@@ -51,9 +51,21 @@ namespace SharpCode
             return this;
         }
 
+        public PropertyBuilder WithoutGetter()
+        {
+            _property.Getter = Option.None<string>();
+            return this;
+        }
+
         public PropertyBuilder WithSetter(string expression)
         {
             _property.Setter = Option.Some(expression);
+            return this;
+        }
+
+        public PropertyBuilder WithoutSetter()
+        {
+            _property.Setter = Option.None<string>();
             return this;
         }
 
