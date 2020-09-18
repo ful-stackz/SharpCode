@@ -54,10 +54,30 @@ namespace SharpCode
             return formatted ? raw.FormatSourceCode() : raw;
         }
 
-        public static string ToSourceCode(this Property field, bool formatted)
+        public static string ToSourceCode(this Property property, bool formatted)
         {
-            // TODO: Implement method
-            return string.Empty;
+            const string Template = @"
+{access-modifier} {type} {name}
+{
+    get{getter}
+    set{setter}
+}
+            ";
+
+            var raw = Template
+                .Replace("{access-modifier}", property.AccessModifier.ToSourceCode())
+                .Replace("{type}", property.Type)
+                .Replace("{name}", property.Name)
+                .Replace("{getter}", property.Getter.Match(
+                    some: (getter) => $" => {getter}{(getter.EndsWith("}") ? string.Empty : ";")}",
+                    none: () => ";"
+                ))
+                .Replace("{setter}", property.Setter.Match(
+                    some: (setter) => $" => {setter}{(setter.EndsWith("}") ? string.Empty : ";")}",
+                    none: () => ";"
+                ));
+
+            return formatted ? raw.Trim().FormatSourceCode() : raw;
         }
 
         public static string ToSourceCode(this Class classData, bool formatted)
@@ -74,13 +94,14 @@ namespace {namespace}
 }
             ";
 
+            // Do not format members separately, rather format the entire class, if requested
             var raw = ClassTemplate
                 .Replace("{namespace}", classData.Namespace)
                 .Replace("{access-modifier}", classData.AccessModifier.ToSourceCode())
                 .Replace("{name}", classData.Name)
-                .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(formatted)).Join("\n"))
-                .Replace("{constructors}", classData.Constructors.Select(ctor => ctor.ToSourceCode(formatted)).Join("\n"))
-                .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(formatted)).Join("\n"));
+                .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(false)).Join("\n"))
+                .Replace("{constructors}", classData.Constructors.Select(ctor => ctor.ToSourceCode(false)).Join("\n"))
+                .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(false)).Join("\n"));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
