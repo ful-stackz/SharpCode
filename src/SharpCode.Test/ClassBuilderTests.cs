@@ -8,19 +8,21 @@ namespace SharpCode.Test
         [Test]
         public void ClassBuilderBuildsSimpleClass()
         {
-            var code = Code.CreateClass("User")
+            var generatedCode = Code.CreateClass("User")
                 .WithNamespace("Data")
-                .ToSourceCode(formatted: true);
-            const string ExpectedCode = @"
+                .ToSourceCode(formatted: true)
+                .WithUnixEOL();
+
+            var ExpectedCode = @"
 namespace Data
 {
     public class User
     {
     }
 }
-            ";
+            ".Trim().WithUnixEOL();
 
-            Assert.AreEqual(ExpectedCode.Trim().Replace("\r\n", "\n"), code.Replace("\r\n", "\n"));
+            Assert.AreEqual(ExpectedCode, generatedCode);
         }
 
         [Test]
@@ -32,7 +34,7 @@ namespace Data
                 .WithField(Code.CreateField("double", "_adjacent"))
                 .WithField(Code.CreateField("float", "_opposite"))
                 .ToSourceCode(formatted: true)
-                .Replace("\r\n", "\n");
+                .WithUnixEOL();
 
             string expectedCode = @"
 namespace Shapes
@@ -44,7 +46,7 @@ namespace Shapes
         private float _opposite;
     }
 }
-            ".Trim().Replace("\r\n", "\n");
+            ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
@@ -67,7 +69,7 @@ namespace Shapes
                     .WithGetter("_opposite")
                     .WithSetter("_opposite = value"))
                 .ToSourceCode()
-                .Replace("\r\n", "\n");
+                .WithUnixEOL();
 
             string expectedCode = @"
 namespace Shapes
@@ -96,7 +98,7 @@ namespace Shapes
         }
     }
 }
-            ".Trim();
+            ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
         }

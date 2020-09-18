@@ -10,7 +10,7 @@ namespace SharpCode.Test
         {
             var generatedCode = Code.CreateProperty("string", "Username")
                 .ToSourceCode()
-                .Replace("\r\n", "\n");
+                .WithUnixEOL();
 
             var expectedCode = @"
 public string Username
@@ -18,7 +18,7 @@ public string Username
     get;
     set;
 }
-            ".Trim();
+            ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
@@ -30,7 +30,7 @@ public string Username
                 .WithGetter("_id")
                 .WithSetter("{ value = value > 10 ? value : 10; _id = value; }")
                 .ToSourceCode()
-                .Replace("\r\n", "\n");
+                .WithUnixEOL();
 
             var expectedCode = @"
 public int Id
@@ -42,7 +42,7 @@ public int Id
         _id = value;
     }
 }
-            ".Trim();
+            ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
