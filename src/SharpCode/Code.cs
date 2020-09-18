@@ -35,7 +35,7 @@ namespace SharpCode
             string name,
             AccessModifier accessModifier = AccessModifier.Public)
         {
-            return new PropertyBuilder();
+            return new PropertyBuilder(accessModifier, type, name);
         }
     }
 }
