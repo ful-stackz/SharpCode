@@ -50,7 +50,7 @@ namespace SharpCode
             return this;
         }
 
-        public string ToSourceCode(bool formatted = false)
+        public string ToSourceCode(bool formatted = true)
         {
             return _field.ToSourceCode(formatted);
         }
