@@ -37,5 +37,10 @@ namespace SharpCode
         {
             return new PropertyBuilder(accessModifier, type, name);
         }
+
+        public static ConstructorBuilder CreateConstructor()
+        {
+            return new ConstructorBuilder();
+        }
     }
 }

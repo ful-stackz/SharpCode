@@ -34,14 +34,15 @@ namespace SharpCode
     {
         public string Type { get; set; }
         public string Name { get; set; }
+        public string? ReceivingMember { get; set; }
     }
 
-    internal struct Constructor
+    internal class Constructor
     {
-        public string ClassName { get; set; }
-        public AccessModifier AccessModifier { get; set; }
-        public IEnumerable<Parameter> Parameters { get; set; }
-        public Option<IEnumerable<Parameter>> BaseCall { get; set; }
+        public string ClassName { get; set; } = string.Empty;
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public List<Parameter> Parameters { get; set; } = new List<Parameter>();
+        public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
     }
 
     internal class Class
@@ -49,6 +50,8 @@ namespace SharpCode
         public string? Namespace { get; set; }
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
         public string? Name { get; set; }
+        public Option<string> InheritedClass { get; set; } = Option.None<string>();
+        public List<string> ImplementedInterfaces { get; } = new List<string>();
         public List<Field> Fields { get; } = new List<Field>();
         public List<Property> Properties { get; } = new List<Property>();
         public List<Constructor> Constructors { get; } = new List<Constructor>();

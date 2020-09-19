@@ -45,11 +45,24 @@ namespace SharpCode
         public static string ToSourceCode(this Constructor constructor, bool formatted)
         {
             const string Template = @"
-{access-modifier} {name}({parameters}) { }";
+{access-modifier} {name}({parameters}){base-call}
+{
+    {assignments}
+}";
             var raw = Template
                 .Replace("{access-modifier}", constructor.AccessModifier.ToSourceCode())
                 .Replace("{name}", constructor.ClassName)
-                .Replace("{parameters}", constructor.Parameters.Select(param => param.ToSourceCode()).Join(", "));
+                .Replace("{parameters}", constructor.Parameters.Select(param => param.ToSourceCode()).Join(", "))
+                .Replace("{base-call}", constructor.BaseCallParameters.Match(
+                    some: (parameters) => $": base({parameters.Join(", ")})",
+                    none: () => string.Empty
+                ))
+                .Replace(
+                    "{assignments}",
+                    constructor.Parameters
+                        .Where(param => !string.IsNullOrWhiteSpace(param.ReceivingMember))
+                        .Select(param => $"{param.ReceivingMember} = {param.Name};")
+                        .Join("\n"));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -85,7 +98,7 @@ namespace SharpCode
             const string ClassTemplate = @"
 namespace {namespace}
 {
-    {access-modifier} class {name}
+    {access-modifier} class {name}{inheritance}
     {
         {fields}
         {constructors}
@@ -94,11 +107,16 @@ namespace {namespace}
 }
             ";
 
+            var inheritance = classData.InheritedClass.Match(
+                some: (className) => classData.ImplementedInterfaces.Prepend(className),
+                none: () => classData.ImplementedInterfaces);
+
             // Do not format members separately, rather format the entire class, if requested
             var raw = ClassTemplate
                 .Replace("{namespace}", classData.Namespace)
                 .Replace("{access-modifier}", classData.AccessModifier.ToSourceCode())
                 .Replace("{name}", classData.Name)
+                .Replace("{inheritance}", inheritance.Any() ? $": {inheritance.Join(", ")}" : string.Empty)
                 .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(false)).Join("\n"))
                 .Replace("{constructors}", classData.Constructors.Select(ctor => ctor.ToSourceCode(false)).Join("\n"))
                 .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(false)).Join("\n"));

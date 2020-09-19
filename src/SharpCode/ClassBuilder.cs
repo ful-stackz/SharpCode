@@ -1,3 +1,6 @@
+using System.Linq;
+using Optional;
+
 namespace SharpCode
 {
     public class ClassBuilder
@@ -30,6 +33,18 @@ namespace SharpCode
             return this;
         }
 
+        public ClassBuilder WithInheritedClass(string name)
+        {
+            _class.InheritedClass = Option.Some(name);
+            return this;
+        }
+
+        public ClassBuilder WithImplementedInterface(string name)
+        {
+            _class.ImplementedInterfaces.Add(name);
+            return this;
+        }
+
         public ClassBuilder WithField(FieldBuilder builder)
         {
             _class.Fields.Add(builder.Build());
@@ -39,6 +54,14 @@ namespace SharpCode
         public ClassBuilder WithProperty(PropertyBuilder builder)
         {
             _class.Properties.Add(builder.Build());
+            return this;
+        }
+
+        public ClassBuilder WithConstructor(ConstructorBuilder builder)
+        {
+            var constructor = builder.Build();
+            constructor.ClassName = _class.Name ?? string.Empty;
+            _class.Constructors.Add(constructor);
             return this;
         }
 
