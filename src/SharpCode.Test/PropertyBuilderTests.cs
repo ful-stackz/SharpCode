@@ -46,5 +46,24 @@ public int Id
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
+
+        [Test]
+        public void CreateProperty_Works_WithGetterWithoutSetter()
+        {
+            var expectedCode = @"
+private string EmptyString
+{
+    get => string.Empty;
+}
+            ".Trim().WithUnixEOL();
+
+            var generatedCode = Code.CreateProperty("string", "EmptyString", AccessModifier.Private)
+                .WithGetter("string.Empty")
+                .WithoutSetter()
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
     }
 }

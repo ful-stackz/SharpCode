@@ -59,8 +59,8 @@ namespace SharpCode
             const string Template = @"
 {access-modifier} {type} {name}
 {
-    get{getter}
-    set{setter}
+    {getter}
+    {setter}
 }
             ";
 
@@ -69,12 +69,12 @@ namespace SharpCode
                 .Replace("{type}", property.Type)
                 .Replace("{name}", property.Name)
                 .Replace("{getter}", property.Getter.Match(
-                    some: (getter) => $" => {getter}{(getter.EndsWith("}") ? string.Empty : ";")}",
-                    none: () => ";"
+                    some: (getter) => $"get => {getter}{(getter.EndsWith("}") ? string.Empty : ";")}",
+                    none: () => property.Setter.HasValue ? string.Empty : "get;"
                 ))
                 .Replace("{setter}", property.Setter.Match(
-                    some: (setter) => $" => {setter}{(setter.EndsWith("}") ? string.Empty : ";")}",
-                    none: () => ";"
+                    some: (setter) => $"set => {setter}{(setter.EndsWith("}") ? string.Empty : ";")}",
+                    none: () => property.Getter.HasValue ? string.Empty : "set;"
                 ));
 
             return formatted ? raw.Trim().FormatSourceCode() : raw;
