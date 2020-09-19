@@ -1,0 +1,40 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1.4
+      with:
+        projectBaseDir: ./src
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+
+    - name: Install dependencies
+      run: |
+        cd ./src/SharpCode
+        dotnet restore
+
+    - name: Build
+      run: |
+        cd ./src/SharpCode
+        dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: |
+        cd ./src/SharpCode.Test
+        dotnet test --no-restore --verbosity normal
