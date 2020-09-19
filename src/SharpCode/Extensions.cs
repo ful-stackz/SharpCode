@@ -90,7 +90,7 @@ namespace SharpCode
                     none: () => property.Getter.HasValue ? string.Empty : "set;"
                 ));
 
-            return formatted ? raw.Trim().FormatSourceCode() : raw;
+            return formatted ? raw.FormatSourceCode() : raw;
         }
 
         public static string ToSourceCode(this Class classData, bool formatted)

@@ -52,7 +52,7 @@ namespace SharpCode
 
         public string ToSourceCode(bool formatted = true)
         {
-            return _field.ToSourceCode(formatted);
+            return Build().ToSourceCode(formatted);
         }
 
         public override string ToString()

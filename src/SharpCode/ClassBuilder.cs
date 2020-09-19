@@ -59,15 +59,13 @@ namespace SharpCode
 
         public ClassBuilder WithConstructor(ConstructorBuilder builder)
         {
-            var constructor = builder.Build();
-            constructor.ClassName = _class.Name ?? string.Empty;
-            _class.Constructors.Add(constructor);
+            _class.Constructors.Add(builder.Build());
             return this;
         }
 
         public string ToSourceCode(bool formatted = true)
         {
-            return _class.ToSourceCode(formatted);
+            return Build().ToSourceCode(formatted);
         }
 
         public override string ToString()
@@ -77,6 +75,8 @@ namespace SharpCode
 
         internal Class Build()
         {
+            _class.Namespace ??= "Generated";
+            _class.Constructors.ForEach(ctor => ctor.ClassName = _class.Name ?? string.Empty);
             return _class;
         }
     }

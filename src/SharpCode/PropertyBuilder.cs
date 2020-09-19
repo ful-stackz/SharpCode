@@ -71,7 +71,7 @@ namespace SharpCode
 
         public string ToSourceCode(bool formatted = true)
         {
-            return _property.ToSourceCode(formatted);
+            return Build().ToSourceCode(formatted);
         }
 
         public override string ToString()
