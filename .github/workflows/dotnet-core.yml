@@ -14,11 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v1.4
-      with:
-        projectBaseDir: ./src
-
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
