@@ -5,7 +5,7 @@ namespace SharpCode
 {
     public class ConstructorBuilder
     {
-        private Constructor _constructor = new Constructor();
+        private readonly Constructor _constructor = new Constructor();
 
         public ConstructorBuilder WithParameter(string type, string name, string? receivingMember = null)
         {

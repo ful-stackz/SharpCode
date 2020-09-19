@@ -5,7 +5,7 @@ namespace SharpCode
 {
     public class ClassBuilder
     {
-        private Class _class = new Class();
+        private readonly Class _class = new Class();
 
         internal ClassBuilder() { }
 
