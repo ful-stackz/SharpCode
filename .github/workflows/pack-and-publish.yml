@@ -9,7 +9,7 @@ on:
       publish_beta:
         description: 'Publish as beta'
         required: false
-        default: '$false'
+        default: 'false'
 
 jobs:
   publish:
@@ -18,8 +18,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: 'Package and Publish'
         run: >
-          ./scripts/PackAndPublish
+          ./PackAndPublish
           -NuGetApiKey:${{ github.event.inputs.nuget_api_key }}
           -Publish
           -Beta:$${{ github.event.inputs.publish_beta }}
         shell: pwsh
+        working-directory: ./scripts

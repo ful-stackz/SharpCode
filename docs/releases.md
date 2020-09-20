@@ -7,7 +7,7 @@ Official releases are created through the designated GitHub action.
 1. Modify the [.version](../.version) file with the target version of the release
 2. Run the _"Pack and publish"_ GitHub action
    - Provide the _"NuGet API key"_
-   - Set the _"Publish as beta"_ flag accordingly. Possible values are `$true` and `$false`
+   - Set the _"Publish as beta"_ flag accordingly. Possible values are `true` and `false`
 3. Tag the released commit with the version from the .version file
    - Use the `v{major.minor.patch[-beta]}` format
 
