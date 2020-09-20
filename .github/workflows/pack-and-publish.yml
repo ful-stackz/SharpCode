@@ -1,0 +1,25 @@
+name: Pack and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      nuget_api_key:
+        description: 'NuGet API key'
+        required: true
+      publish_beta:
+        description: 'Publish as beta'
+        required: false
+        default: '$false'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Package and Publish'
+        run: >
+          ./scripts/PackAndPublish
+          -NuGetApiKey:${{ github.event.inputs.nuget_api_key }}
+          -Publish
+          -Beta:$${{ github.event.inputs.publish_beta }}
+        shell: pwsh
