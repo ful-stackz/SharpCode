@@ -13,42 +13,42 @@ namespace SharpCode
         ProtectedInternal,
     }
 
-    internal struct Field
+    internal class Field
     {
-        public AccessModifier AccessModifier { get; set; }
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Private;
         public bool IsReadonly { get; set; }
-        public string Type { get; set; }
-        public string Name { get; set; }
+        public string? Type { get; set; }
+        public string? Name { get; set; }
     }
 
-    internal struct Property
+    internal class Property
     {
-        public AccessModifier AccessModifier { get; set; }
-        public string Type { get; set; }
-        public string Name { get; set; }
-        public Option<string> Getter { get; set; }
-        public Option<string> Setter { get; set; }
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public string? Type { get; set; }
+        public string? Name { get; set; }
+        public Option<string> Getter { get; set; } = Option.None<string>();
+        public Option<string> Setter { get; set; } = Option.None<string>();
     }
 
-    internal struct Parameter
+    internal class Parameter
     {
-        public string Type { get; set; }
-        public string Name { get; set; }
+        public string? Type { get; set; }
+        public string? Name { get; set; }
         public string? ReceivingMember { get; set; }
     }
 
     internal class Constructor
     {
-        public string ClassName { get; set; } = string.Empty;
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public string? ClassName { get; set; }
         public List<Parameter> Parameters { get; set; } = new List<Parameter>();
         public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
     }
 
     internal class Class
     {
-        public string? Namespace { get; set; }
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public string? Namespace { get; set; }
         public string? Name { get; set; }
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
         public List<string> ImplementedInterfaces { get; } = new List<string>();

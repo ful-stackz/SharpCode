@@ -1,3 +1,5 @@
+using System;
+
 namespace SharpCode
 {
     public static class Code
@@ -25,6 +27,14 @@ namespace SharpCode
             return new FieldBuilder(accessModifier, type, name);
         }
 
+        public static FieldBuilder CreateField(
+            Type type,
+            string name,
+            AccessModifier accessModifier = AccessModifier.Private)
+        {
+            return new FieldBuilder(accessModifier, type, name);
+        }
+
         public static PropertyBuilder CreateProperty()
         {
             return new PropertyBuilder();
@@ -32,6 +42,14 @@ namespace SharpCode
 
         public static PropertyBuilder CreateProperty(
             string type,
+            string name,
+            AccessModifier accessModifier = AccessModifier.Public)
+        {
+            return new PropertyBuilder(accessModifier, type, name);
+        }
+
+        public static PropertyBuilder CreateProperty(
+            Type type,
             string name,
             AccessModifier accessModifier = AccessModifier.Public)
         {

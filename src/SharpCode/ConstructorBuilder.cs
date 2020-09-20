@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Optional;
 
@@ -7,6 +8,51 @@ namespace SharpCode
     {
         private readonly Constructor _constructor = new Constructor();
 
+        /// <summary>
+        /// Sets the access modifier of the constructor being built.
+        /// </summary>
+        public ConstructorBuilder WithAccessModifier(AccessModifier accessModifier)
+        {
+            _constructor.AccessModifier = accessModifier;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an accepted parameter to the constructor.
+        /// </summary>
+        /// <param name="type">
+        /// The type of the parameter.
+        /// </param>
+        /// <param name="name">
+        /// The name of the parameter.
+        /// </param>
+        /// <param name="receivingMember">
+        /// A member of the class to which this parameter will be assigned. Providing this parameter will result in
+        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>
+        /// </param>
+        /// <example>
+        /// This example shows the generated code for a constructor with a parameter.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter("string", "username");
+        /// 
+        /// public User(string username)
+        /// {
+        /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// This example shows the generated code for a constructor with a parameter with a receiving member.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter("string", "username", "_username");
+        /// 
+        /// public User(string username)
+        /// {
+        ///     _username = username;
+        /// }
+        /// </code>
+        /// </example>
         public ConstructorBuilder WithParameter(string type, string name, string? receivingMember = null)
         {
             _constructor.Parameters.Add(new Parameter
@@ -18,6 +64,81 @@ namespace SharpCode
             return this;
         }
 
+        /// <summary>
+        /// Adds an accepted parameter to the constructor.
+        /// </summary>
+        /// <param name="type">
+        /// The type of the parameter.
+        /// </param>
+        /// <param name="name">
+        /// The name of the parameter.
+        /// </param>
+        /// <param name="receivingMember">
+        /// A member of the class to which this parameter will be assigned. Providing this parameter will result in
+        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>
+        /// </param>
+        /// <example>
+        /// This example shows the generated code for a constructor with a parameter.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter(typeof(string), "username");
+        /// 
+        /// public User(String username)
+        /// {
+        /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// This example shows the generated code for a constructor with a parameter with a receiving member.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter(typeof(string), "username", "_username");
+        /// 
+        /// public User(String username)
+        /// {
+        ///     _username = username;
+        /// }
+        /// </code>
+        /// </example>
+        public ConstructorBuilder WithParameter(Type type, string name, string? receivingMember = null)
+        {
+            _constructor.Parameters.Add(new Parameter
+            {
+                Name = name,
+                ReceivingMember = receivingMember,
+                Type = type.Name,
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the <c>base()</c> call of the constructor with the specified <paramref name="passedParamaters" />.
+        /// </summary>
+        /// <param name="passedParameters">
+        /// The parameters that will be passed to the <c>base()</c> call.
+        /// </param>
+        /// <example>
+        /// This example shows the generated code for a constructor with a base call.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithBaseCall();
+        /// 
+        /// public User(): base()
+        /// {
+        /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// This example shows the generated code for a constructor with a base call with passed parameters.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter("string", "username").WithBaseCall("username");
+        /// 
+        /// public User(string username): base(username)
+        /// {
+        /// }
+        /// </code>
+        /// </example>
         public ConstructorBuilder WithBaseCall(params string[] passedParameters)
         {
             _constructor.BaseCallParameters = Option.Some<IEnumerable<string>>(passedParameters);

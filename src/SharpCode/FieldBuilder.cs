@@ -4,7 +4,7 @@ namespace SharpCode
 {
     public class FieldBuilder
     {
-        private Field _field = new Field();
+        private readonly Field _field = new Field();
 
         internal FieldBuilder() { }
 
@@ -20,41 +20,68 @@ namespace SharpCode
         {
         }
 
+        /// <summary>
+        /// Sets accessibilty modifier of the field being built.
+        /// </summary>
         public FieldBuilder WithAccessModifier(AccessModifier accessModifier)
         {
             _field.AccessModifier = accessModifier;
             return this;
         }
 
+        /// <summary>
+        /// Sets the type of the field being built.
+        /// </summary>
         public FieldBuilder WithType(string type)
         {
             _field.Type = type;
             return this;
         }
 
+        /// <summary>
+        /// Sets the type of the field being built.
+        /// </summary>
         public FieldBuilder WithType(Type type)
         {
             _field.Type = type.Name;
             return this;
         }
 
+        /// <summary>
+        /// Sets the name of the field being built.
+        /// </summary>
         public FieldBuilder WithName(string name)
         {
             _field.Name = name;
             return this;
         }
 
-        public FieldBuilder MakeReadonly()
+        /// <summary>
+        /// Sets the readonly preference for the field being built.
+        /// </summary>
+        /// <param name="makeReadonly">
+        /// Indicates whether the field will be made readonly (<c>true</c>) or not (<c>false</c>).
+        /// </param>
+        public FieldBuilder MakeReadonly(bool makeReadonly = true)
         {
-            _field.IsReadonly = true;
+            _field.IsReadonly = makeReadonly;
             return this;
         }
 
+        /// <summary>
+        /// Returns the source code of the built field.
+        /// </summary>
+        /// <param name="formatted">
+        /// Indicates whether to format the source code.
+        /// </param>
         public string ToSourceCode(bool formatted = true)
         {
             return Build().ToSourceCode(formatted);
         }
 
+        /// <summary>
+        /// Returns the source code of the built field.
+        /// </summary>
         public override string ToString()
         {
             return ToSourceCode();
@@ -62,6 +89,17 @@ namespace SharpCode
 
         internal Field Build()
         {
+            if (string.IsNullOrEmpty(_field.Type))
+            {
+                throw new MissingBuilderSettingException(
+                    "Providing the type of the field is required when building a field.");
+            }
+            else if (string.IsNullOrEmpty(_field.Name))
+            {
+                throw new MissingBuilderSettingException(
+                    "Providing the name of the field is required when building a field.");
+            }
+
             return _field;
         }
     }

@@ -82,11 +82,11 @@ namespace SharpCode
                 .Replace("{type}", property.Type)
                 .Replace("{name}", property.Name)
                 .Replace("{getter}", property.Getter.Match(
-                    some: (getter) => $"get => {getter}{(getter.EndsWith("}") ? string.Empty : ";")}",
+                    some: (getter) => getter.StartsWith("{") ? $"get{getter}" : $"get => {getter};",
                     none: () => property.Setter.HasValue ? string.Empty : "get;"
                 ))
                 .Replace("{setter}", property.Setter.Match(
-                    some: (setter) => $"set => {setter}{(setter.EndsWith("}") ? string.Empty : ";")}",
+                    some: (setter) => setter.StartsWith("{") ? $"set{setter}" : $"set => {setter};",
                     none: () => property.Getter.HasValue ? string.Empty : "set;"
                 ));
 

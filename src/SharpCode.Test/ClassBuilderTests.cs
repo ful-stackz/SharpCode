@@ -66,8 +66,8 @@ namespace Shapes
                     .WithGetter("_adjacent")
                     .WithSetter("_adjacent = value"))
                 .WithProperty(Code.CreateProperty("double", "Opposite")
-                    .WithGetter("_opposite")
-                    .WithSetter("_opposite = value"))
+                    .WithGetter("{ return _opposite; }")
+                    .WithSetter("{ _opposite = value; }"))
                 .ToSourceCode()
                 .WithUnixEOL();
 
@@ -93,8 +93,15 @@ namespace Shapes
 
         public double Opposite
         {
-            get => _opposite;
-            set => _opposite = value;
+            get
+            {
+                return _opposite;
+            }
+
+            set
+            {
+                _opposite = value;
+            }
         }
     }
 }
@@ -200,6 +207,14 @@ namespace Authorization
                 .WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_Throws_WhenRequiredSettingsNotProvided()
+        {
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass().ToSourceCode(),
+                "Expected generating the source code for a class without setting the name to throw an exception.");
         }
     }
 }
