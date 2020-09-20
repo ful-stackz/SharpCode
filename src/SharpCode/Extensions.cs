@@ -119,5 +119,24 @@ namespace SharpCode
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
+
+        public static string ToSourceCode(this Namespace data, bool formatted)
+        {
+            const string Template = @"
+{usings}
+
+namespace {name}
+{
+    {classes}
+}
+            ";
+
+            var raw = Template
+                .Replace("{name}", data.Name)
+                .Replace("{usings}", data.Usings.Select(item => $"using {item};").Join("\n"))
+                .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"));
+
+            return formatted ? raw.FormatSourceCode() : raw;
+        }
     }
 }

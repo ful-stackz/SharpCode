@@ -55,4 +55,11 @@ namespace SharpCode
         public List<Property> Properties { get; } = new List<Property>();
         public List<Constructor> Constructors { get; } = new List<Constructor>();
     }
+
+    internal class Namespace
+    {
+        public string? Name { get; set; }
+        public List<string> Usings { get; } = new List<string>();
+        public List<Class> Classes { get; } = new List<Class>();
+    }
 }

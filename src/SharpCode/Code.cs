@@ -1,4 +1,5 @@
 using System;
+using System.Security;
 
 namespace SharpCode
 {
@@ -59,6 +60,19 @@ namespace SharpCode
         public static ConstructorBuilder CreateConstructor()
         {
             return new ConstructorBuilder();
+        }
+
+        public static NamespaceBuilder CreateNamespace()
+        {
+            return new NamespaceBuilder();
+        }
+
+        /// <param name="name">
+        /// The name of the namespace.
+        /// </param>
+        public static NamespaceBuilder CreateNamespace(string name)
+        {
+            return new NamespaceBuilder(name);
         }
     }
 }
