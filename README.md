@@ -1,7 +1,13 @@
 # SharpCode
 Small C# code generator. Easily generate code programmatically!
 
-![CI](https://github.com/ful-stackz/SharpCode/workflows/CI/badge.svg?branch=main)
+![CI](https://github.com/ful-stackz/SharpCode/workflows/CI/badge.svg?branch=main) [![Nuget](https://img.shields.io/nuget/v/SharpCode?color=success&label=nuget&logo=nuget)](https://www.nuget.org/packages/SharpCode/)
+
+## Install
+
+- .NET CLI `dotnet add package SharpCode`
+- Package Manager `Install-Package SharpCode`
+- Package Reference `<PackageReference Include="SharpCode" Version="0.0.1" />`
 
 ## Usage
 
