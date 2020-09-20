@@ -64,11 +64,20 @@ private string EmptyString
                 .WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
+        }
 
-            // var sourceCode = Code.CreateProperty("bool", "IsCreated")
-            //     .WithSetter("{ if (value <= 0) { throw new Exception(); } _value = value; }")
-            //     .ToSourceCode();
-            // System.IO.File.WriteAllText(@"C:\Users\stoya\source\repos\SharpCode\src\SharpCode.Test\Generated.cs", sourceCode);
+        [Test]
+        public void CreateProperty_WithoutGetterAndSetter_Works()
+        {
+            var generatedCode = Code.CreateProperty("string", "NoGetterOrSetter", AccessModifier.Public)
+                .WithoutGetter()
+                .WithoutSetter()
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = "public string NoGetterOrSetter;";
+
+            Assert.AreEqual(expectedCode, generatedCode);
         }
 
         [Test]

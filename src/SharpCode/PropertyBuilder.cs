@@ -60,6 +60,21 @@ namespace SharpCode
         /// <summary>
         /// Sets the getter logic of the property being built.
         /// </summary>
+        /// <param name="expression">
+        /// The expression or block body of the getter. If not specified the default getter will be used - <c>get;</c>
+        /// </param>
+        /// <example>
+        /// This example shows the generated code for a property with a default getter.
+        /// 
+        /// <code>
+        /// // PropertyBuilder.WithName("Identifier").WithGetter()
+        /// 
+        /// public int Identifier
+        /// {
+        ///     get;
+        /// }
+        /// </code>
+        /// </example>
         /// <example>
         /// This example shows the generated code for a property with a getter that is an expression.
         /// 
@@ -94,7 +109,7 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
-        public PropertyBuilder WithGetter(string expression)
+        public PropertyBuilder WithGetter(string? expression = null)
         {
             _property.Getter = Option.Some(expression);
             return this;
@@ -113,9 +128,21 @@ namespace SharpCode
         /// Sets the setter logic of the property being built.
         /// </summary>
         /// <param name="expression">
-        /// The logic of the setter. Can be an expression or a block of code (wrapped in <c>{}</c>). The logic can
-        /// make use of the <c>value</c> provided to the property setter.
+        /// The expression or block body of the setter. If not specified the default setter will be used - <c>set;</c>
+        /// Custom setter logic can make use of the <c>value</c> provided to the property setter.
         /// </param>
+        /// <example>
+        /// This example shows the generated code for a property with a default setter.
+        /// 
+        /// <code>
+        /// // PropertyBuilder.WithName("Identifier").WithSetter()
+        /// 
+        /// public int Identifier
+        /// {
+        ///     set;
+        /// }
+        /// </code>
+        /// </example>
         /// <example>
         /// This example shows the generated code for a property with a setter that is an expression.
         /// 
@@ -132,7 +159,8 @@ namespace SharpCode
         /// This example shows the generated code for a property with a setter that has a block body.
         /// 
         /// <code>
-        /// // PropertyBuilder.WithName("Value").WithSetter("{ if (value <= 0) { throw new Exception(); } _value = value; }")
+        /// // PropertyBuilder.WithName("Value")
+        /// //    .WithSetter("{ if (value &lt;= 0) { throw new Exception(); } _value = value; }")
         /// 
         /// public int Identifier
         /// {
@@ -150,7 +178,7 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
-        public PropertyBuilder WithSetter(string expression)
+        public PropertyBuilder WithSetter(string? expression = null)
         {
             _property.Setter = Option.Some(expression);
             return this;

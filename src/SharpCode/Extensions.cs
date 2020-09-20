@@ -71,24 +71,32 @@ namespace SharpCode
         {
             const string Template = @"
 {access-modifier} {type} {name}
-{
+{getter-setter-open-bracket}
     {getter}
     {setter}
-}
+{getter-setter-close-bracket}
             ";
 
             var raw = Template
                 .Replace("{access-modifier}", property.AccessModifier.ToSourceCode())
                 .Replace("{type}", property.Type)
                 .Replace("{name}", property.Name)
+                .Replace("{getter-setter-open-bracket}", property.Getter.Else(property.Setter).HasValue
+                    ? "{"
+                    : ";") // Use ; instead of { if there is no getter or setter
+                .Replace("{getter-setter-close-bracket}", property.Getter.Else(property.Setter).HasValue
+                    ? "}"
+                    : string.Empty)
                 .Replace("{getter}", property.Getter.Match(
-                    some: (getter) => getter.StartsWith("{") ? $"get{getter}" : $"get => {getter};",
-                    none: () => property.Setter.HasValue ? string.Empty : "get;"
-                ))
+                    some: (getter) => string.IsNullOrWhiteSpace(getter)
+                        ? "get;"
+                        : getter!.StartsWith("{") ? $"get{getter}" : $"get => {getter};",
+                    none: () => string.Empty))
                 .Replace("{setter}", property.Setter.Match(
-                    some: (setter) => setter.StartsWith("{") ? $"set{setter}" : $"set => {setter};",
-                    none: () => property.Getter.HasValue ? string.Empty : "set;"
-                ));
+                    some: (setter) => string.IsNullOrWhiteSpace(setter)
+                        ? "set;"
+                        : setter!.StartsWith("{") ? $"set{setter}" : $"set => {setter};",
+                    none: () => string.Empty));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }

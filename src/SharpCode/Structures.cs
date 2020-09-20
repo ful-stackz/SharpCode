@@ -26,8 +26,8 @@ namespace SharpCode
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
         public string? Type { get; set; }
         public string? Name { get; set; }
-        public Option<string> Getter { get; set; } = Option.None<string>();
-        public Option<string> Setter { get; set; } = Option.None<string>();
+        public Option<string?> Getter { get; set; } = Option.Some<string?>(null);
+        public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
     }
 
     internal class Parameter
