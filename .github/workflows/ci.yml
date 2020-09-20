@@ -1,4 +1,4 @@
-name: .NET Core
+name: CI
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -20,16 +19,13 @@ jobs:
         dotnet-version: 3.1.301
 
     - name: Install dependencies
-      run: |
-        cd ./src/SharpCode
-        dotnet restore
+      run: dotnet restore
+      working-directory: ./src/SharpCode
 
     - name: Build
-      run: |
-        cd ./src/SharpCode
-        dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./src/SharpCode
 
     - name: Test
-      run: |
-        cd ./src/SharpCode.Test
-        dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./src/SharpCode.Test

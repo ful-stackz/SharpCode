@@ -2,6 +2,7 @@
 *.suo
 *.user
 *.sln.docstates
+**/.vs/*
 
 # Build results
 [Dd]ebug/
@@ -66,3 +67,7 @@ $RECYCLE.BIN/
 
 # Publishing results
 publish/
+
+# VS Code files
+.vscode/
+!.vscode/settings.json

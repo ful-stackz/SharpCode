@@ -1,6 +1,8 @@
 # SharpCode
 Small C# code generator. Easily generate code programmatically!
 
+![CI](https://github.com/ful-stackz/SharpCode/workflows/CI/badge.svg?branch=main)
+
 ## Usage
 
 ### Simple usage

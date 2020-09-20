@@ -1,4 +1,4 @@
-name: Pack and publish
+name: Release
 
 on:
   workflow_dispatch:
@@ -14,8 +14,10 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
       - name: 'Package and Publish'
         run: >
           ./PackAndPublish
