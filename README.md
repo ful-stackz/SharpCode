@@ -7,7 +7,6 @@ Small C# code generator. Easily generate code programmatically!
 using SharpCode;
 
 var sourceCode = Code.CreateClass("User")
-    .WithNamespace("Data")
     .WithProperty(Code.CreateProperty("int", "Id"))
     .WithProperty(Code.CreateProperty("string", "Username"))
     .ToSourceCode();
@@ -15,21 +14,18 @@ var sourceCode = Code.CreateClass("User")
 System.IO.File.WriteAllText("User.cs", sourceCode);
 
 // User.cs
-namespace Data
+public class User
 {
-    public class User
+    public int Id
     {
-        public int Id
-        {
-            get;
-            set;
-        }
-        
-        public string Username
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
+    
+    public string Username
+    {
+        get;
+        set;
     }
 }
 ```
@@ -40,7 +36,6 @@ namespace Data
 using SharpCode;
 
 var sourceCode = Code.CreateClass("User")
-    .WithNamespace("Data")
     .WithField(Code.CreateField("int", "_id"))
     .WithField(Code.CreateField("string", "_username"))
     .WithProperty(Code.CreateProperty("int", "Id")
@@ -57,27 +52,24 @@ var sourceCode = Code.CreateClass("User")
 System.IO.File.WriteAllText("User.cs", sourceCode);
 
 // User.cs
-namespace Data
+public class User
 {
-    public class User
+    private int _id;
+    private string _username;
+    public User(int id, string username)
     {
-        private int _id;
-        private string _username;
-        public User(int id, string username)
-        {
-            _id = id;
-            _username = username;
-        }
+        _id = id;
+        _username = username;
+    }
 
-        public int Id
-        {
-            get => _id;
-        }
+    public int Id
+    {
+        get => _id;
+    }
 
-        public string Username
-        {
-            get => _username;
-        }
+    public string Username
+    {
+        get => _username;
     }
 }
 ```

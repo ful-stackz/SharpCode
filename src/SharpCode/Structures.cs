@@ -48,7 +48,6 @@ namespace SharpCode
     internal class Class
     {
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
-        public string? Namespace { get; set; }
         public string? Name { get; set; }
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
         public List<string> ImplementedInterfaces { get; } = new List<string>();

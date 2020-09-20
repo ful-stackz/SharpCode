@@ -96,14 +96,11 @@ namespace SharpCode
         public static string ToSourceCode(this Class classData, bool formatted)
         {
             const string ClassTemplate = @"
-namespace {namespace}
+{access-modifier} class {name}{inheritance}
 {
-    {access-modifier} class {name}{inheritance}
-    {
-        {fields}
-        {constructors}
-        {properties}
-    }
+    {fields}
+    {constructors}
+    {properties}
 }
             ";
 
@@ -113,7 +110,6 @@ namespace {namespace}
 
             // Do not format members separately, rather format the entire class, if requested
             var raw = ClassTemplate
-                .Replace("{namespace}", classData.Namespace)
                 .Replace("{access-modifier}", classData.AccessModifier.ToSourceCode())
                 .Replace("{name}", classData.Name)
                 .Replace("{inheritance}", inheritance.Any() ? $": {inheritance.Join(", ")}" : string.Empty)

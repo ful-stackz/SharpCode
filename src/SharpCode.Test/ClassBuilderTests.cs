@@ -6,19 +6,15 @@ namespace SharpCode.Test
     public class ClassBuilderTests
     {
         [Test]
-        public void CreateClass_WithNamespace()
+        public void CreateClass_WithNoMembers_Works()
         {
             var generatedCode = Code.CreateClass("User")
-                .WithNamespace("Data")
                 .ToSourceCode(formatted: true)
                 .WithUnixEOL();
 
             var expectedCode = @"
-namespace Data
+public class User
 {
-    public class User
-    {
-    }
 }
             ".Trim().WithUnixEOL();
 
@@ -29,7 +25,6 @@ namespace Data
         public void CreateClass_WithFields()
         {
             var generatedCode = Code.CreateClass("Triangle", AccessModifier.Internal)
-                .WithNamespace("Shapes")
                 .WithField(Code.CreateField("int", "_hypotenuse"))
                 .WithField(Code.CreateField("double", "_adjacent"))
                 .WithField(Code.CreateField("float", "_opposite"))
@@ -37,14 +32,11 @@ namespace Data
                 .WithUnixEOL();
 
             var expectedCode = @"
-namespace Shapes
+internal class Triangle
 {
-    internal class Triangle
-    {
-        private int _hypotenuse;
-        private double _adjacent;
-        private float _opposite;
-    }
+    private int _hypotenuse;
+    private double _adjacent;
+    private float _opposite;
 }
             ".Trim().WithUnixEOL();
 
@@ -55,7 +47,6 @@ namespace Shapes
         public void CreateClass_Works_WithFieldsAndProperties()
         {
             var generatedCode = Code.CreateClass("Triangle", AccessModifier.Public)
-                .WithNamespace("Shapes")
                 .WithField(Code.CreateField("double", "_hypotenuse"))
                 .WithField(Code.CreateField("double", "_adjacent"))
                 .WithField(Code.CreateField("double", "_opposite"))
@@ -72,36 +63,33 @@ namespace Shapes
                 .WithUnixEOL();
 
             var expectedCode = @"
-namespace Shapes
+public class Triangle
 {
-    public class Triangle
+    private double _hypotenuse;
+    private double _adjacent;
+    private double _opposite;
+    public double Hypotenuse
     {
-        private double _hypotenuse;
-        private double _adjacent;
-        private double _opposite;
-        public double Hypotenuse
+        get => _hypotenuse;
+        set => _hypotenuse = value;
+    }
+
+    public double Adjacent
+    {
+        get => _adjacent;
+        set => _adjacent = value;
+    }
+
+    public double Opposite
+    {
+        get
         {
-            get => _hypotenuse;
-            set => _hypotenuse = value;
+            return _opposite;
         }
 
-        public double Adjacent
+        set
         {
-            get => _adjacent;
-            set => _adjacent = value;
-        }
-
-        public double Opposite
-        {
-            get
-            {
-                return _opposite;
-            }
-
-            set
-            {
-                _opposite = value;
-            }
+            _opposite = value;
         }
     }
 }
@@ -114,21 +102,17 @@ namespace Shapes
         public void CreateClass_WithFields_AndConstructor()
         {
             var expectedCode = @"
-namespace Generated
+internal class User
 {
-    internal class User
+    private internal string _username;
+    public User(string username)
     {
-        private internal string _username;
-        public User(string username)
-        {
-            _username = username;
-        }
+        _username = username;
     }
 }
             ".Trim().WithUnixEOL();
 
             var generatedCode = Code.CreateClass("User", AccessModifier.Internal)
-                .WithNamespace("Generated")
                 .WithField(Code.CreateField("string", "_username", AccessModifier.PrivateInternal))
                 .WithConstructor(Code.CreateConstructor()
                     .WithParameter("string", "username", "_username"))
@@ -142,19 +126,15 @@ namespace Generated
         public void CreateClass_WithInheritance_AndBaseCall()
         {
             var expectedCode = @"
-namespace Generated
+public class UserCredentials : Credentials, IAuthorizationDetails, IMadeThisUp
 {
-    public class UserCredentials : Credentials, IAuthorizationDetails, IMadeThisUp
+    public UserCredentials(string username, string password): base(username, password, ""basic"")
     {
-        public UserCredentials(string username, string password): base(username, password, ""basic"")
-        {
-        }
     }
 }
             ".Trim().WithUnixEOL();
 
             var generatedCode = Code.CreateClass("UserCredentials", AccessModifier.Public)
-                .WithNamespace("Generated")
                 .WithInheritedClass("Credentials")
                 .WithImplementedInterface("IAuthorizationDetails")
                 .WithImplementedInterface("IMadeThisUp")
@@ -172,27 +152,23 @@ namespace Generated
         public void CreateClass_WithInheritance_AndMultipleConstructors()
         {
             var expectedCode = @"
-namespace Authorization
+public class BasicCredentials : AuthorizationDetails
 {
-    public class BasicCredentials : AuthorizationDetails
+    public BasicCredentials(): base(string.Empty, string.Empty, ""basic"")
     {
-        public BasicCredentials(): base(string.Empty, string.Empty, ""basic"")
-        {
-        }
+    }
 
-        public BasicCredentials(string username): base(username, string.Empty, ""basic"")
-        {
-        }
+    public BasicCredentials(string username): base(username, string.Empty, ""basic"")
+    {
+    }
 
-        public BasicCredentials(string username, string password): base(username, password, ""basic"")
-        {
-        }
+    public BasicCredentials(string username, string password): base(username, password, ""basic"")
+    {
     }
 }
             ".Trim().WithUnixEOL();
 
             var generatedCode = Code.CreateClass("BasicCredentials")
-                .WithNamespace("Authorization")
                 .WithInheritedClass("AuthorizationDetails")
                 .WithConstructor(Code.CreateConstructor()
                     .WithBaseCall("string.Empty", "string.Empty", "\"basic\""))

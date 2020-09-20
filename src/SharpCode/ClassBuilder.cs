@@ -14,12 +14,6 @@ namespace SharpCode
             _class.Name = name;
         }
 
-        public ClassBuilder WithNamespace(string @namespace)
-        {
-            _class.Namespace = @namespace;
-            return this;
-        }
-
         /// <summary>
         /// Sets the access modifier of the class being built.
         /// </summary>
@@ -110,8 +104,7 @@ namespace SharpCode
                     "Providing the name of the class is required when building a class.");
             }
 
-            _class.Namespace ??= "Generated";
-            _class.Constructors.ForEach(ctor => ctor.ClassName = _class.Name ?? string.Empty);
+            _class.Constructors.ForEach(ctor => ctor.ClassName = _class.Name);
             return _class;
         }
     }
