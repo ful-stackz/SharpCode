@@ -112,3 +112,20 @@ namespace Data
     }
 }
 ```
+
+## Development
+
+You don't need anything special for local development.
+
+- `dotnet build ./src/SharpCode` - will build you your own local `SharpCode`
+- `dotnet add <path to your project> reference <path to ./src/SharpCode>` - will add `SharpCode` as a local reference to your project
+- `dotnet test ./src/SharpCode.Test` - will run the tests
+- `dotnet watch test ./src/SharpCode.Test` - will run the tests everytime you make a change to the source code
+of `SharpCode` itself or the tests
+
+## Contributing
+
+This library is still in its early stages and being figured out. Many changes are expected and incoming. For your own
+sake please don't work on any big changes as the files might disappear before you're ready.
+
+Nonetheless, insights into the usage of the library, structure and general suggestions are always welcome! Thank you!
