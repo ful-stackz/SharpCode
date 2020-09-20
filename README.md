@@ -1,75 +1,112 @@
 # SharpCode
 Small C# code generator. Easily generate code programmatically!
 
-## Simple usage
+## Usage
+
+### Simple usage
 
 ```csharp
 using SharpCode;
 
-var sourceCode = Code.CreateClass("User")
-    .WithProperty(Code.CreateProperty("int", "Id"))
-    .WithProperty(Code.CreateProperty("string", "Username"))
+var sourceCode = Code.CreateNamespace("Data")
+    .WithClass(Code.CreateClass("User")
+        .WithProperty(Code.CreateProperty("int", "Id"))
+        .WithProperty(Code.CreateProperty("string", "Username")))
     .ToSourceCode();
 
 System.IO.File.WriteAllText("User.cs", sourceCode);
 
 // User.cs
-public class User
+namespace Data
 {
-    public int Id
+    public class User
     {
-        get;
-        set;
-    }
-    
-    public string Username
-    {
-        get;
-        set;
+        public int Id
+        {
+            get;
+            set;
+        }
+
+        public string Username
+        {
+            get;
+            set;
+        }
     }
 }
 ```
 
-## Extended usage
+### Extended usage
 
 ```csharp
 using SharpCode;
 
-var sourceCode = Code.CreateClass("User")
-    .WithField(Code.CreateField("int", "_id"))
-    .WithField(Code.CreateField("string", "_username"))
-    .WithProperty(Code.CreateProperty("int", "Id")
-        .WithGetter("_id")
-        .WithoutSetter())
-    .WithProperty(Code.CreateProperty("string", "Username")
-        .WithGetter("_username")
-        .WithoutSetter())
+var dataNamespace = Code.CreateNamespace("Data");
+
+var userDetailsClass = Code.CreateClass("UserDetails", AccessModifier.Public)
+    .WithField(Code.CreateField("int", "_id", AccessModifier.Private).MakeReadonly())
+    .WithField(Code.CreateField("string", "_username", AccessModifier.Private).MakeReadonly())
     .WithConstructor(Code.CreateConstructor()
+        .WithAccessModifier(AccessModifier.Public)
         .WithParameter("int", "id", "_id")
         .WithParameter("string", "username", "_username"))
-    .ToSourceCode();
-    
-System.IO.File.WriteAllText("User.cs", sourceCode);
+    .WithProperty(Code.CreateProperty("int", "Id", AccessModifier.Public)
+        .WithGetter("_id")
+        .WithoutSetter())
+    .WithProperty(Code.CreateProperty("string", "Username", AccessModifier.Public)
+        .WithGetter("_username")
+        .WithoutSetter());
+
+var userClass = Code.CreateClass("User", AccessModifier.Public)
+    .WithProperty(Code.CreateProperty("UserDetails", "Details", AccessModifier.Public)
+        .WithoutSetter())
+    .WithConstructor(Code.CreateConstructor()
+        .WithAccessModifier(AccessModifier.Public)
+        .WithParameter("UserDetails", "details", "Details"));
+
+
+System.IO.File.WriteAllText(
+    "User.cs",
+    dataNamespace
+        .WithClass(userDetailsClass)
+        .WithClass(userClass)
+        .ToSourceCode());
 
 // User.cs
-public class User
+namespace Data
 {
-    private int _id;
-    private string _username;
-    public User(int id, string username)
+    public class UserDetails
     {
-        _id = id;
-        _username = username;
+        private readonly int _id;
+        private readonly string _username;
+        public UserDetails(int id, string username)
+        {
+            _id = id;
+            _username = username;
+        }
+
+        public int Id
+        {
+            get => _id;
+        }
+
+        public string Username
+        {
+            get => _username;
+        }
     }
 
-    public int Id
+    public class User
     {
-        get => _id;
-    }
+        public User(UserDetails details)
+        {
+            Details = details;
+        }
 
-    public string Username
-    {
-        get => _username;
+        public UserDetails Details
+        {
+            get;
+        }
     }
 }
 ```

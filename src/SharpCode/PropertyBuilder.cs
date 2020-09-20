@@ -120,7 +120,7 @@ namespace SharpCode
         /// </summary>
         public PropertyBuilder WithoutGetter()
         {
-            _property.Getter = Option.None<string>();
+            _property.Getter = Option.None<string?>();
             return this;
         }
 
@@ -189,7 +189,7 @@ namespace SharpCode
         /// </summary>
         public PropertyBuilder WithoutSetter()
         {
-            _property.Setter = Option.None<string>();
+            _property.Setter = Option.None<string?>();
             return this;
         }
 
