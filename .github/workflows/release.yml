@@ -3,9 +3,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      nuget_api_key:
-        description: 'NuGet API key'
-        required: true
       publish_beta:
         description: 'Publish as beta'
         required: false
@@ -21,7 +18,7 @@ jobs:
       - name: 'Package and Publish'
         run: >
           ./PackAndPublish
-          -NuGetApiKey:${{ github.event.inputs.nuget_api_key }}
+          -NuGetApiKey:${{ secrets.NUGET_API_KEY }}
           -Publish
           -Beta:$${{ github.event.inputs.publish_beta }}
         shell: pwsh
