@@ -240,12 +240,12 @@ namespace SharpCode
 
         internal Property Build()
         {
-            if (string.IsNullOrEmpty(_property.Name))
+            if (string.IsNullOrWhiteSpace(_property.Name))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the property is required when building a property.");
             }
-            else if (string.IsNullOrEmpty(_property.Type))
+            else if (string.IsNullOrWhiteSpace(_property.Type))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the type of the property is required when building a property.");

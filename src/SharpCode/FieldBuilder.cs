@@ -89,12 +89,12 @@ namespace SharpCode
 
         internal Field Build()
         {
-            if (string.IsNullOrEmpty(_field.Type))
+            if (string.IsNullOrWhiteSpace(_field.Type))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the type of the field is required when building a field.");
             }
-            else if (string.IsNullOrEmpty(_field.Name))
+            else if (string.IsNullOrWhiteSpace(_field.Name))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the field is required when building a field.");
