@@ -51,20 +51,46 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds a field to the class being builty.
+        /// Adds a field to the class being built.
         /// </summary>
         public ClassBuilder WithField(FieldBuilder builder)
         {
             _class.Fields.Add(builder.Build());
             return this;
         }
+        
+        /// <summary>
+        /// Adds a bunch of fields to the class being built.
+        /// </summary>
+        public ClassBuilder WithFields(params FieldBuilder[] builders)
+        {
+            foreach(var builder in builders)
+            {
+                _class.Fields.Add(builder.Build());
+            }
+            
+            return this;
+        }
 
         /// <summary>
-        /// Adds a property to the class being builty.
+        /// Adds a property to the class being built.
         /// </summary>
         public ClassBuilder WithProperty(PropertyBuilder builder)
         {
             _class.Properties.Add(builder.Build());
+            return this;
+        }
+        
+        /// <summary>
+        /// Adds a bunch of properties to the class being built.
+        /// </summary>
+        public ClassBuilder WithProperties(params PropertyBuilder[] builders)
+        {
+            foreach(var builder in builders)
+            {
+                _class.Properties.Add(builder.Build());
+            }
+            
             return this;
         }
 
