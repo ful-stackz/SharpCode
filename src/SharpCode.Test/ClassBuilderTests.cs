@@ -186,11 +186,64 @@ public class BasicCredentials : AuthorizationDetails
         }
 
         [Test]
+        public void CreateClass_StaticClass()
+        {
+            var generatedCode = Code.CreateClass("Factory")
+                .MakeStatic()
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public static class Factory
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void CreateClass_Throws_WhenRequiredSettingsNotProvided()
         {
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateClass().ToSourceCode(),
-                "Expected generating the source code for a class without setting the name to throw an exception.");
+                "Generating the source code for a class without setting the name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass(name: null).ToSourceCode(),
+                "Generating the source for a class with null as a name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass().WithName(null).ToSourceCode(),
+                "Generating the source for a class with null as a name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass(name: string.Empty).ToSourceCode(),
+                "Generating the source for a class with an empty name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass().WithName(string.Empty).ToSourceCode(),
+                "Generating the source for a class with an empty name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass(name: "  ").ToSourceCode(),
+                "Generating the source for a class with a whitespace name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateClass().WithName("  ").ToSourceCode(),
+                "Generating the source for a class with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreatingStaticClass_WithMultipleConstructors_Throws()
+        {
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateClass("Factory")
+                    .MakeStatic()
+                    .WithConstructor(Code.CreateConstructor())
+                    .WithConstructor(Code.CreateConstructor())
+                    .ToSourceCode(),
+                "Generating the source code for a static class with multiple constructors should throw an exception.");
         }
     }
 }

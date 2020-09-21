@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace SharpCode
 {
     public class NamespaceBuilder
     {
         private readonly Namespace _namespace = new Namespace();
+        private readonly List<ClassBuilder> _classes = new List<ClassBuilder>();
 
         internal NamespaceBuilder() { }
 
@@ -38,7 +42,7 @@ namespace SharpCode
         /// </summary>
         public NamespaceBuilder WithClass(ClassBuilder builder)
         {
-            _namespace.Classes.Add(builder.Build());
+            _classes.Add(builder);
             return this;
         }
 
@@ -68,6 +72,8 @@ namespace SharpCode
                 throw new MissingBuilderSettingException(
                     "Providing the name of the namespace is required when building a namespace.");
             }
+
+            _namespace.Classes.AddRange(_classes.Select(builder => builder.Build()));
 
             return _namespace;
         }

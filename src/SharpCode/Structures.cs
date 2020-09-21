@@ -5,6 +5,7 @@ namespace SharpCode
 {
     public enum AccessModifier
     {
+        None,
         Private,
         Internal,
         Protected,
@@ -40,6 +41,7 @@ namespace SharpCode
     internal class Constructor
     {
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public bool IsStatic { get; set; } = false;
         public string? ClassName { get; set; }
         public List<Parameter> Parameters { get; set; } = new List<Parameter>();
         public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
@@ -48,6 +50,7 @@ namespace SharpCode
     internal class Class
     {
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public bool IsStatic { get; set; } = false;
         public string? Name { get; set; }
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
         public List<string> ImplementedInterfaces { get; } = new List<string>();

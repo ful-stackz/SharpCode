@@ -14,6 +14,7 @@ namespace SharpCode
         public static string ToSourceCode(this AccessModifier accessModifier) =>
             accessModifier switch
             {
+                AccessModifier.None => string.Empty,
                 AccessModifier.Internal => "internal",
                 AccessModifier.PrivateInternal => "private internal",
                 AccessModifier.Protected => "protected",
@@ -45,12 +46,13 @@ namespace SharpCode
         public static string ToSourceCode(this Constructor constructor, bool formatted)
         {
             const string Template = @"
-{access-modifier} {name}({parameters}){base-call}
+{access-modifier} {static-modifier} {name}({parameters}){base-call}
 {
     {assignments}
 }";
             var raw = Template
                 .Replace("{access-modifier}", constructor.AccessModifier.ToSourceCode())
+                .Replace("{static-modifier}", constructor.IsStatic ? "static" : string.Empty)
                 .Replace("{name}", constructor.ClassName)
                 .Replace("{parameters}", constructor.Parameters.Select(param => param.ToSourceCode()).Join(", "))
                 .Replace("{base-call}", constructor.BaseCallParameters.Match(
@@ -104,7 +106,7 @@ namespace SharpCode
         public static string ToSourceCode(this Class classData, bool formatted)
         {
             const string ClassTemplate = @"
-{access-modifier} class {name}{inheritance}
+{access-modifier} {static-modifier} class {name}{inheritance}
 {
     {fields}
     {constructors}
@@ -119,6 +121,7 @@ namespace SharpCode
             // Do not format members separately, rather format the entire class, if requested
             var raw = ClassTemplate
                 .Replace("{access-modifier}", classData.AccessModifier.ToSourceCode())
+                .Replace("{static-modifier}", classData.IsStatic ? "static" : string.Empty)
                 .Replace("{name}", classData.Name)
                 .Replace("{inheritance}", inheritance.Any() ? $": {inheritance.Join(", ")}" : string.Empty)
                 .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(false)).Join("\n"))
