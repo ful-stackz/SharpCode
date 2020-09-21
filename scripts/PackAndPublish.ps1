@@ -37,8 +37,11 @@ if ($Version.Length -eq 0) {
 }
 
 if ($Publish -and $NuGetApiKey.Length -eq 0) {
-  Write-Error "Please provide a NuGet API key for publishing the package"
-  exit 1
+  $NuGetApiKey = $Env:NUGET_API_KEY
+  if ($NuGetApiKey.Length -eq 0) {
+    Write-Error "Please provide a NuGet API key for publishing the package"
+    exit 1
+  }
 }
 
 if ($Beta) {
