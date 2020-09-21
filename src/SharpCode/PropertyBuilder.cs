@@ -194,6 +194,32 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Sets the default value of the property being built.
+        /// </summary>
+        /// <param name="defaultValue">
+        /// The default value of the property. The value is used as-is, therefore you should wrap any string values in
+        /// escaped quotes. For example,
+        /// <c>WithDefaultValue(defaultValue: "\"this will be generated as a string\"")</c>
+        /// </param>
+        public PropertyBuilder WithDefaultValue(string defaultValue)
+        {
+            _property.DefaultValue = Option.Some(defaultValue);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets whether the property being built should be static or not.
+        /// </summary>
+        /// <param name="makeStatic">
+        /// Indicates whether the property should be static or not.
+        /// </param>
+        public PropertyBuilder MakeStatic(bool makeStatic = true)
+        {
+            _property.IsStatic = makeStatic;
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built property.
         /// </summary>
         /// <param name="formatted">
@@ -214,15 +240,36 @@ namespace SharpCode
 
         internal Property Build()
         {
-            if (string.IsNullOrEmpty(_property.Name))
+            if (string.IsNullOrWhiteSpace(_property.Name))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the property is required when building a property.");
             }
-            else if (string.IsNullOrEmpty(_property.Type))
+            else if (string.IsNullOrWhiteSpace(_property.Type))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the type of the property is required when building a property.");
+            }
+            else if (_property.Setter.Exists(value => string.IsNullOrWhiteSpace(value)))
+            {
+                if (!_property.Getter.HasValue)
+                {
+                    throw new SyntaxException(
+                        "Properties with auto implemented setters must also have auto implemented getters. (CS8051)");
+                }
+                else if (_property.Getter.Exists(value => !string.IsNullOrWhiteSpace(value)))
+                {
+                    throw new SyntaxException(
+                        "Properties with custom getters cannot have auto implemented setters.");
+                }
+            }
+            else if (_property.DefaultValue.HasValue)
+            {
+                if (_property.Getter.Exists(value => !string.IsNullOrWhiteSpace(value)) ||
+                    _property.Setter.Exists(value => !string.IsNullOrWhiteSpace(value)))
+                {
+                    throw new SyntaxException("Only auto implemented properties can have a default value. (CS8050)");
+                }
             }
 
             return _property;

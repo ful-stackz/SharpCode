@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Optional;
 
 namespace SharpCode
@@ -5,6 +7,9 @@ namespace SharpCode
     public class ClassBuilder
     {
         private readonly Class _class = new Class();
+        private readonly List<FieldBuilder> _fields = new List<FieldBuilder>();
+        private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
+        private readonly List<ConstructorBuilder> _constructors = new List<ConstructorBuilder>();
 
         internal ClassBuilder() { }
 
@@ -55,20 +60,16 @@ namespace SharpCode
         /// </summary>
         public ClassBuilder WithField(FieldBuilder builder)
         {
-            _class.Fields.Add(builder.Build());
+            _fields.Add(builder);
             return this;
         }
-        
+
         /// <summary>
         /// Adds a bunch of fields to the class being built.
         /// </summary>
         public ClassBuilder WithFields(params FieldBuilder[] builders)
         {
-            foreach(var builder in builders)
-            {
-                _class.Fields.Add(builder.Build());
-            }
-            
+            _fields.AddRange(builders);
             return this;
         }
 
@@ -77,20 +78,16 @@ namespace SharpCode
         /// </summary>
         public ClassBuilder WithProperty(PropertyBuilder builder)
         {
-            _class.Properties.Add(builder.Build());
+            _properties.Add(builder);
             return this;
         }
-        
+
         /// <summary>
         /// Adds a bunch of properties to the class being built.
         /// </summary>
         public ClassBuilder WithProperties(params PropertyBuilder[] builders)
         {
-            foreach(var builder in builders)
-            {
-                _class.Properties.Add(builder.Build());
-            }
-            
+            _properties.AddRange(builders);
             return this;
         }
 
@@ -99,7 +96,19 @@ namespace SharpCode
         /// </summary>
         public ClassBuilder WithConstructor(ConstructorBuilder builder)
         {
-            _class.Constructors.Add(builder.Build());
+            _constructors.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets whether the class being built should be static or not.
+        /// </summary>
+        /// <param name="makeStatic">
+        /// Indicates whether the class should be static or not.
+        /// </param>
+        public ClassBuilder MakeStatic(bool makeStatic = true)
+        {
+            _class.IsStatic = makeStatic;
             return this;
         }
 
@@ -124,13 +133,24 @@ namespace SharpCode
 
         internal Class Build()
         {
-            if (string.IsNullOrEmpty(_class.Name))
+            if (string.IsNullOrWhiteSpace(_class.Name))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the class is required when building a class.");
             }
+            else if (_class.IsStatic && _constructors.Count > 1)
+            {
+                throw new SyntaxException("Static classes can have only 1 constructor.");
+            }
 
-            _class.Constructors.ForEach(ctor => ctor.ClassName = _class.Name);
+            _class.Fields.AddRange(_fields.Select(builder => builder.Build()));
+            _class.Properties.AddRange(_properties.Select(builder => builder.Build()));
+            _class.Constructors.AddRange(
+                _constructors.Select(builder => builder
+                    .WithClassName(_class.Name!)
+                    .MakeStatic(_class.IsStatic)
+                    .Build()));
+
             return _class;
         }
     }

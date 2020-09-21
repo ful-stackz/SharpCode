@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Optional;
 
 namespace SharpCode
@@ -145,8 +146,36 @@ namespace SharpCode
             return this;
         }
 
+        internal ConstructorBuilder MakeStatic(bool makeStatic)
+        {
+            _constructor.IsStatic = makeStatic;
+            return this;
+        }
+
+        internal ConstructorBuilder WithClassName(string name)
+        {
+            _constructor.ClassName = name;
+            return this;
+        }
+
         internal Constructor Build()
         {
+            if (_constructor.IsStatic)
+            {
+                if (_constructor.AccessModifier != AccessModifier.None)
+                {
+                    throw new SyntaxException("Access modifiers are not allowed on static constructors. (CS0515)");
+                }
+                else if (_constructor.Parameters.Any())
+                {
+                    throw new SyntaxException("Parameters are not allowed on static constructors. (CS0132)");
+                }
+                else if (_constructor.BaseCallParameters.HasValue)
+                {
+                    throw new SyntaxException("Static constructors cannot call base constructors. (CS0514)");
+                }
+            }
+
             return _constructor;
         }
     }
