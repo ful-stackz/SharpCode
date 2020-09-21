@@ -101,7 +101,7 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Sets whether the class being should be static or not.
+        /// Sets whether the class being built should be static or not.
         /// </summary>
         /// <param name="makeStatic">
         /// Indicates whether the class should be static or not.

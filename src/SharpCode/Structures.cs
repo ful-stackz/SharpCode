@@ -25,8 +25,10 @@ namespace SharpCode
     internal class Property
     {
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public bool IsStatic { get; set; } = false;
         public string? Type { get; set; }
         public string? Name { get; set; }
+        public Option<string> DefaultValue { get; set; } = Option.None<string>();
         public Option<string?> Getter { get; set; } = Option.Some<string?>(null);
         public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
     }

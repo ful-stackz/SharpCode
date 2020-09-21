@@ -203,6 +203,43 @@ public static class Factory
         }
 
         [Test]
+        public void CreatingStaticClass_WithStaticProperties_Works()
+        {
+            var generatedCode = Code.CreateClass("Config")
+                .MakeStatic()
+                .WithProperty(Code.CreateProperty("string", "Name")
+                    .MakeStatic()
+                    .WithoutSetter()
+                    .WithDefaultValue("\"SharpCode\""))
+                .WithProperty(Code.CreateProperty("System.Version", "Version")
+                    .MakeStatic()
+                    .WithoutSetter()
+                    .WithDefaultValue("new System.Version(0, 0, 1)"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public static class Config
+{
+    public static string Name
+    {
+        get;
+    }
+
+    = ""SharpCode"";
+    public static System.Version Version
+    {
+        get;
+    }
+
+    = new System.Version(0, 0, 1);
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void CreateClass_Throws_WhenRequiredSettingsNotProvided()
         {
             Assert.Throws<MissingBuilderSettingException>(

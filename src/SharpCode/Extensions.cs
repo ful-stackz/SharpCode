@@ -72,15 +72,16 @@ namespace SharpCode
         public static string ToSourceCode(this Property property, bool formatted)
         {
             const string Template = @"
-{access-modifier} {type} {name}
+{access-modifier} {static-modifier} {type} {name}
 {getter-setter-open-bracket}
     {getter}
     {setter}
-{getter-setter-close-bracket}
+{getter-setter-close-bracket} {default-value}
             ";
 
             var raw = Template
                 .Replace("{access-modifier}", property.AccessModifier.ToSourceCode())
+                .Replace("{static-modifier}", property.IsStatic ? "static" : string.Empty)
                 .Replace("{type}", property.Type)
                 .Replace("{name}", property.Name)
                 .Replace("{getter-setter-open-bracket}", property.Getter.Else(property.Setter).HasValue
@@ -98,6 +99,15 @@ namespace SharpCode
                     some: (setter) => string.IsNullOrWhiteSpace(setter)
                         ? "set;"
                         : setter!.StartsWith("{") ? $"set{setter}" : $"set => {setter};",
+                    none: () => string.Empty))
+                .Replace("{default-value}", property.DefaultValue.Match(
+                    some: (def) =>
+                    {
+                        var defValue = def.StartsWith("=") ? string.Empty : "= ";
+                        defValue += def;
+                        defValue += def.EndsWith(";") ? string.Empty : ";";
+                        return defValue;
+                    },
                     none: () => string.Empty));
 
             return formatted ? raw.FormatSourceCode() : raw;
