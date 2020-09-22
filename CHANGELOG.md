@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structure build logic - keep builders locally, build when explicitly requested
 - Improved validation during the build of a structure
 - Validate the access members of namespace members (no private/protected [internal] classes/interfaces!)
-- Use C# 9.0
 
 ## [0.0.1] - 2020-09-20
 
