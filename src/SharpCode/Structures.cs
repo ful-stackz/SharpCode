@@ -61,10 +61,19 @@ namespace SharpCode
         public List<Constructor> Constructors { get; } = new List<Constructor>();
     }
 
+    internal class Interface
+    {
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public string? Name { get; set; }
+        public List<string> ImplementedInterfaces { get; } = new List<string>();
+        public List<Property> Properties { get; } = new List<Property>();
+    }
+
     internal class Namespace
     {
         public string? Name { get; set; }
         public List<string> Usings { get; } = new List<string>();
         public List<Class> Classes { get; } = new List<Class>();
+        public List<Interface> Interfaces { get; } = new List<Interface>();
     }
 }

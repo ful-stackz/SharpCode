@@ -186,5 +186,97 @@ namespace Vehicles
                 () => Code.CreateNamespace().WithName("  ").ToSourceCode(),
                 "Generating the source code for a namespace with a whitespace name should throw an exception.");
         }
+
+        [Test]
+        public void CreatingNamespace_ValidatesMembersAccessModifiers()
+        {
+            // -- Classes
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithClass(Code.CreateClass("Test", AccessModifier.Private))
+                    .ToSourceCode(),
+                "Generating the source code for a private class inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithClass(Code.CreateClass("Test", AccessModifier.PrivateInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a private internal class inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithClass(Code.CreateClass("Test", AccessModifier.Protected))
+                    .ToSourceCode(),
+                "Generating the source code for a protected class inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithClass(Code.CreateClass("Test", AccessModifier.ProtectedInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a protected internal class inside a namespace should throw an exception.");
+
+            // -- Interfaces
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.Private))
+                    .ToSourceCode(),
+                "Generating the source code for a private interface inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.PrivateInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a private internal interface inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.Protected))
+                    .ToSourceCode(),
+                "Generating the source code for a protected interface inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.ProtectedInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a protected internal interface inside a namespace should throw an exception.");
+        }
+
+        [Test]
+        public void CreatingNamespace_WithInterfaces_Works()
+        {
+            var generatedCode = Code.CreateNamespace("GeneratedGoodies")
+                .WithInterface(Code.CreateInterface("IHaveGoodies")
+                    .WithProperty(Code.CreateProperty("int", "Count")))
+                .WithInterface(Code.CreateInterface("IHaveHiddenGoodies", AccessModifier.Internal)
+                    .WithImplementedInterface("IHaveGoodies")
+                    .WithProperty(Code.CreateProperty("int", "HiddenCount")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+namespace GeneratedGoodies
+{
+    public interface IHaveGoodies
+    {
+        int Count
+        {
+            get;
+            set;
+        }
+    }
+
+    internal interface IHaveHiddenGoodies : IHaveGoodies
+    {
+        int HiddenCount
+        {
+            get;
+            set;
+        }
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
     }
 }

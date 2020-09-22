@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Static classes
 - Static properties
 - Properties with default values
+- Generating interface source code
 
 ### Changed
 
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Changed the publish script to look for an env var if nuget api key not provided as an argument
 - Structure build logic - keep builders locally, build when explicitly requested
 - Improved validation during the build of a structure
+- Validate the access members of namespace members (no private/protected [internal] classes/interfaces!)
+- Use C# 9.0
 
 ## [0.0.1] - 2020-09-20
 
