@@ -141,6 +141,26 @@ namespace SharpCode
             return formatted ? raw.FormatSourceCode() : raw;
         }
 
+        public static string ToSourceCode(this Interface data, bool formatted)
+        {
+            const string Template = @"
+{access-modifier} interface {name}{inheritance}
+{
+    {properties}
+}
+            ";
+
+            var raw = Template
+                .Replace("{access-modifier}", data.AccessModifier.ToSourceCode())
+                .Replace("{name}", data.Name)
+                .Replace("{inheritance}", data.ImplementedInterfaces.Any()
+                    ? $": {data.ImplementedInterfaces.Join(", ")}"
+                    : string.Empty)
+                .Replace("{properties}", data.Properties.Select(item => item.ToSourceCode(false)).Join("\n"));
+
+            return formatted ? raw.FormatSourceCode() : raw;
+        }
+
         public static string ToSourceCode(this Namespace data, bool formatted)
         {
             const string Template = @"
@@ -148,6 +168,7 @@ namespace SharpCode
 
 namespace {name}
 {
+    {interfaces}
     {classes}
 }
             ";
@@ -155,6 +176,7 @@ namespace {name}
             var raw = Template
                 .Replace("{name}", data.Name)
                 .Replace("{usings}", data.Usings.Select(item => $"using {item};").Join("\n"))
+                .Replace("{interfaces}", data.Interfaces.Select(item => item.ToSourceCode(false)).Join("\n"))
                 .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"));
 
             return formatted ? raw.FormatSourceCode() : raw;

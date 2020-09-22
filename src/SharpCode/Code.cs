@@ -62,6 +62,14 @@ namespace SharpCode
             return new ConstructorBuilder();
         }
 
+        public static InterfaceBuilder CreateInterface() =>
+            new InterfaceBuilder();
+
+        public static InterfaceBuilder CreateInterface(
+            string name,
+            AccessModifier accessModifier = AccessModifier.Public) =>
+            new InterfaceBuilder(name, accessModifier);
+
         public static NamespaceBuilder CreateNamespace()
         {
             return new NamespaceBuilder();

@@ -1,12 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
+using Optional.Collections;
 
 namespace SharpCode
 {
     public class NamespaceBuilder
     {
+        private static readonly AccessModifier[] AllowedMemberAccessModifiers = new AccessModifier[]
+        {
+            AccessModifier.None,
+            AccessModifier.Internal,
+            AccessModifier.Public
+        };
+
         private readonly Namespace _namespace = new Namespace();
         private readonly List<ClassBuilder> _classes = new List<ClassBuilder>();
+        private readonly List<InterfaceBuilder> _interfaces = new List<InterfaceBuilder>();
 
         internal NamespaceBuilder() { }
 
@@ -47,6 +56,24 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds an interface definition to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithInterface(InterfaceBuilder builder)
+        {
+            _interfaces.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of interface definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithInterfaces(params InterfaceBuilder[] builders)
+        {
+            _interfaces.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built namespace.
         /// </summary>
         /// <param name="formatted">
@@ -74,6 +101,18 @@ namespace SharpCode
             }
 
             _namespace.Classes.AddRange(_classes.Select(builder => builder.Build()));
+            _namespace.Classes
+                .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
+                .MatchSome(item => throw new SyntaxException(
+                    "A class defined under a namespace cannot have the access modifier " +
+                    $"'{item.AccessModifier.ToSourceCode()}'."));
+
+            _namespace.Interfaces.AddRange(_interfaces.Select(builder => builder.Build()));
+            _namespace.Interfaces
+                .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
+                .MatchSome(item => throw new SyntaxException(
+                    "An interface defined under a namespace cannot have the access modifier " +
+                    $"'{item.AccessModifier.ToSourceCode()}'."));
 
             return _namespace;
         }
