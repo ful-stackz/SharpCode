@@ -4,6 +4,10 @@ using Optional;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building class structures. <see cref="ClassBuilder"/> instances are <b>not</b>
+    /// immutable.
+    /// </summary>
     public class ClassBuilder
     {
         private readonly Class _class = new Class();

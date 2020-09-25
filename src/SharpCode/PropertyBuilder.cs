@@ -3,6 +3,10 @@ using Optional;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building properties. <see cref="PropertyBuilder"/> instances are <b>not</b>
+    /// immutable.
+    /// </summary>
     public class PropertyBuilder
     {
         private readonly Property _property = new Property();

@@ -2,6 +2,9 @@
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building fields. <see cref="FieldBuilder"/> instances are <b>not</b> immutable.
+    /// </summary>
     public class FieldBuilder
     {
         private readonly Field _field = new Field();

@@ -3,6 +3,10 @@ using System.Linq;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building interface structures. <see cref="InterfaceBuilder"/> instances are
+    /// <b>not</b> immutable.
+    /// </summary>
     public class InterfaceBuilder
     {
         private readonly Interface _interface = new Interface();

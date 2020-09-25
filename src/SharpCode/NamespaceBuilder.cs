@@ -4,6 +4,10 @@ using Optional.Collections;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building namespaces. <see cref="NamespaceBuilder"/> instances are <b>not</b>
+    /// immutable.
+    /// </summary>
     public class NamespaceBuilder
     {
         private static readonly AccessModifier[] AllowedMemberAccessModifiers = new AccessModifier[]

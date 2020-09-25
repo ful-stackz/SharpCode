@@ -5,9 +5,18 @@ using Optional;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Provides functionality for building constructors. <see cref="ConstructorBuilder"/> instances are <b>not</b>
+    /// immutable.
+    /// </summary>
     public class ConstructorBuilder
     {
         private readonly Constructor _constructor = new Constructor();
+
+        internal ConstructorBuilder(AccessModifier accessModifier)
+        {
+            _constructor.AccessModifier = accessModifier;
+        }
 
         /// <summary>
         /// Sets the access modifier of the constructor being built.
