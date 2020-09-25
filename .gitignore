@@ -71,3 +71,7 @@ publish/
 # VS Code files
 .vscode/
 !.vscode/settings.json
+
+# Ionide
+.fake
+.ionide
