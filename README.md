@@ -12,113 +12,122 @@ Small C# code generator. Easily generate code programmatically!
 
 ## Usage
 
-### Simple usage
+<details>
+    <summary>Simple usage</summary>
+    
+    ```csharp
+    using SharpCode;
 
-```csharp
-using SharpCode;
+    var sourceCode = Code.CreateNamespace("Data")
+        .WithClass(Code.CreateClass("User")
+            .WithProperty(Code.CreateProperty("int", "Id"))
+            .WithProperty(Code.CreateProperty("string", "Username")))
+        .ToSourceCode();
 
-var sourceCode = Code.CreateNamespace("Data")
-    .WithClass(Code.CreateClass("User")
-        .WithProperty(Code.CreateProperty("int", "Id"))
-        .WithProperty(Code.CreateProperty("string", "Username")))
-    .ToSourceCode();
+    System.IO.File.WriteAllText("User.cs", sourceCode);
 
-System.IO.File.WriteAllText("User.cs", sourceCode);
-
-// User.cs
-namespace Data
-{
-    public class User
+    // User.cs
+    namespace Data
     {
-        public int Id
+        public class User
         {
-            get;
-            set;
-        }
+            public int Id
+            {
+                get;
+                set;
+            }
 
-        public string Username
-        {
-            get;
-            set;
+            public string Username
+            {
+                get;
+                set;
+            }
         }
     }
-}
-```
+    ```
+</details>
 
-### Extended usage
+<details>
+    <summary>Extended usage</summary>
 
-```csharp
-using SharpCode;
+    ```csharp
+    using SharpCode;
 
-var dataNamespace = Code.CreateNamespace("Data");
+    var dataNamespace = Code.CreateNamespace("Data");
 
-var userDetailsClass = Code.CreateClass("UserDetails", AccessModifier.Public)
-    .WithField(Code.CreateField("int", "_id", AccessModifier.Private).MakeReadonly())
-    .WithField(Code.CreateField("string", "_username", AccessModifier.Private).MakeReadonly())
-    .WithConstructor(Code.CreateConstructor()
-        .WithAccessModifier(AccessModifier.Public)
-        .WithParameter("int", "id", "_id")
-        .WithParameter("string", "username", "_username"))
-    .WithProperty(Code.CreateProperty("int", "Id", AccessModifier.Public)
-        .WithGetter("_id")
-        .WithoutSetter())
-    .WithProperty(Code.CreateProperty("string", "Username", AccessModifier.Public)
-        .WithGetter("_username")
-        .WithoutSetter());
+    var userDetailsClass = Code.CreateClass("UserDetails", AccessModifier.Public)
+        .WithField(Code.CreateField("int", "_id", AccessModifier.Private).MakeReadonly())
+        .WithField(Code.CreateField("string", "_username", AccessModifier.Private).MakeReadonly())
+        .WithConstructor(Code.CreateConstructor()
+            .WithAccessModifier(AccessModifier.Public)
+            .WithParameter("int", "id", "_id")
+            .WithParameter("string", "username", "_username"))
+        .WithProperty(Code.CreateProperty("int", "Id", AccessModifier.Public)
+            .WithGetter("_id")
+            .WithoutSetter())
+        .WithProperty(Code.CreateProperty("string", "Username", AccessModifier.Public)
+            .WithGetter("_username")
+            .WithoutSetter());
 
-var userClass = Code.CreateClass("User", AccessModifier.Public)
-    .WithProperty(Code.CreateProperty("UserDetails", "Details", AccessModifier.Public)
-        .WithoutSetter())
-    .WithConstructor(Code.CreateConstructor()
-        .WithAccessModifier(AccessModifier.Public)
-        .WithParameter("UserDetails", "details", "Details"));
+    var userClass = Code.CreateClass("User", AccessModifier.Public)
+        .WithProperty(Code.CreateProperty("UserDetails", "Details", AccessModifier.Public)
+            .WithoutSetter())
+        .WithConstructor(Code.CreateConstructor()
+            .WithAccessModifier(AccessModifier.Public)
+            .WithParameter("UserDetails", "details", "Details"));
 
 
-System.IO.File.WriteAllText(
-    "User.cs",
-    dataNamespace
-        .WithClass(userDetailsClass)
-        .WithClass(userClass)
-        .ToSourceCode());
+    System.IO.File.WriteAllText(
+        "User.cs",
+        dataNamespace
+            .WithClass(userDetailsClass)
+            .WithClass(userClass)
+            .ToSourceCode());
 
-// User.cs
-namespace Data
-{
-    public class UserDetails
+    // User.cs
+    namespace Data
     {
-        private readonly int _id;
-        private readonly string _username;
-        public UserDetails(int id, string username)
+        public class UserDetails
         {
-            _id = id;
-            _username = username;
+            private readonly int _id;
+            private readonly string _username;
+            public UserDetails(int id, string username)
+            {
+                _id = id;
+                _username = username;
+            }
+
+            public int Id
+            {
+                get => _id;
+            }
+
+            public string Username
+            {
+                get => _username;
+            }
         }
 
-        public int Id
+        public class User
         {
-            get => _id;
-        }
+            public User(UserDetails details)
+            {
+                Details = details;
+            }
 
-        public string Username
-        {
-            get => _username;
+            public UserDetails Details
+            {
+                get;
+            }
         }
     }
+    ```
+</details>
 
-    public class User
-    {
-        public User(UserDetails details)
-        {
-            Details = details;
-        }
+## Samples
 
-        public UserDetails Details
-        {
-            get;
-        }
-    }
-}
-```
+The [samples](https://github.com/ful-stackz/SharpCode/tree/main/samples) folder contains sample projects which make use of `SharpCode`. The projects are fully functional
+and can be played around with. Check the `samples/README.md` for more information.
 
 ## Development
 
