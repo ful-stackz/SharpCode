@@ -1,3 +1,5 @@
+[*.cs]
+
 # ------------------------
 # .NET code style settings
 
@@ -148,3 +150,9 @@ csharp_space_between_square_brackets = false
 # Wrap options
 csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
+
+# -----------------------------
+# XML documentation preferences
+
+# CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity = none

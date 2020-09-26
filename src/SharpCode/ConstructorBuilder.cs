@@ -122,7 +122,7 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Sets the <c>base()</c> call of the constructor with the specified <paramref name="passedParamaters" />.
+        /// Sets the <c>base()</c> call of the constructor with the specified <paramref name="passedParameters" />.
         /// </summary>
         /// <param name="passedParameters">
         /// The parameters that will be passed to the <c>base()</c> call.

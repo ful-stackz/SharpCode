@@ -3,6 +3,9 @@ using Optional;
 
 namespace SharpCode
 {
+    /// <summary>
+    /// Represents the access modifier of a C# structure.
+    /// </summary>
     public enum AccessModifier
     {
         None,

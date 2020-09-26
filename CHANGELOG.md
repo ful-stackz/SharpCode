@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Static properties
 - Properties with default values
 - Generating interface source code
+- Bulk-friendly APIs
+- Errors documentation
+- Generate XML documentation
 
 ### Changed
 

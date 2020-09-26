@@ -15,7 +15,7 @@ namespace SharpCode
 
         /// <summary>
         /// Creates a new pre-configured <see cref="NamespaceBuilder"/> instance for building namespaces. Configures
-        /// the <see cref="NamespaceBuider"/> instance with the specified <paramref name="name"/>.
+        /// the <see cref="NamespaceBuilder"/> instance with the specified <paramref name="name"/>.
         /// </summary>
         /// <param name="name">
         /// The name of the namespace. Used as-is.
@@ -37,6 +37,9 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the interface. Used as-is.
         /// </param>
+        /// <param name="accessModifier">
+        /// The access modifier of the interface.
+        /// </param>
         public static InterfaceBuilder CreateInterface(
             string name,
             AccessModifier accessModifier = AccessModifier.Public) =>
@@ -55,6 +58,9 @@ namespace SharpCode
         /// </summary>
         /// <param name="name">
         /// The name of the class. Used as-is.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access modifier of the class.
         /// </param>
         public static ClassBuilder CreateClass(string name, AccessModifier accessModifier = AccessModifier.Public) =>
             new ClassBuilder(accessModifier, name);
@@ -76,6 +82,9 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the field. Used as-is.
         /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the field.
+        /// </param>
         public static FieldBuilder CreateField(
             string type,
             string name,
@@ -93,6 +102,9 @@ namespace SharpCode
         /// </param>
         /// <param name="name">
         /// The name of the field. Used as-is.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the field.
         /// </param>
         public static FieldBuilder CreateField(
             Type type,
@@ -123,6 +135,9 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the property. Used as-is.
         /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the property.
+        /// </param>
         public static PropertyBuilder CreateProperty(
             string type,
             string name,
@@ -141,6 +156,9 @@ namespace SharpCode
         /// </param>
         /// <param name="name">
         /// The name of the property. Used as-is.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the property.
         /// </param>
         public static PropertyBuilder CreateProperty(
             Type type,
