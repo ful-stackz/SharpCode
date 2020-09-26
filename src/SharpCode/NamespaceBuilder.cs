@@ -60,6 +60,24 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds a bunch of class definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithClasses(params ClassBuilder[] builders)
+        {
+            _classes.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of class definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithClasses(IEnumerable<ClassBuilder> builders)
+        {
+            _classes.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Adds an interface definition to the namespace being built.
         /// </summary>
         public NamespaceBuilder WithInterface(InterfaceBuilder builder)
@@ -72,6 +90,15 @@ namespace SharpCode
         /// Adds a bunch of interface definitions to the namespace being built.
         /// </summary>
         public NamespaceBuilder WithInterfaces(params InterfaceBuilder[] builders)
+        {
+            _interfaces.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of interface definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithInterfaces(IEnumerable<InterfaceBuilder> builders)
         {
             _interfaces.AddRange(builders);
             return this;

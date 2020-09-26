@@ -57,6 +57,15 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds a bunch of properties to the interface being built.
+        /// </summary>
+        public InterfaceBuilder WithProperties(IEnumerable<PropertyBuilder> builders)
+        {
+            _properties.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Adds an interface to the list of interfaces that the interface being built implements.
         /// </summary>
         public InterfaceBuilder WithImplementedInterface(string name)

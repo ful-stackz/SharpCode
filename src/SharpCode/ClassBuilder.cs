@@ -96,6 +96,15 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds a bunch of properties to the class being built.
+        /// </summary>
+        public ClassBuilder WithProperties(IEnumerable<PropertyBuilder> builders)
+        {
+            _properties.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Adds a constructor to the class being built.
         /// </summary>
         public ClassBuilder WithConstructor(ConstructorBuilder builder)
