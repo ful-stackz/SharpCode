@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "JsonToNet": {
+      "commandName": "Project",
+      "commandLineArgs": "input:./input/user.json,./input/types.json",
+      "workingDirectory": "C:\\Users\\IvanStoyanov\\source\\repos\\SharpCode\\samples\\JsonToNet"
+    }
+  }
+}

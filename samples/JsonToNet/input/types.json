@@ -1,0 +1,12 @@
+﻿{
+  "string_value": "string",
+  "integer_value": 42,
+  "double_value": 3.14,
+  "boolean_value": true,
+  "date_value": "2020-09-25T10:11:12.134Z",
+  "array_of_strings": [ "a" ],
+  "array_of_numbers": [ 1 ],
+  "array_of_booleans": [ false ],
+  "array_of_doubles": [ 9.65, 101.45 ],
+  "array_of_dates": [ "2020-09-25T10:11:12.134Z" ]
+}
