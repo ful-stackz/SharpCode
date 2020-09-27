@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_beta:
-        description: 'Publish as beta'
+        description: Publish as beta
         required: false
         default: 'false'
 
@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: 'Package and Publish'
+      - name: Package and publish to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: >
@@ -24,3 +25,30 @@ jobs:
           -Beta:$${{ github.event.inputs.publish_beta }}
         shell: pwsh
         working-directory: ./scripts
+
+      - name: Get release version
+        id: get_release_version
+        run: |
+          version=`cat ./.version`
+          echo "::set-output name=release_version::$version"
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_release_version.outputs.release_version }}
+          release_name: v${{ steps.get_release_version.outputs.release_version }}
+          draft: false
+          prerelease: ${{ github.event.inputs.publish_beta == 'true' }}
+
+      - name: Upload release package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/SharpCode.${{ steps.get_release_version.outputs.release_version }}.nupkg
+          asset_name: SharpCode.${{ steps.get_release_version.outputs.release_version }}.nupkg
+          asset_content_type: application/zip
