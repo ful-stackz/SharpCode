@@ -11,6 +11,9 @@ namespace SharpCode
         public static string FormatSourceCode(this string source) =>
             Utils.FormatSourceCode(source);
 
+        public static bool AtLeast<T>(this IEnumerable<T> source, int count) =>
+            source.Take(count).Count() == count;
+
         public static string ToSourceCode(this AccessModifier accessModifier) =>
             accessModifier switch
             {
@@ -161,6 +164,34 @@ namespace SharpCode
             return formatted ? raw.FormatSourceCode() : raw;
         }
 
+        public static string ToSourceCode(this EnumerationMember data)
+        {
+            return "{name}{value},"
+                .Replace("{name}", data.Name)
+                .Replace("{value}", data.Value.Match(
+                    some: (value) => $" = {value}",
+                    none: () => string.Empty));
+        }
+
+        public static string ToSourceCode(this Enumeration data, bool formatted)
+        {
+            const string Template = @"
+{flags-attribute}
+{access-modifier} enum {name}
+{
+    {members}
+}
+            ";
+
+            var raw = Template
+                .Replace("{flags-attribute}", data.IsFlag ? "[System.Flags]" : string.Empty)
+                .Replace("{access-modifier}", data.AccessModifier.ToSourceCode())
+                .Replace("{name}", data.Name!)
+                .Replace("{members}", data.Members.Select(ToSourceCode).Join("\n"));
+
+            return formatted ? raw.FormatSourceCode() : raw;
+        }
+
         public static string ToSourceCode(this Namespace data, bool formatted)
         {
             const string Template = @"
@@ -168,6 +199,7 @@ namespace SharpCode
 
 namespace {name}
 {
+    {enums}
     {interfaces}
     {classes}
 }
@@ -176,6 +208,7 @@ namespace {name}
             var raw = Template
                 .Replace("{name}", data.Name)
                 .Replace("{usings}", data.Usings.Select(item => $"using {item};").Join("\n"))
+                .Replace("{enums}", data.Enums.Select(item => item.ToSourceCode(false)).Join("\n"))
                 .Replace("{interfaces}", data.Interfaces.Select(item => item.ToSourceCode(false)).Join("\n"))
                 .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"));
 

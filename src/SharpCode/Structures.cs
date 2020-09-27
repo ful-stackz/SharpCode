@@ -72,11 +72,28 @@ namespace SharpCode
         public List<Property> Properties { get; } = new List<Property>();
     }
 
+    internal class EnumerationMember
+    {
+        public string? Name { get; set; }
+        public Option<int> Value { get; set; } = Option.None<int>();
+
+    }
+
+    internal class Enumeration
+    {
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public string? Name { get; set; }
+        public bool IsFlag { get; set; }
+        public List<EnumerationMember> Members { get; } = new List<EnumerationMember>();
+        
+    }
+
     internal class Namespace
     {
         public string? Name { get; set; }
         public List<string> Usings { get; } = new List<string>();
         public List<Class> Classes { get; } = new List<Class>();
         public List<Interface> Interfaces { get; } = new List<Interface>();
+        public List<Enumeration> Enums { get; } = new List<Enumeration>();
     }
 }
