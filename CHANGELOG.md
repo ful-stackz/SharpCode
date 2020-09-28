@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automated GitHub releases from the release action
 - Support for enums generation
 - Support for various enum members - with implicit and/or explicit values, flags
+- Code coverage, via CodeCov
 
 ## [0.1.0] - 2020-09-26
 
