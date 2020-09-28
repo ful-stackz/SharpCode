@@ -54,7 +54,7 @@ jobs:
       shell: pwsh
       run: |
         .\.sonar\scanner\dotnet-sonarscanner begin /k:"ful-stackz_SharpCode" /o:"ful-stackz" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet build --configuration Release --no-restore
+        dotnet build --configuration Release --no-restore ./src/SharpCode
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
 #     - name: Build
