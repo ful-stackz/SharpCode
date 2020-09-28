@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
@@ -12,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch_depth: 0
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -21,11 +24,43 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
       working-directory: ./src/SharpCode
+    
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v1
+      with:
+        path: ~\sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-      working-directory: ./src/SharpCode
+    - name: Cache SonarCloud scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v1
+      with:
+        path: .\.sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
 
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-      working-directory: ./src/SharpCode.Test
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        New-Item -Path .\.sonar\scanner -ItemType Directory
+        dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      shell: pwsh
+      run: |
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"ful-stackz_SharpCode" /o:"ful-stackz" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet build --configuration Release --no-restore
+        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+#     - name: Build
+#       run: dotnet build --configuration Release --no-restore
+#       working-directory: ./src/SharpCode
+
+#     - name: Test
+#       run: dotnet test --no-restore --verbosity normal
+#       working-directory: ./src/SharpCode.Test
