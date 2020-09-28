@@ -20,6 +20,7 @@ namespace SharpCode
         private readonly Namespace _namespace = new Namespace();
         private readonly List<ClassBuilder> _classes = new List<ClassBuilder>();
         private readonly List<InterfaceBuilder> _interfaces = new List<InterfaceBuilder>();
+        private readonly List<EnumBuilder> _enums = new List<EnumBuilder>();
 
         internal NamespaceBuilder() { }
 
@@ -105,6 +106,33 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds an enum definition to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithEnum(EnumBuilder builder)
+        {
+            _enums.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of enum definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithEnums(params EnumBuilder[] builders)
+        {
+            _enums.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of enum definitions to the namespace being built.
+        /// </summary>
+        public NamespaceBuilder WithEnums(IEnumerable<EnumBuilder> builders)
+        {
+            _enums.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built namespace.
         /// </summary>
         /// <param name="formatted">
@@ -143,6 +171,13 @@ namespace SharpCode
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "An interface defined under a namespace cannot have the access modifier " +
+                    $"'{item.AccessModifier.ToSourceCode()}'."));
+
+            _namespace.Enums.AddRange(_enums.Select(builder => builder.Build()));
+            _namespace.Enums
+                .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
+                .MatchSome(item => throw new SyntaxException(
+                    "An enum defined under a namespace cannot have the access modifier " +
                     $"'{item.AccessModifier.ToSourceCode()}'."));
 
             return _namespace;

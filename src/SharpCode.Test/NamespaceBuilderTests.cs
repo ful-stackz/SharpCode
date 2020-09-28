@@ -159,6 +159,70 @@ namespace Vehicles
         }
 
         [Test]
+        public void CreatingNamespace_WithEnum_Works()
+        {
+            var generatedCode = Code.CreateNamespace(name: "GeneratedCode")
+                .WithEnum(Code.CreateEnum(name: "Level")
+                    .WithMembers(
+                        Code.CreateEnumMember("Low"),
+                        Code.CreateEnumMember("Medium"),
+                        Code.CreateEnumMember("High")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+namespace GeneratedCode
+{
+    public enum Level
+    {
+        Low,
+        Medium,
+        High,
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingNamespace_WithFlagsEnum_Works()
+        {
+            var generatedCode = Code.CreateNamespace(name: "GeneratedCode")
+                .WithEnum(Code.CreateEnum(name: "Level")
+                    .WithMembers(
+                        Code.CreateEnumMember("Off"),
+                        Code.CreateEnumMember("VeryLow"),
+                        Code.CreateEnumMember("Low"),
+                        Code.CreateEnumMember("Medium"),
+                        Code.CreateEnumMember("High"),
+                        Code.CreateEnumMember("ExtraHigh"),
+                        Code.CreateEnumMember("Max"))
+                    .MakeFlagsEnum())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+namespace GeneratedCode
+{
+    [System.Flags]
+    public enum Level
+    {
+        Off = 0,
+        VeryLow = 1,
+        Low = 2,
+        Medium = 4,
+        High = 8,
+        ExtraHigh = 16,
+        Max = 32,
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void CreateClass_Throws_WhenRequiredSettingsNotProvided()
         {
             Assert.Throws<MissingBuilderSettingException>(
@@ -239,6 +303,31 @@ namespace Vehicles
                     .WithInterface(Code.CreateInterface("ITest", AccessModifier.ProtectedInternal))
                     .ToSourceCode(),
                 "Generating the source code for a protected internal interface inside a namespace should throw an exception.");
+
+            // -- Enums
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithEnum(Code.CreateEnum("Test", AccessModifier.Private))
+                    .ToSourceCode(),
+                "Generating the source code for a private enum inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithEnum(Code.CreateEnum("Test", AccessModifier.PrivateInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a private internal enum inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithEnum(Code.CreateEnum("Test", AccessModifier.Protected))
+                    .ToSourceCode(),
+                "Generating the source code for a protected enum inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithEnum(Code.CreateEnum("Test", AccessModifier.ProtectedInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a protected internal enum inside a namespace should throw an exception.");
         }
 
         [Test]
