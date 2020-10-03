@@ -76,3 +76,6 @@ publish/
 # Ionide
 .fake
 .ionide
+
+# Code coverage
+coverage/

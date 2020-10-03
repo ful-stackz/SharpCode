@@ -3,6 +3,7 @@ Small C# code generator. Easily generate code programmatically!
 
 [![CI Status](https://img.shields.io/github/workflow/status/ful-stackz/SharpCode/CI?label=CI&logo=github&style=flat)](https://github.com/ful-stackz/SharpCode/actions?query=workflow%3ACI)
 [![Nuget](https://img.shields.io/nuget/v/SharpCode?color=success&label=nuget&logo=nuget&style=flat)](https://www.nuget.org/packages/SharpCode/)
+[![codecov](https://codecov.io/gh/ful-stackz/SharpCode/branch/main/graph/badge.svg?token=F2E4FV2DA3)](https://codecov.io/gh/ful-stackz/SharpCode)
 
 ## Install
 
