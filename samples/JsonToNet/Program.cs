@@ -61,6 +61,7 @@ namespace JsonToNet
                 Write($"Processing '{fileFullName}'...");
                 var generatedCode = SourceCode.FromJson(fileName, File.ReadAllText(filePath));
                 var outputFilePath = Path.Join(outputDirectory, $"{fileName.ToPascalCase()}.cs");
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
                 File.WriteAllText(outputFilePath, generatedCode);
 
                 Write($"Generated '{Path.GetFullPath(outputFilePath)}'", ConsoleColor.Green, endWithEmptyLine: true);
