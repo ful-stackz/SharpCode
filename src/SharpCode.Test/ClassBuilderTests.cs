@@ -21,6 +21,26 @@ public class User
             Assert.AreEqual(expectedCode, generatedCode);
         }
 
+        [Test] 
+        public void CreateClass_WithDocumentation_Works()
+        {
+            var generatedCode = Code.CreateClass("User")
+                .WithDocumentation("A user of the application")
+                .ToSourceCode(formatted: true)
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// A user of the application
+/// </summary>
+public class User
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
         [Test]
         public void CreateClass_WithFields()
         {

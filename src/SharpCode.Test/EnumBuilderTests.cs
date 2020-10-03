@@ -31,6 +31,38 @@ internal enum UserStatus
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
+         
+        [Test]
+        public void CreatingEnumWithDocumentation_Works()
+        {
+            var generatedCode = Code.CreateEnum()
+                .WithAccessModifier(AccessModifier.Internal)
+                .WithName("UserStatus")
+                .WithMember(Code.CreateEnumMember("Inactive").WithDocumentation("The state of the user when they are inactive"))
+                .WithMember(Code.CreateEnumMember("Active").WithDocumentation("The user is active\nLike, all the time"))
+                .WithMember(Code.CreateEnumMember("Asleep"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+internal enum UserStatus
+{
+    /// <summary>
+    /// The state of the user when they are inactive
+    /// </summary>
+    Inactive,
+    /// <summary>
+    /// The user is active
+    /// Like, all the time
+    /// </summary>
+    Active,
+    Asleep,
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
 
         [Test]
         public void CreatingFlagsEnum_Works()

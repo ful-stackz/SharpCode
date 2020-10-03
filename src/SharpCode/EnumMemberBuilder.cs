@@ -43,6 +43,18 @@ namespace SharpCode
             return this;
         }
 
+        /// <summary>
+        /// Adds XML documentation to the enum member
+        /// </summary>
+        /// <param name="docs">
+        /// The content of the documentation
+        /// </param>
+        public EnumMemberBuilder WithDocumentation(string docs)
+        {
+            _enumMember.Documentation = Option.Some(docs);
+            return this;
+        }
+
         internal EnumerationMember Build()
         {
             if (string.IsNullOrWhiteSpace(_enumMember.Name))

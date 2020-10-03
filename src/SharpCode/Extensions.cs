@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Optional;
 
 namespace SharpCode
 {
@@ -46,6 +48,27 @@ namespace SharpCode
                 .Replace("{name}", parameter.Name);
         }
 
+        private static string DocumentationBlock(Option<string> documentation)
+        {
+            var docs = documentation.ValueOr(string.Empty);
+
+            if (string.IsNullOrWhiteSpace(docs))
+            {
+                return string.Empty;
+            }
+
+            var propertyDocs = new[]
+            {
+                 "/// <summary>",
+                 "/// " + docs.Replace("\r\n", "\r\n/// ").Replace("\n", "\r\n/// ") ,
+                 "/// </summary>",
+                 string.Empty
+            };
+
+            return string.Join(Environment.NewLine, propertyDocs);
+        }
+
+
         public static string ToSourceCode(this Constructor constructor, bool formatted)
         {
             const string Template = @"
@@ -75,7 +98,7 @@ namespace SharpCode
         public static string ToSourceCode(this Property property, bool formatted)
         {
             const string Template = @"
-{access-modifier} {static-modifier} {type} {name}
+{documentation}{access-modifier} {static-modifier} {type} {name}
 {getter-setter-open-bracket}
     {getter}
     {setter}
@@ -111,7 +134,8 @@ namespace SharpCode
                         defValue += def.EndsWith(";") ? string.Empty : ";";
                         return defValue;
                     },
-                    none: () => string.Empty));
+                    none: () => string.Empty))
+                .Replace("{documentation}", DocumentationBlock(property.Documentation)); 
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -119,7 +143,7 @@ namespace SharpCode
         public static string ToSourceCode(this Class classData, bool formatted)
         {
             const string ClassTemplate = @"
-{access-modifier} {static-modifier} class {name}{inheritance}
+{documentation}{access-modifier} {static-modifier} class {name}{inheritance}
 {
     {fields}
     {constructors}
@@ -139,7 +163,8 @@ namespace SharpCode
                 .Replace("{inheritance}", inheritance.Any() ? $": {inheritance.Join(", ")}" : string.Empty)
                 .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(false)).Join("\n"))
                 .Replace("{constructors}", classData.Constructors.Select(ctor => ctor.ToSourceCode(false)).Join("\n"))
-                .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(false)).Join("\n"));
+                .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(false)).Join("\n"))
+                .Replace("{documentation}", DocumentationBlock(classData.Documentation));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -166,11 +191,12 @@ namespace SharpCode
 
         public static string ToSourceCode(this EnumerationMember data)
         {
-            return "{name}{value},"
+            return "{documentation}{name}{value},"
                 .Replace("{name}", data.Name)
                 .Replace("{value}", data.Value.Match(
                     some: (value) => $" = {value}",
-                    none: () => string.Empty));
+                    none: () => string.Empty))
+                .Replace("{documentation}", DocumentationBlock(data.Documentation));
         }
 
         public static string ToSourceCode(this Enumeration data, bool formatted)

@@ -32,11 +32,12 @@ namespace SharpCode
         public string? Type { get; set; }
         public string? Name { get; set; }
         public Option<string> DefaultValue { get; set; } = Option.None<string>();
+        public Option<string> Documentation { get; set; } = Option.None<string>();
         public Option<string?> Getter { get; set; } = Option.Some<string?>(null);
         public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
     }
 
-    internal class Parameter
+    internal class Parameter 
     {
         public string? Type { get; set; }
         public string? Name { get; set; }
@@ -59,6 +60,7 @@ namespace SharpCode
         public string? Name { get; set; }
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
         public List<string> ImplementedInterfaces { get; } = new List<string>();
+        public Option<string> Documentation { get; set; } = Option.None<string>();
         public List<Field> Fields { get; } = new List<Field>();
         public List<Property> Properties { get; } = new List<Property>();
         public List<Constructor> Constructors { get; } = new List<Constructor>();
@@ -76,7 +78,7 @@ namespace SharpCode
     {
         public string? Name { get; set; }
         public Option<int> Value { get; set; } = Option.None<int>();
-
+        public Option<string> Documentation { get; set; } = Option.None<string>();
     }
 
     internal class Enumeration
@@ -85,7 +87,6 @@ namespace SharpCode
         public string? Name { get; set; }
         public bool IsFlag { get; set; }
         public List<EnumerationMember> Members { get; } = new List<EnumerationMember>();
-        
     }
 
     internal class Namespace

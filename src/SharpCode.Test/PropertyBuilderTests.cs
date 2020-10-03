@@ -24,6 +24,28 @@ public string Username
         }
 
         [Test]
+        public void CreateProperty_Works_WithDocumentation()
+        {
+            var generatedCode = Code.CreateProperty("string", "Username")
+                .WithDocumentation("The name of the user")
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// The name of the user
+/// </summary>
+public string Username
+{
+    get;
+    set;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void CreateProperty_Works_WithCustomGetterSetter()
         {
             var generatedCode = Code.CreateProperty("int", "Id")

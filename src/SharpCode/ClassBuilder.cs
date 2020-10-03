@@ -60,6 +60,18 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds XML documentation to the class
+        /// </summary>
+        /// <param name="docs">
+        /// The content of the documentation
+        /// </param>
+        public ClassBuilder WithDocumentation(string docs)
+        {
+            _class.Documentation = Option.Some(docs);
+            return this;
+        }
+
+        /// <summary>
         /// Adds a field to the class being built.
         /// </summary>
         public ClassBuilder WithField(FieldBuilder builder)
