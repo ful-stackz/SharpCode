@@ -56,16 +56,16 @@ namespace SharpCode
             {
                 return string.Empty;
             }
-
-            var propertyDocs = new[]
+             
+            var blockParts = new[]
             {
                  "/// <summary>",
                  "/// " + docs.Replace("\r\n", "\r\n/// ").Replace("\n", "\r\n/// ") ,
                  "/// </summary>",
                  string.Empty
             };
-
-            return string.Join(Environment.NewLine, propertyDocs);
+             
+            return string.Join(Environment.NewLine, blockParts);
         }
 
 
