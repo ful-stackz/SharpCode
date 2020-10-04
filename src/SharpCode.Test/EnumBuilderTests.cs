@@ -31,10 +31,10 @@ internal enum UserStatus
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
-         
+
         [Test]
         public void CreatingEnumWithSummary_Works()
-        { 
+        {
             var generatedCode = Code.CreateEnum()
                 .WithAccessModifier(AccessModifier.Internal)
                 .WithName("UserStatus")
@@ -62,7 +62,6 @@ internal enum UserStatus
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
-
 
         [Test]
         public void CreatingFlagsEnum_Works()

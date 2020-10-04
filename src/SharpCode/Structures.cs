@@ -40,9 +40,10 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
-        public Option<string> DefaultValue { get; set; } = Option.None<string>();
         public Option<string> Summary { get; set; } = Option.None<string>();
-        
+
+        public Option<string> DefaultValue { get; set; } = Option.None<string>();
+
         public Option<string?> Getter { get; set; } = Option.Some<string?>(null);
 
         public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
@@ -78,10 +79,12 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
+        public Option<string> Summary { get; set; } = Option.None<string>();
+
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
 
         public List<string> ImplementedInterfaces { get; } = new List<string>();
-        public Option<string> Summary { get; set; } = Option.None<string>();
+
         public List<Field> Fields { get; } = new List<Field>();
 
         public List<Property> Properties { get; } = new List<Property>();
@@ -103,7 +106,9 @@ namespace SharpCode
     internal class EnumerationMember
     {
         public string? Name { get; set; }
+
         public Option<int> Value { get; set; } = Option.None<int>();
+
         public Option<string> Summary { get; set; } = Option.None<string>();
     }
 

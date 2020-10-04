@@ -62,10 +62,10 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds XML summary documentation to the class
+        /// Adds XML summary documentation to the class.
         /// </summary>
         /// <param name="summaryDocs">
-        /// The content of the summary documentation
+        /// The content of the summary documentation.
         /// </param>
         public ClassBuilder WithSummary(string summaryDocs)
         {

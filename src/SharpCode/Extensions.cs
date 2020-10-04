@@ -48,27 +48,6 @@ namespace SharpCode
                 .Replace("{name}", parameter.Name);
         }
 
-        private static string SummaryBlock(Option<string> summaryDocs)
-        {
-            var docs = summaryDocs.ValueOr(string.Empty);
-
-            if (string.IsNullOrWhiteSpace(docs))
-            {
-                return string.Empty;
-            }
-             
-            var blockParts = new[]
-            {
-                 "/// <summary>",
-                 "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// ") ,
-                 "/// </summary>",
-                 string.Empty
-            };
-
-            return string.Join("\n", blockParts);
-        }
-
-
         public static string ToSourceCode(this Constructor constructor, bool formatted)
         {
             const string Template = @"
@@ -146,7 +125,7 @@ namespace SharpCode
                         return defValue;
                     },
                     none: () => string.Empty))
-                .Replace("{documentation}", SummaryBlock(property.Summary)); 
+                .Replace("{documentation}", SummaryBlock(property.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -250,6 +229,26 @@ namespace {name}
                 .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"));
 
             return formatted ? raw.FormatSourceCode() : raw;
+        }
+
+        private static string SummaryBlock(Option<string> summaryDocs)
+        {
+            var docs = summaryDocs.ValueOr(string.Empty);
+
+            if (string.IsNullOrWhiteSpace(docs))
+            {
+                return string.Empty;
+            }
+
+            var blockParts = new[]
+            {
+                 "/// <summary>",
+                 "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// "),
+                 "/// </summary>",
+                 string.Empty,
+            };
+
+            return string.Join("\n", blockParts);
         }
     }
 }
