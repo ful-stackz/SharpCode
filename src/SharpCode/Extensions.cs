@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Optional;
@@ -30,12 +29,16 @@ namespace SharpCode
 
         public static string ToSourceCode(this Field field, bool formatted)
         {
-            const string Template = "{access-modifier} {readonly} {type} {name};";
+            const string Template = @"
+{documentation}
+{access-modifier} {readonly} {type} {name};
+";
             var raw = Template
                 .Replace("{access-modifier}", field.AccessModifier.ToSourceCode())
                 .Replace("{readonly}", field.IsReadonly ? "readonly" : string.Empty)
                 .Replace("{type}", field.Type)
-                .Replace("{name}", field.Name);
+                .Replace("{name}", field.Name)
+                .Replace("{documentation}", SummaryBlock(field.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -51,6 +54,7 @@ namespace SharpCode
         public static string ToSourceCode(this Constructor constructor, bool formatted)
         {
             const string Template = @"
+{documentation}
 {access-modifier} {static-modifier} {name}({parameters}){base-call}
 {
     {assignments}
@@ -68,7 +72,8 @@ namespace SharpCode
                     constructor.Parameters
                         .Where(param => !string.IsNullOrWhiteSpace(param.ReceivingMember))
                         .Select(param => $"{param.ReceivingMember} = {param.Name};")
-                        .Join("\n"));
+                        .Join("\n"))
+                .Replace("{documentation}", SummaryBlock(constructor.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -76,7 +81,8 @@ namespace SharpCode
         public static string ToSourceCode(this Property property, bool formatted)
         {
             const string Template = @"
-{documentation}{access-modifier} {static-modifier} {type} {name}
+{documentation}
+{access-modifier} {static-modifier} {type} {name}
 {getter-setter-open-bracket}
     {getter}
     {setter}
@@ -133,7 +139,8 @@ namespace SharpCode
         public static string ToSourceCode(this Class classData, bool formatted)
         {
             const string ClassTemplate = @"
-{documentation}{access-modifier} {static-modifier} class {name}{inheritance}
+{documentation}
+{access-modifier} {static-modifier} class {name}{inheritance}
 {
     {fields}
     {constructors}
@@ -162,6 +169,7 @@ namespace SharpCode
         public static string ToSourceCode(this Interface data, bool formatted)
         {
             const string Template = @"
+{documentation}
 {access-modifier} interface {name}{inheritance}
 {
     {properties}
@@ -174,7 +182,8 @@ namespace SharpCode
                 .Replace("{inheritance}", data.ImplementedInterfaces.Any()
                     ? $": {data.ImplementedInterfaces.Join(", ")}"
                     : string.Empty)
-                .Replace("{properties}", data.Properties.Select(item => item.ToSourceCode(false)).Join("\n"));
+                .Replace("{properties}", data.Properties.Select(item => item.ToSourceCode(false)).Join("\n"))
+                .Replace("{documentation}", SummaryBlock(data.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -186,12 +195,15 @@ namespace SharpCode
                 .Replace("{value}", data.Value.Match(
                     some: (value) => $" = {value}",
                     none: () => string.Empty))
-                .Replace("{documentation}", SummaryBlock(data.Summary));
+                .Replace("{documentation}", data.Summary.Match(
+                    some: (_) => SummaryBlock(data.Summary) + "\n",
+                    none: () => string.Empty));
         }
 
         public static string ToSourceCode(this Enumeration data, bool formatted)
         {
             const string Template = @"
+{documentation}
 {flags-attribute}
 {access-modifier} enum {name}
 {
@@ -203,7 +215,8 @@ namespace SharpCode
                 .Replace("{flags-attribute}", data.IsFlag ? "[System.Flags]" : string.Empty)
                 .Replace("{access-modifier}", data.AccessModifier.ToSourceCode())
                 .Replace("{name}", data.Name!)
-                .Replace("{members}", data.Members.Select(ToSourceCode).Join("\n"));
+                .Replace("{members}", data.Members.Select(ToSourceCode).Join("\n"))
+                .Replace("{documentation}", SummaryBlock(data.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -245,7 +258,6 @@ namespace {name}
                  "/// <summary>",
                  "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// "),
                  "/// </summary>",
-                 string.Empty,
             };
 
             return string.Join("\n", blockParts);

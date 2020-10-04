@@ -28,6 +28,8 @@ namespace SharpCode
         public string? Type { get; set; }
 
         public string? Name { get; set; }
+
+        public Option<string> Summary { get; set; } = Option.None<string>();
     }
 
     internal class Property
@@ -66,6 +68,8 @@ namespace SharpCode
 
         public string? ClassName { get; set; }
 
+        public Option<string> Summary { get; set; } = Option.None<string>();
+
         public List<Parameter> Parameters { get; set; } = new List<Parameter>();
 
         public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
@@ -98,6 +102,8 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
+        public Option<string> Summary { get; set; } = Option.None<string>();
+
         public List<string> ImplementedInterfaces { get; } = new List<string>();
 
         public List<Property> Properties { get; } = new List<Property>();
@@ -117,6 +123,8 @@ namespace SharpCode
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
 
         public string? Name { get; set; }
+
+        public Option<string> Summary { get; set; } = Option.None<string>();
 
         public bool IsFlag { get; set; }
 
