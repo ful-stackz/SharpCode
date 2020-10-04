@@ -6,6 +6,7 @@ namespace SharpCode
     /// <summary>
     /// The exception that is thrown when building with the provided configuration will result in invalid source code.
     /// </summary>
+    [Serializable]
     public class SyntaxException : Exception
     {
         /// <summary>

@@ -6,6 +6,7 @@ namespace SharpCode
     /// <summary>
     /// The exception that is thrown when attempting to build source code, but a required setting is missing.
     /// </summary>
+    [Serializable]
     public class MissingBuilderSettingException : Exception
     {
         /// <summary>

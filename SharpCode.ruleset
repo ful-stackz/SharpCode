@@ -15,4 +15,8 @@
     <Rule Id="SA1633" Action="None" /> <!-- Files must have XML header documentation -->
     <Rule Id="SA1649" Action="None" /> <!-- File name should match first type name -->
   </Rules>
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <Rule Id="S1066" Action="None" /> <!-- Collapsible if statements should be merged -->
+    <Rule Id="S3626" Action="None" /> <!-- Jump statements should not be redundant -->
+  </Rules>
 </RuleSet>

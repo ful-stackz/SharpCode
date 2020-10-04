@@ -93,14 +93,26 @@ namespace SharpCode
                     ? "}"
                     : string.Empty)
                 .Replace("{getter}", property.Getter.Match(
-                    some: (getter) => string.IsNullOrWhiteSpace(getter)
-                        ? "get;"
-                        : getter!.StartsWith("{") ? $"get{getter}" : $"get => {getter};",
+                    some: (getter) =>
+                    {
+                        if (string.IsNullOrWhiteSpace(getter))
+                        {
+                            return "get;";
+                        }
+
+                        return getter!.StartsWith("{") ? $"get{getter}" : $"get => {getter};";
+                    },
                     none: () => string.Empty))
                 .Replace("{setter}", property.Setter.Match(
-                    some: (setter) => string.IsNullOrWhiteSpace(setter)
-                        ? "set;"
-                        : setter!.StartsWith("{") ? $"set{setter}" : $"set => {setter};",
+                    some: (setter) =>
+                    {
+                        if (string.IsNullOrWhiteSpace(setter))
+                        {
+                            return "set;";
+                        }
+
+                        return setter!.StartsWith("{") ? $"set{setter}" : $"set => {setter};";
+                    },
                     none: () => string.Empty))
                 .Replace("{default-value}", property.DefaultValue.Match(
                     some: (def) =>

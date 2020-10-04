@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace SharpCode
 {
-    internal class Utils
+    internal static class Utils
     {
         public static string FormatSourceCode(string sourceCode) =>
             SyntaxNodeExtensions

@@ -8,6 +8,7 @@ namespace SharpCode
     /// </summary>
     public enum AccessModifier
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         None,
         Private,
         Internal,
@@ -15,6 +16,7 @@ namespace SharpCode
         Public,
         PrivateInternal,
         ProtectedInternal,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 
     internal class Field

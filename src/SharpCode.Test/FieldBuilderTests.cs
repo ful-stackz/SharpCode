@@ -9,7 +9,6 @@ namespace SharpCode.Test
         public void CreateField_Works_WithDefaults()
         {
             var generatedCode = Code.CreateField()
-                .WithAccessModifier(AccessModifier.Private)
                 .WithType(typeof(int))
                 .WithName("_username")
                 .MakeReadonly()
