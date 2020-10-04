@@ -11,7 +11,9 @@ namespace SharpCode
     {
         private readonly Property _property = new Property();
 
-        internal PropertyBuilder() { }
+        internal PropertyBuilder()
+        {
+        }
 
         internal PropertyBuilder(AccessModifier accessModifier, string type, string name)
         {
@@ -65,14 +67,12 @@ namespace SharpCode
         /// Sets the getter logic of the property being built.
         /// </summary>
         /// <param name="expression">
-        /// The expression or block body of the getter. If not specified the default getter will be used - <c>get;</c>
+        /// The expression or block body of the getter. If not specified the default getter will be used - <c>get;</c>.
         /// </param>
         /// <example>
         /// This example shows the generated code for a property with a default getter.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("Identifier").WithGetter()
-        /// 
         /// public int Identifier
         /// {
         ///     get;
@@ -81,10 +81,8 @@ namespace SharpCode
         /// </example>
         /// <example>
         /// This example shows the generated code for a property with a getter that is an expression.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("Identifier").WithGetter("_id")
-        /// 
         /// public int Identifier
         /// {
         ///     get => _id;
@@ -93,10 +91,8 @@ namespace SharpCode
         /// </example>
         /// <example>
         /// This example shows the generated code for a property with a getter that has a block body.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("IsCreated").WithGetter("{ if (_id == -1) { return false; } else { return true; } }")
-        /// 
         /// public int Identifier
         /// {
         ///     get
@@ -137,10 +133,8 @@ namespace SharpCode
         /// </param>
         /// <example>
         /// This example shows the generated code for a property with a default setter.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("Identifier").WithSetter()
-        /// 
         /// public int Identifier
         /// {
         ///     set;
@@ -149,10 +143,8 @@ namespace SharpCode
         /// </example>
         /// <example>
         /// This example shows the generated code for a property with a setter that is an expression.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("Identifier").WithSetter("_id = value")
-        /// 
         /// public int Identifier
         /// {
         ///     set => _id = value;
@@ -161,11 +153,9 @@ namespace SharpCode
         /// </example>
         /// <example>
         /// This example shows the generated code for a property with a setter that has a block body.
-        /// 
         /// <code>
         /// // PropertyBuilder.WithName("Value")
         /// //    .WithSetter("{ if (value &lt;= 0) { throw new Exception(); } _value = value; }")
-        /// 
         /// public int Identifier
         /// {
         ///     set
@@ -203,7 +193,7 @@ namespace SharpCode
         /// <param name="defaultValue">
         /// The default value of the property. The value is used as-is, therefore you should wrap any string values in
         /// escaped quotes. For example,
-        /// <c>WithDefaultValue(defaultValue: "\"this will be generated as a string\"")</c>
+        /// <c>WithDefaultValue(defaultValue: "\"this will be generated as a string\"")</c>.
         /// </param>
         public PropertyBuilder WithDefaultValue(string defaultValue)
         {
@@ -224,10 +214,10 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds XML summary documentation to the property
+        /// Adds XML summary documentation to the property.
         /// </summary>
         /// <param name="summaryDocs">
-        /// The content of the summary documentation
+        /// The content of the summary documentation.
         /// </param>
         public PropertyBuilder WithSummary(string summaryDocs)
         {

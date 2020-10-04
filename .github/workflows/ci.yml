@@ -32,6 +32,7 @@ jobs:
         dotnet test
         --verbosity diag
         /p:CollectCoverage=true
+        /p:Exclude="[*]SharpCode.*Exception"
         /p:CoverletOutput=../../coverage/
         /p:CoverletOutputFormat=cobertura
       working-directory: ./src/SharpCode.Test

@@ -15,7 +15,9 @@ namespace SharpCode
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
         private readonly List<ConstructorBuilder> _constructors = new List<ConstructorBuilder>();
 
-        internal ClassBuilder() { }
+        internal ClassBuilder()
+        {
+        }
 
         internal ClassBuilder(AccessModifier accessModifier, string name)
         {
@@ -60,10 +62,10 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds XML summary documentation to the class
+        /// Adds XML summary documentation to the class.
         /// </summary>
         /// <param name="summaryDocs">
-        /// The content of the summary documentation
+        /// The content of the summary documentation.
         /// </param>
         public ClassBuilder WithSummary(string summaryDocs)
         {

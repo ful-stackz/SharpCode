@@ -21,7 +21,7 @@ public class User
             Assert.AreEqual(expectedCode, generatedCode);
         }
 
-        [Test] 
+        [Test]
         public void CreateClass_WithSummary_Works()
         {
             var generatedCode = Code.CreateClass("User")

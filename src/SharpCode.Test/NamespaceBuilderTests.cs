@@ -241,7 +241,7 @@ namespace GeneratedCode
                 "Generating the source code for a namespace with an empty name should throw an exception.");
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateNamespace().WithName(string.Empty).ToSourceCode(),
-                    "Generating the source code for a namespace with an empty name should throw an exception.");
+                "Generating the source code for a namespace with an empty name should throw an exception.");
 
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateNamespace(name: "  ").ToSourceCode(),

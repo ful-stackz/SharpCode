@@ -12,7 +12,9 @@ namespace SharpCode
         private readonly Interface _interface = new Interface();
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
 
-        internal InterfaceBuilder() { }
+        internal InterfaceBuilder()
+        {
+        }
 
         internal InterfaceBuilder(string name, AccessModifier accessModifier)
         {

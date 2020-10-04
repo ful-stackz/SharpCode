@@ -9,7 +9,9 @@ namespace SharpCode
     {
         private readonly Field _field = new Field();
 
-        internal FieldBuilder() { }
+        internal FieldBuilder()
+        {
+        }
 
         internal FieldBuilder(AccessModifier accessModifier, string type, string name)
         {

@@ -38,14 +38,13 @@ namespace SharpCode
         /// </param>
         /// <param name="receivingMember">
         /// A member of the class to which this parameter will be assigned. Providing this parameter will result in
-        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>
+        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>.
         /// </param>
         /// <example>
         /// This example shows the generated code for a constructor with a parameter.
         ///
         /// <code>
         /// // ConstructorBuilder.WithParameter("string", "username");
-        /// 
         /// public User(string username)
         /// {
         /// }
@@ -56,7 +55,6 @@ namespace SharpCode
         ///
         /// <code>
         /// // ConstructorBuilder.WithParameter("string", "username", "_username");
-        /// 
         /// public User(string username)
         /// {
         ///     _username = username;
@@ -85,14 +83,13 @@ namespace SharpCode
         /// </param>
         /// <param name="receivingMember">
         /// A member of the class to which this parameter will be assigned. Providing this parameter will result in
-        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>
+        /// the following line being added to the constructor body - <c>{receivingMember} = {name};</c>.
         /// </param>
         /// <example>
         /// This example shows the generated code for a constructor with a parameter.
         ///
         /// <code>
         /// // ConstructorBuilder.WithParameter(typeof(string), "username");
-        /// 
         /// public User(String username)
         /// {
         /// }
@@ -103,7 +100,6 @@ namespace SharpCode
         ///
         /// <code>
         /// // ConstructorBuilder.WithParameter(typeof(string), "username", "_username");
-        /// 
         /// public User(String username)
         /// {
         ///     _username = username;
@@ -132,7 +128,6 @@ namespace SharpCode
         ///
         /// <code>
         /// // ConstructorBuilder.WithBaseCall();
-        /// 
         /// public User(): base()
         /// {
         /// }
@@ -143,7 +138,6 @@ namespace SharpCode
         ///
         /// <code>
         /// // ConstructorBuilder.WithParameter("string", "username").WithBaseCall("username");
-        /// 
         /// public User(string username): base(username)
         /// {
         /// }

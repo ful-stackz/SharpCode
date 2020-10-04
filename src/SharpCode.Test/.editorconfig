@@ -1,5 +1,8 @@
 [*.cs]
 
+# Disable XML comment analysis, since this project does not generate XML docs
+dotnet_diagnostic.SA0001.severity = none
+
 # Unused value preferences
 # Suppress, otherwise every Assert.Throws<T>() must use the discard variable
 csharp_style_unused_value_expression_statement_preference = discard_variable:none
