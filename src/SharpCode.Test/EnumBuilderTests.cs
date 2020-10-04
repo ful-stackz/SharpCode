@@ -33,7 +33,38 @@ internal enum UserStatus
         }
 
         [Test]
-        public void CreatingEnumWithSummary_Works()
+        public void CreatingEnum_WithSummary_Works()
+        {
+            var generatedCode = Code.CreateEnum()
+                .WithAccessModifier(AccessModifier.Private)
+                .WithSummary("Represents the status of a user.")
+                .WithName("UserStatus")
+                .WithMember(Code.CreateEnumMember("Inactive"))
+                .WithMember(Code.CreateEnumMember("Active"))
+                .WithMembers(
+                    Code.CreateEnumMember("Blocked"),
+                    Code.CreateEnumMember("NotConfirmed"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// Represents the status of a user.
+/// </summary>
+private enum UserStatus
+{
+    Inactive,
+    Active,
+    Blocked,
+    NotConfirmed,
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingEnum_WithMembersSummary_Works()
         {
             var generatedCode = Code.CreateEnum()
                 .WithAccessModifier(AccessModifier.Internal)
@@ -45,6 +76,43 @@ internal enum UserStatus
                 .WithUnixEOL();
 
             var expectedCode = @"
+internal enum UserStatus
+{
+    /// <summary>
+    /// The state of the user when they are inactive
+    /// </summary>
+    Inactive,
+    /// <summary>
+    /// The user is active
+    /// Like, all the time
+    /// </summary>
+    Active,
+    Asleep,
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingEnum_WithSummaryAndMembersSummary_Works()
+        {
+            var generatedCode = Code.CreateEnum()
+                .WithAccessModifier(AccessModifier.Internal)
+                .WithSummary("Represents the status of the user.")
+                .WithName("UserStatus")
+                .WithMember(Code.CreateEnumMember("Inactive")
+                    .WithSummary("The state of the user when they are inactive"))
+                .WithMember(Code.CreateEnumMember("Active")
+                    .WithSummary("The user is active\nLike, all the time"))
+                .WithMember(Code.CreateEnumMember("Asleep"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// Represents the status of the user.
+/// </summary>
 internal enum UserStatus
 {
     /// <summary>

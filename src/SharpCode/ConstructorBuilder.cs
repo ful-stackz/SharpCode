@@ -149,6 +149,18 @@ namespace SharpCode
             return this;
         }
 
+        /// <summary>
+        /// Adds XML summary documentation to the constructor.
+        /// </summary>
+        /// <param name="summary">
+        /// The content of the summary documentation.
+        /// </param>
+        public ConstructorBuilder WithSummary(string summary)
+        {
+            _constructor.Summary = Option.Some(summary);
+            return this;
+        }
+
         internal ConstructorBuilder MakeStatic(bool makeStatic)
         {
             _constructor.IsStatic = makeStatic;

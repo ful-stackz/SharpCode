@@ -43,5 +43,48 @@ namespace SharpCode.Test
                     .ToSourceCode(),
                 "Generating the source code for a static constructor with a base call should throw an exception.");
         }
+
+        [Test]
+        public void CreatingConstructor_WithSummary_Works()
+        {
+            var generatedCode = Code.CreateClass()
+                .WithAccessModifier(AccessModifier.Public)
+                .WithName("Test")
+                .WithConstructor(Code.CreateConstructor(AccessModifier.Public)
+                    .WithSummary("Initializes a new instance of the Test class."))
+                .WithConstructor(Code.CreateConstructor(AccessModifier.Private)
+                    .WithSummary("Privately initializes a new instance of the Test class.")
+                    .WithParameter("string", "name"))
+                .WithConstructor(Code.CreateConstructor(AccessModifier.PrivateInternal)
+                    .WithParameter("string", "name")
+                    .WithParameter("int", "count"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Test
+{
+    /// <summary>
+    /// Initializes a new instance of the Test class.
+    /// </summary>
+    public Test()
+    {
+    }
+
+    /// <summary>
+    /// Privately initializes a new instance of the Test class.
+    /// </summary>
+    private Test(string name)
+    {
+    }
+
+    private internal Test(string name, int count)
+    {
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
     }
 }

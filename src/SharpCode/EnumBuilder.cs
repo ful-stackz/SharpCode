@@ -85,6 +85,18 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds XML summary documentation to the enum.
+        /// </summary>
+        /// <param name="summary">
+        /// The content of the summary documentation.
+        /// </param>
+        public EnumBuilder WithSummary(string summary)
+        {
+            _enumeration.Summary = Option.Some(summary);
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built enum.
         /// </summary>
         /// <param name="formatted">

@@ -148,5 +148,27 @@ public interface ITest
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
+
+        [Test]
+        public void CreatingInterface_WithSummary_Works()
+        {
+            var generatedCode = Code.CreateInterface()
+                .WithAccessModifier(AccessModifier.Public)
+                .WithName("ISerializable")
+                .WithSummary("Allows an object to control its own serialization and deserialization.")
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// Allows an object to control its own serialization and deserialization.
+/// </summary>
+public interface ISerializable
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
     }
 }

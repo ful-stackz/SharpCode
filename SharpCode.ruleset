@@ -19,4 +19,7 @@
     <Rule Id="S1066" Action="None" /> <!-- Collapsible if statements should be merged -->
     <Rule Id="S3626" Action="None" /> <!-- Jump statements should not be redundant -->
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="CS8019" Action="Warning" />
+  </Rules>
 </RuleSet>

@@ -64,12 +64,12 @@ namespace SharpCode
         /// <summary>
         /// Adds XML summary documentation to the class.
         /// </summary>
-        /// <param name="summaryDocs">
+        /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
-        public ClassBuilder WithSummary(string summaryDocs)
+        public ClassBuilder WithSummary(string summary)
         {
-            _class.Summary = Option.Some(summaryDocs);
+            _class.Summary = Option.Some(summary);
             return this;
         }
 

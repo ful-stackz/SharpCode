@@ -1,4 +1,5 @@
 ﻿using System;
+using Optional;
 
 namespace SharpCode
 {
@@ -70,6 +71,18 @@ namespace SharpCode
         public FieldBuilder MakeReadonly(bool makeReadonly = true)
         {
             _field.IsReadonly = makeReadonly;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds XML summary documentation to the field.
+        /// </summary>
+        /// <param name="summary">
+        /// The content of the summary documentation.
+        /// </param>
+        public FieldBuilder WithSummary(string summary)
+        {
+            _field.Summary = Option.Some(summary);
             return this;
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Optional;
 
 namespace SharpCode
 {
@@ -73,6 +74,18 @@ namespace SharpCode
         public InterfaceBuilder WithImplementedInterface(string name)
         {
             _interface.ImplementedInterfaces.Add(name);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds XML summary documentation to the interface.
+        /// </summary>
+        /// <param name="summary">
+        /// The content of the summary documentation.
+        /// </param>
+        public InterfaceBuilder WithSummary(string summary)
+        {
+            _interface.Summary = Option.Some(summary);
             return this;
         }
 

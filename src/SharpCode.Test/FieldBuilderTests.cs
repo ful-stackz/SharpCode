@@ -45,5 +45,27 @@ namespace SharpCode.Test
                 () => Code.CreateField().WithName("_iHaveNoType").ToSourceCode(),
                 "Expected generating the source code for a field without setting the type to throw an exception.");
         }
+
+        [Test]
+        public void CreatingField_WithSummary_Works()
+        {
+            var generatedCode = Code.CreateField()
+                .WithAccessModifier(AccessModifier.PrivateInternal)
+                .WithSummary("Stores the name of the thing.")
+                .WithType("string")
+                .WithName("_name")
+                .MakeReadonly()
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+/// <summary>
+/// Stores the name of the thing.
+/// </summary>
+private internal readonly string _name;
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
     }
 }
