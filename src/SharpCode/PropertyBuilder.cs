@@ -214,6 +214,18 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds XML summary documentation to the property
+        /// </summary>
+        /// <param name="summaryDocs">
+        /// The content of the summary documentation
+        /// </param>
+        public PropertyBuilder WithSummary(string summaryDocs)
+        {
+            _property.Summary = Option.Some(summaryDocs);
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built property.
         /// </summary>
         /// <param name="formatted">
