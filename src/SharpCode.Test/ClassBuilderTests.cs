@@ -22,10 +22,10 @@ public class User
         }
 
         [Test] 
-        public void CreateClass_WithDocumentation_Works()
+        public void CreateClass_WithSummary_Works()
         {
             var generatedCode = Code.CreateClass("User")
-                .WithDocumentation("A user of the application")
+                .WithSummary("A user of the application")
                 .ToSourceCode(formatted: true)
                 .WithUnixEOL();
 

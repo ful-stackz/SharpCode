@@ -33,13 +33,13 @@ internal enum UserStatus
         }
          
         [Test]
-        public void CreatingEnumWithDocumentation_Works()
-        {
+        public void CreatingEnumWithSummary_Works()
+        { 
             var generatedCode = Code.CreateEnum()
                 .WithAccessModifier(AccessModifier.Internal)
                 .WithName("UserStatus")
-                .WithMember(Code.CreateEnumMember("Inactive").WithDocumentation("The state of the user when they are inactive"))
-                .WithMember(Code.CreateEnumMember("Active").WithDocumentation("The user is active\nLike, all the time"))
+                .WithMember(Code.CreateEnumMember("Inactive").WithSummary("The state of the user when they are inactive"))
+                .WithMember(Code.CreateEnumMember("Active").WithSummary("The user is active\nLike, all the time"))
                 .WithMember(Code.CreateEnumMember("Asleep"))
                 .ToSourceCode()
                 .WithUnixEOL();

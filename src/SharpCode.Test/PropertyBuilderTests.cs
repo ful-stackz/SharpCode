@@ -24,10 +24,10 @@ public string Username
         }
 
         [Test]
-        public void CreateProperty_Works_WithDocumentation()
+        public void CreateProperty_Works_WithSummary()
         {
             var generatedCode = Code.CreateProperty("string", "Username")
-                .WithDocumentation("The name of the user")
+                .WithSummary("The name of the user")
                 .ToSourceCode()
                 .WithUnixEOL();
 

@@ -44,14 +44,14 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds XML documentation to the enum member
+        /// Adds XML summary documentation to the enum member
         /// </summary>
-        /// <param name="docs">
-        /// The content of the documentation
+        /// <param name="summaryDocs">
+        /// The content of the summary documentation
         /// </param>
-        public EnumMemberBuilder WithDocumentation(string docs)
+        public EnumMemberBuilder WithSummary(string summaryDocs)
         {
-            _enumMember.Documentation = Option.Some(docs);
+            _enumMember.Summary = Option.Some(summaryDocs);
             return this;
         }
 

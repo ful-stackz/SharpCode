@@ -48,9 +48,9 @@ namespace SharpCode
                 .Replace("{name}", parameter.Name);
         }
 
-        private static string DocumentationBlock(Option<string> documentation)
+        private static string SummaryBlock(Option<string> summaryDocs)
         {
-            var docs = documentation.ValueOr(string.Empty);
+            var docs = summaryDocs.ValueOr(string.Empty);
 
             if (string.IsNullOrWhiteSpace(docs))
             {
@@ -60,12 +60,12 @@ namespace SharpCode
             var blockParts = new[]
             {
                  "/// <summary>",
-                 "/// " + docs.Replace("\r\n", "\r\n/// ").Replace("\n", "\r\n/// ") ,
+                 "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// ") ,
                  "/// </summary>",
                  string.Empty
             };
-             
-            return string.Join(Environment.NewLine, blockParts);
+
+            return string.Join("\n", blockParts);
         }
 
 
@@ -135,7 +135,7 @@ namespace SharpCode
                         return defValue;
                     },
                     none: () => string.Empty))
-                .Replace("{documentation}", DocumentationBlock(property.Documentation)); 
+                .Replace("{documentation}", SummaryBlock(property.Summary)); 
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -164,7 +164,7 @@ namespace SharpCode
                 .Replace("{fields}", classData.Fields.Select(field => field.ToSourceCode(false)).Join("\n"))
                 .Replace("{constructors}", classData.Constructors.Select(ctor => ctor.ToSourceCode(false)).Join("\n"))
                 .Replace("{properties}", classData.Properties.Select(property => property.ToSourceCode(false)).Join("\n"))
-                .Replace("{documentation}", DocumentationBlock(classData.Documentation));
+                .Replace("{documentation}", SummaryBlock(classData.Summary));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
@@ -196,7 +196,7 @@ namespace SharpCode
                 .Replace("{value}", data.Value.Match(
                     some: (value) => $" = {value}",
                     none: () => string.Empty))
-                .Replace("{documentation}", DocumentationBlock(data.Documentation));
+                .Replace("{documentation}", SummaryBlock(data.Summary));
         }
 
         public static string ToSourceCode(this Enumeration data, bool formatted)
