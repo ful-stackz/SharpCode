@@ -166,6 +166,32 @@ namespace SharpCode
             return formatted ? raw.FormatSourceCode() : raw;
         }
 
+        public static string ToSourceCode(this Struct data, bool formatted)
+        {
+            const string Template = @"
+{documentation}
+{access-modifier} struct {name}{implemented-interfaces}
+{
+    {fields}
+    {constructors}
+    {properties}
+}
+            ";
+
+            var raw = Template
+                .Replace("{documentation}", SummaryBlock(data.Summary))
+                .Replace("{access-modifier}", data.AccessModifier.ToSourceCode())
+                .Replace("{name}", data.Name)
+                .Replace("{implemented-interfaces}", data.ImplementedInterfaces.Any()
+                    ? $" : {data.ImplementedInterfaces!.Join(", ")}"
+                    : string.Empty)
+                .Replace("{fields}", data.Fields.Select(x => x.ToSourceCode(false)).Join("\n"))
+                .Replace("{constructors}", data.Constructors.Select(x => x.ToSourceCode(false)).Join("\n"))
+                .Replace("{properties}", data.Properties.Select(x => x.ToSourceCode(false)).Join("\n"));
+
+            return formatted ? raw.FormatSourceCode() : raw;
+        }
+
         public static string ToSourceCode(this Interface data, bool formatted)
         {
             const string Template = @"
@@ -231,6 +257,7 @@ namespace {name}
     {enums}
     {interfaces}
     {classes}
+    {structs}
 }
             ";
 
@@ -239,25 +266,26 @@ namespace {name}
                 .Replace("{usings}", data.Usings.Select(item => $"using {item};").Join("\n"))
                 .Replace("{enums}", data.Enums.Select(item => item.ToSourceCode(false)).Join("\n"))
                 .Replace("{interfaces}", data.Interfaces.Select(item => item.ToSourceCode(false)).Join("\n"))
-                .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"));
+                .Replace("{classes}", data.Classes.Select(item => item.ToSourceCode(false)).Join("\n"))
+                .Replace("{structs}", data.Structs.Select(item => item.ToSourceCode(false)).Join("\n"));
 
             return formatted ? raw.FormatSourceCode() : raw;
         }
 
-        private static string SummaryBlock(Option<string> summaryDocs)
+        private static string SummaryBlock(Option<string?> summaryDocs)
         {
             var docs = summaryDocs.ValueOr(string.Empty);
 
-            if (string.IsNullOrWhiteSpace(docs))
+            if (docs is null || string.IsNullOrWhiteSpace(docs))
             {
                 return string.Empty;
             }
 
             var blockParts = new[]
             {
-                 "/// <summary>",
-                 "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// "),
-                 "/// </summary>",
+                "/// <summary>",
+                "/// " + docs.Replace("\r\n", "\n/// ").Replace("\n", "\n/// "),
+                "/// </summary>",
             };
 
             return string.Join("\n", blockParts);

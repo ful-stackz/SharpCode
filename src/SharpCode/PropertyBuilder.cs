@@ -221,7 +221,7 @@ namespace SharpCode
         /// </param>
         public PropertyBuilder WithSummary(string summary)
         {
-            _property.Summary = Option.Some(summary);
+            _property.Summary = Option.Some<string?>(summary);
             return this;
         }
 

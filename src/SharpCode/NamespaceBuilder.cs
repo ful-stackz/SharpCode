@@ -19,6 +19,7 @@ namespace SharpCode
 
         private readonly Namespace _namespace = new Namespace();
         private readonly List<ClassBuilder> _classes = new List<ClassBuilder>();
+        private readonly List<StructBuilder> _structs = new List<StructBuilder>();
         private readonly List<InterfaceBuilder> _interfaces = new List<InterfaceBuilder>();
         private readonly List<EnumBuilder> _enums = new List<EnumBuilder>();
 
@@ -135,23 +136,55 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Returns the source code of the built namespace.
+        /// Adds a struct to the namespace.
         /// </summary>
-        /// <param name="formatted">
-        /// Indicates whether to format the source code.
+        /// <param name="builder">
+        /// The configuration of the struct.
         /// </param>
-        public string ToSourceCode(bool formatted = true)
+        public NamespaceBuilder WithStruct(StructBuilder builder)
         {
-            return Build().ToSourceCode(formatted);
+            _structs.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of structs to the namespace.
+        /// </summary>
+        /// <param name="builders">
+        /// A collection of structs which will be added to the namespace.
+        /// </param>
+        public NamespaceBuilder WithStructs(params StructBuilder[] builders)
+        {
+            _structs.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of structs to the namespace.
+        /// </summary>
+        /// <param name="builders">
+        /// A collection of structs which will be added to the namespace.
+        /// </param>
+        public NamespaceBuilder WithStructs(IEnumerable<StructBuilder> builders)
+        {
+            _structs.AddRange(builders);
+            return this;
         }
 
         /// <summary>
         /// Returns the source code of the built namespace.
         /// </summary>
-        public override string ToString()
-        {
-            return ToSourceCode();
-        }
+        /// <param name="formatted">
+        /// Indicates whether to format the source code.
+        /// </param>
+        public string ToSourceCode(bool formatted = true) =>
+            Build().ToSourceCode(formatted);
+
+        /// <summary>
+        /// Returns the source code of the built namespace.
+        /// </summary>
+        public override string ToString() =>
+            ToSourceCode();
 
         internal Namespace Build()
         {
@@ -166,6 +199,13 @@ namespace SharpCode
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "A class defined under a namespace cannot have the access modifier " +
+                    $"'{item.AccessModifier.ToSourceCode()}'."));
+
+            _namespace.Structs.AddRange(_structs.Select(builder => builder.Build()));
+            _namespace.Structs
+                .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
+                .MatchSome(item => throw new SyntaxException(
+                    "A struct defined under a namespace cannot have the access modifier " +
                     $"'{item.AccessModifier.ToSourceCode()}'."));
 
             _namespace.Interfaces.AddRange(_interfaces.Select(builder => builder.Build()));

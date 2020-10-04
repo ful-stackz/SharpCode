@@ -82,7 +82,7 @@ namespace SharpCode
         /// </param>
         public FieldBuilder WithSummary(string summary)
         {
-            _field.Summary = Option.Some(summary);
+            _field.Summary = Option.Some<string?>(summary);
             return this;
         }
 

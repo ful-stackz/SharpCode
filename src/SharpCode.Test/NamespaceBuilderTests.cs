@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -279,6 +280,31 @@ namespace GeneratedCode
                     .ToSourceCode(),
                 "Generating the source code for a protected internal class inside a namespace should throw an exception.");
 
+            // -- Structs
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithStruct(Code.CreateStruct("Test", AccessModifier.Private))
+                    .ToSourceCode(),
+                "Generating the source code for a private struct inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithStruct(Code.CreateStruct("Test", AccessModifier.PrivateInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a private internal struct inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithStruct(Code.CreateStruct("Test", AccessModifier.Protected))
+                    .ToSourceCode(),
+                "Generating the source code for a protected struct inside a namespace should throw an exception.");
+
+            Assert.Throws<SyntaxException>(
+                () => Code.CreateNamespace("Test")
+                    .WithStruct(Code.CreateStruct("Test", AccessModifier.ProtectedInternal))
+                    .ToSourceCode(),
+                "Generating the source code for a protected internal struct inside a namespace should throw an exception.");
+
             // -- Interfaces
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
@@ -366,6 +392,146 @@ namespace GeneratedGoodies
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingNamespace_WithStruct_Works()
+        {
+            var generatedCode = Code.CreateNamespace()
+                .WithName("Geometry")
+                .WithStruct(Code.CreateStruct()
+                    .WithAccessModifier(AccessModifier.Public)
+                    .WithName("Cube")
+                    .WithSummary("Represents a geometrical cube.")
+                    .WithProperty(Code.CreateProperty("int", "Side").WithSummary("Gets or sets the length of the cube side.")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+namespace Geometry
+{
+    /// <summary>
+    /// Represents a geometrical cube.
+    /// </summary>
+    public struct Cube
+    {
+        /// <summary>
+        /// Gets or sets the length of the cube side.
+        /// </summary>
+        public int Side
+        {
+            get;
+            set;
+        }
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void NamespaceBuilder_WithStructs_ApisYieldIdenticalResults()
+        {
+            var enumerableApi = Code.CreateNamespace("Test")
+                .WithStructs(new List<StructBuilder>
+                {
+                    Code.CreateStruct("Position"),
+                    Code.CreateStruct("Location"),
+                })
+                .ToSourceCode();
+
+            var paramsApi = Code.CreateNamespace("Test")
+                .WithStructs(
+                    Code.CreateStruct("Position"),
+                    Code.CreateStruct("Location"))
+                .ToSourceCode();
+
+            Assert.AreEqual(enumerableApi, paramsApi);
+        }
+
+        [Test]
+        public void NamespaceBuilder_WithClasses_ApisYieldIdenticalResults()
+        {
+            var enumerableApi = Code.CreateNamespace("Test")
+                .WithClasses(new List<ClassBuilder>
+                {
+                    Code.CreateClass()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("Tester"),
+                    Code.CreateClass()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("PublicTester"),
+                })
+                .ToSourceCode();
+
+            var paramsApi = Code.CreateNamespace("Test")
+                .WithClasses(
+                    Code.CreateClass()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("Tester"),
+                    Code.CreateClass()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("PublicTester"))
+                .ToSourceCode();
+
+            Assert.AreEqual(enumerableApi, paramsApi);
+        }
+
+        [Test]
+        public void NamespaceBuilder_WithInterfaces_ApisYieldIdenticalResults()
+        {
+            var enumerableApi = Code.CreateNamespace("Test")
+                .WithInterfaces(new List<InterfaceBuilder>
+                {
+                    Code.CreateInterface()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("ITester"),
+                    Code.CreateInterface()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("IPublicTester"),
+                })
+                .ToSourceCode();
+
+            var paramsApi = Code.CreateNamespace("Test")
+                .WithInterfaces(
+                    Code.CreateInterface()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("ITester"),
+                    Code.CreateInterface()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("IPublicTester"))
+                .ToSourceCode();
+
+            Assert.AreEqual(enumerableApi, paramsApi);
+        }
+
+        [Test]
+        public void NamespaceBuilder_WithEnums_ApisYieldIdenticalResults()
+        {
+            var enumerableApi = Code.CreateNamespace("Test")
+                .WithEnums(new List<EnumBuilder>
+                {
+                    Code.CreateEnum()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("UserStatus"),
+                    Code.CreateEnum()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("TestStatus"),
+                })
+                .ToSourceCode();
+
+            var paramsApi = Code.CreateNamespace("Test")
+                .WithEnums(
+                    Code.CreateEnum()
+                        .WithAccessModifier(AccessModifier.Internal)
+                        .WithName("UserStatus"),
+                    Code.CreateEnum()
+                        .WithAccessModifier(AccessModifier.Public)
+                        .WithName("TestStatus"))
+                .ToSourceCode();
+
+            Assert.AreEqual(enumerableApi, paramsApi);
         }
     }
 }

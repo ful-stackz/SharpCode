@@ -110,6 +110,26 @@ namespace SharpCode
             new ClassBuilder(accessModifier, name);
 
         /// <summary>
+        /// Creates a new <see cref="StructBuilder"/> instance for building structs.
+        /// </summary>
+        public static StructBuilder CreateStruct() =>
+            new StructBuilder();
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="StructBuilder"/> instance for building structs. Configures the
+        /// <see cref="StructBuilder"/> instance with the specified <paramref name="name"/> and
+        /// <paramref name="accessModifier"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the struct.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access modifier of the struct.
+        /// </param>
+        public static StructBuilder CreateStruct(string name, AccessModifier accessModifier = AccessModifier.Public) =>
+            new StructBuilder(name, accessModifier);
+
+        /// <summary>
         /// Creates a new <see cref="FieldBuilder"/> instance for building fields.
         /// </summary>
         public static FieldBuilder CreateField() =>

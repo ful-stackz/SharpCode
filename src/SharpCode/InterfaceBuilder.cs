@@ -85,7 +85,7 @@ namespace SharpCode
         /// </param>
         public InterfaceBuilder WithSummary(string summary)
         {
-            _interface.Summary = Option.Some(summary);
+            _interface.Summary = Option.Some<string?>(summary);
             return this;
         }
 

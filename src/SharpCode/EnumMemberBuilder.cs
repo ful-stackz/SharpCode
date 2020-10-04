@@ -53,7 +53,7 @@ namespace SharpCode
         /// </param>
         public EnumMemberBuilder WithSummary(string summary)
         {
-            _enumMember.Summary = Option.Some(summary);
+            _enumMember.Summary = Option.Some<string?>(summary);
             return this;
         }
 
