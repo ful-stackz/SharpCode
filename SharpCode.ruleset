@@ -1,0 +1,18 @@
+<RuleSet Name="Analyzer rules for SharpCode" Description="These rules configure the FxCop and StyleCop analyzers." ToolsVersion="10.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1101" Action="None" /> <!-- Prefix local calls with this -->
+    <Rule Id="SA1200" Action="None" /> <!-- Using directives must be placed inside the namespace -->
+    <Rule Id="SA1305" Action="Warning" /> <!-- Field names must not use hungarian notation -->
+    <Rule Id="SA1309" Action="None" /> <!-- Field names must not begin with underscore -->
+    <Rule Id="SA1402" Action="None" /> <!-- File may only contain a single type -->
+    <Rule Id="SA1600" Action="None" /> <!-- All elements must be documented -->
+    <Rule Id="SA1602" Action="None" /> <!-- Enumeration items must be documented -->
+    <Rule Id="SA1604" Action="Warning" /> <!-- Elements must have a <summary> documentation -->
+    <Rule Id="SA1609" Action="None" /> <!-- Properties must have <value> documentation -->
+    <Rule Id="SA1611" Action="None" /> <!-- Method parameters must be documented -->
+    <Rule Id="SA1118" Action="None" /> <!-- The parameter spans multiple lines -->
+    <Rule Id="SA1615" Action="None" /> <!-- Return values should be documented -->
+    <Rule Id="SA1633" Action="None" /> <!-- Files must have XML header documentation -->
+    <Rule Id="SA1649" Action="None" /> <!-- File name should match first type name -->
+  </Rules>
+</RuleSet>

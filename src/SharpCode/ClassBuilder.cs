@@ -15,7 +15,9 @@ namespace SharpCode
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
         private readonly List<ConstructorBuilder> _constructors = new List<ConstructorBuilder>();
 
-        internal ClassBuilder() { }
+        internal ClassBuilder()
+        {
+        }
 
         internal ClassBuilder(AccessModifier accessModifier, string name)
         {

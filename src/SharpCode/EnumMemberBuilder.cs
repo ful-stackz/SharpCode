@@ -10,7 +10,9 @@ namespace SharpCode
     {
         private readonly EnumerationMember _enumMember = new EnumerationMember();
 
-        internal EnumMemberBuilder() { }
+        internal EnumMemberBuilder()
+        {
+        }
 
         internal EnumMemberBuilder(string name, Option<int> value)
         {

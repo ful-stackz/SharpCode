@@ -14,7 +14,7 @@ namespace SharpCode
         {
             AccessModifier.None,
             AccessModifier.Internal,
-            AccessModifier.Public
+            AccessModifier.Public,
         };
 
         private readonly Namespace _namespace = new Namespace();
@@ -22,7 +22,9 @@ namespace SharpCode
         private readonly List<InterfaceBuilder> _interfaces = new List<InterfaceBuilder>();
         private readonly List<EnumBuilder> _enums = new List<EnumBuilder>();
 
-        internal NamespaceBuilder() { }
+        internal NamespaceBuilder()
+        {
+        }
 
         internal NamespaceBuilder(string name)
         {

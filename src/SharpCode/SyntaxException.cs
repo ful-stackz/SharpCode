@@ -11,27 +11,32 @@ namespace SharpCode
         /// <summary>
         /// Initializes a new instance of the <see cref="SyntaxException"/> class.
         /// </summary>
-        public SyntaxException() { }
+        public SyntaxException()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyntaxException"/> class.
         /// </summary>
         public SyntaxException(string message)
             : base(message)
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyntaxException"/> class.
         /// </summary>
         public SyntaxException(string message, Exception innerException)
             : base(message, innerException)
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyntaxException"/> class.
         /// </summary>
         protected SyntaxException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+        }
     }
 }

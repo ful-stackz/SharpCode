@@ -15,7 +15,9 @@ namespace SharpCode
         private readonly Enumeration _enumeration = new Enumeration();
         private readonly List<EnumMemberBuilder> _members = new List<EnumMemberBuilder>();
 
-        internal EnumBuilder() { }
+        internal EnumBuilder()
+        {
+        }
 
         internal EnumBuilder(string name, AccessModifier accessModifier)
         {
@@ -94,7 +96,6 @@ namespace SharpCode
         /// <summary>
         /// Returns the source code of the built enum.
         /// </summary>
-        /// <returns></returns>
         public override string ToString() =>
             ToSourceCode();
 
@@ -114,7 +115,6 @@ namespace SharpCode
                 .FirstOrNone()
                 .MatchSome(duplicateMemberName => throw new SyntaxException(
                     $"The enum '{_enumeration.Name}' already contains a definition for '{duplicateMemberName}'."));
-
 
             if (_enumeration.IsFlag && _enumeration.Members.All(x => !x.Value.HasValue))
             {

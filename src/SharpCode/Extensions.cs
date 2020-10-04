@@ -60,8 +60,7 @@ namespace SharpCode
                 .Replace("{parameters}", constructor.Parameters.Select(param => param.ToSourceCode()).Join(", "))
                 .Replace("{base-call}", constructor.BaseCallParameters.Match(
                     some: (parameters) => $": base({parameters.Join(", ")})",
-                    none: () => string.Empty
-                ))
+                    none: () => string.Empty))
                 .Replace(
                     "{assignments}",
                     constructor.Parameters
