@@ -37,7 +37,7 @@ namespace SharpCode
         public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
     }
 
-    internal class Parameter 
+    internal class Parameter
     {
         public string? Type { get; set; }
         public string? Name { get; set; }
