@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for enums generation
 - Support for various enum members - with implicit and/or explicit values, flags
 - Code coverage, via CodeCov
+- Support for generating XML summary documentation ([Zaid Ajaj](https://github.com/Zaid-Ajaj))
+- [StyleCop.Analyzer](https://github.com/DotNetAnalyzers/StyleCopAnalyzers) and [SonarAnalyzer.CSharp](https://github.com/SonarSource/sonar-dotnet)
 
 ## [0.1.0] - 2020-09-26
 
@@ -25,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generating interface source code
 - Bulk-friendly APIs
 - Errors documentation
-- Generate XML documentation
+- XML documentation for exposed API
 
 ### Changed
 
