@@ -92,7 +92,7 @@ namespace SharpCode
         /// </param>
         public EnumBuilder WithSummary(string summary)
         {
-            _enumeration.Summary = Option.Some(summary);
+            _enumeration.Summary = Option.Some<string?>(summary);
             return this;
         }
 

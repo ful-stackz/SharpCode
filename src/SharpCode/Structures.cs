@@ -29,7 +29,7 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
     }
 
     internal class Property
@@ -42,7 +42,7 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
 
         public Option<string> DefaultValue { get; set; } = Option.None<string>();
 
@@ -68,9 +68,9 @@ namespace SharpCode
 
         public string? ClassName { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
 
-        public List<Parameter> Parameters { get; set; } = new List<Parameter>();
+        public List<Parameter> Parameters { get; } = new List<Parameter>();
 
         public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
     }
@@ -83,7 +83,7 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
 
         public Option<string> InheritedClass { get; set; } = Option.None<string>();
 
@@ -96,13 +96,30 @@ namespace SharpCode
         public List<Constructor> Constructors { get; } = new List<Constructor>();
     }
 
+    internal class Struct
+    {
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+
+        public string? Name { get; set; }
+
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
+
+        public List<string?> ImplementedInterfaces { get; } = new List<string?>();
+
+        public List<Constructor> Constructors { get; } = new List<Constructor>();
+
+        public List<Field> Fields { get; } = new List<Field>();
+
+        public List<Property> Properties { get; } = new List<Property>();
+    }
+
     internal class Interface
     {
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
 
         public string? Name { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
 
         public List<string> ImplementedInterfaces { get; } = new List<string>();
 
@@ -115,7 +132,7 @@ namespace SharpCode
 
         public Option<int> Value { get; set; } = Option.None<int>();
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
     }
 
     internal class Enumeration
@@ -124,7 +141,7 @@ namespace SharpCode
 
         public string? Name { get; set; }
 
-        public Option<string> Summary { get; set; } = Option.None<string>();
+        public Option<string?> Summary { get; set; } = Option.None<string?>();
 
         public bool IsFlag { get; set; }
 
@@ -138,6 +155,8 @@ namespace SharpCode
         public List<string> Usings { get; } = new List<string>();
 
         public List<Class> Classes { get; } = new List<Class>();
+
+        public List<Struct> Structs { get; } = new List<Struct>();
 
         public List<Interface> Interfaces { get; } = new List<Interface>();
 

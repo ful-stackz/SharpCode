@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code coverage, via CodeCov
 - Support for generating XML summary documentation ([Zaid Ajaj](https://github.com/Zaid-Ajaj))
 - [StyleCop.Analyzer](https://github.com/DotNetAnalyzers/StyleCopAnalyzers) and [SonarAnalyzer.CSharp](https://github.com/SonarSource/sonar-dotnet)
+- Support for structs generation
 
 ## [0.1.0] - 2020-09-26
 

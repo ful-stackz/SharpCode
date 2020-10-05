@@ -157,7 +157,7 @@ namespace SharpCode
         /// </param>
         public ConstructorBuilder WithSummary(string summary)
         {
-            _constructor.Summary = Option.Some(summary);
+            _constructor.Summary = Option.Some<string?>(summary);
             return this;
         }
 
@@ -167,7 +167,7 @@ namespace SharpCode
             return this;
         }
 
-        internal ConstructorBuilder WithClassName(string name)
+        internal ConstructorBuilder WithName(string name)
         {
             _constructor.ClassName = name;
             return this;

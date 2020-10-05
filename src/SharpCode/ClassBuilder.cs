@@ -69,7 +69,7 @@ namespace SharpCode
         /// </param>
         public ClassBuilder WithSummary(string summary)
         {
-            _class.Summary = Option.Some(summary);
+            _class.Summary = Option.Some<string?>(summary);
             return this;
         }
 
@@ -174,7 +174,7 @@ namespace SharpCode
             _class.Properties.AddRange(_properties.Select(builder => builder.Build()));
             _class.Constructors.AddRange(
                 _constructors.Select(builder => builder
-                    .WithClassName(_class.Name!)
+                    .WithName(_class.Name!)
                     .MakeStatic(_class.IsStatic)
                     .Build()));
 
