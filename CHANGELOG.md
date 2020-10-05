@@ -7,15 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-10-05
+
 ### Added
 
 - Automated GitHub releases from the release action
 - Support for enums generation
 - Support for various enum members - with implicit and/or explicit values, flags
-- Code coverage, via CodeCov
-- Support for generating XML summary documentation ([Zaid Ajaj](https://github.com/Zaid-Ajaj))
-- [StyleCop.Analyzer](https://github.com/DotNetAnalyzers/StyleCopAnalyzers) and [SonarAnalyzer.CSharp](https://github.com/SonarSource/sonar-dotnet)
 - Support for structs generation
+- Support for generating XML summary documentation ([Zaid Ajaj](https://github.com/Zaid-Ajaj))
+   - for interfaces, classes, structs, enums, enum members, fields, properties and constructors
+- Code coverage, via CodeCov
+- [StyleCop.Analyzer](https://github.com/DotNetAnalyzers/StyleCopAnalyzers) and [SonarAnalyzer.CSharp](https://github.com/SonarSource/sonar-dotnet)
 
 ## [0.1.0] - 2020-09-26
 

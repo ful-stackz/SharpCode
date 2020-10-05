@@ -9,7 +9,7 @@ Small C# code generator. Easily generate code programmatically!
 
 - .NET CLI `dotnet add package SharpCode`
 - Package Manager `Install-Package SharpCode`
-- Package Reference `<PackageReference Include="SharpCode" Version="0.1.0" />`
+- Package Reference `<PackageReference Include="SharpCode" Version="0.2.0" />`
 
 ## Usage
 
@@ -129,6 +129,179 @@ namespace Data
 
 The [samples](https://github.com/ful-stackz/SharpCode/tree/main/samples) folder contains sample projects which make use of `SharpCode`. The projects are fully functional
 and can be played around with. Check the `samples/README.md` for more information.
+
+## Features
+
+With `SharpCode` you can programmatically generate source code for a lot of C# structures. When generating the source
+code of any structure `SharpCode` performs basic validation to ensure a level of correctness of the produced source
+code.
+
+<details>
+<summary>Generating namespace source code</summary>
+
+```csharp
+// ✔ Define the name of the namespace
+namespace Data
+{
+    // ✔ Interface members with different access modifiers
+    public interface IHasData {}
+
+    // ✔ Class members with different access modifiers
+    public class Data {}
+
+    // ✔ Struct members with different access modifiers
+    public struct DataPoint {}
+
+    // ✔ Enum members with different access modifiers
+    public enum DataType {}
+}
+```
+</details>
+
+<details>
+<summary>Generating interface source code</summary>
+
+```csharp
+// ✔ Define XML summary docs
+// ✔ Define the name of the interface
+// ✔ Define a list of implemented interfaces
+/// <summary>
+/// Docs!
+/// </summary>
+public interface IHasData : IImplementedInterface
+{
+    // ✔ Define property members
+    int Count { get; set; }
+}
+```
+</details>
+
+<details>
+<summary>Generating class source code</summary>
+
+```csharp
+// ✔ Define XML summary docs
+// ✔ Define the name of the class
+// ✔ Define an inherited class
+// ✔ Define a list of implemented interfaces
+/// <summary>
+/// Docs!
+/// </summary>
+public class Data : DataBase, IHasData
+{
+    // ✔ Define field members
+    private int _count;
+
+    // ✔ Define constructors
+    // ✔ Define constructor XML summary docs
+    // ✔ Define constructor parameters
+    // ✔ Define accepting fields for constructor parameters
+    // ✔ Define base calls with parameters
+    /// <summary>
+    /// Docs!
+    /// </summary>
+    public Data(int count) : DataBase(count)
+    {
+        _count = count;
+    }
+
+    // ✔ Define property members
+    // ✔ Define property XML summary docs
+    // ✔ Define custom getter/setter for properties
+    /// <summary>
+    /// Docs!
+    /// </summary>
+    public int Count
+    {
+        get => _count;
+        set => _count = value;
+    }
+
+    // ✔ Define auto-implemented properties
+    public string Name { get; set; }
+}
+```
+</details>
+
+<details>
+<summary>Generating struct source code</summary>
+
+```csharp
+// ✔ Define XML summary docs
+// ✔ Define the name of the struct
+// ✔ Define a list of implemented interfaces
+/// <summary>
+/// Docs!
+/// </summary>
+public struct DataPoint : IHasData
+{
+    // ✔ Define field members
+    private int _count;
+
+    // ✔ Define constructors
+    // ✔ Define constructor XML summary docs
+    // ✔ Define constructor parameters
+    // ✔ Define accepting fields for constructor parameters
+    /// <summary>
+    /// Docs!
+    /// </summary>
+    public Data(int count)
+    {
+        _count = count;
+    }
+
+    // ✔ Define property members
+    // ✔ Define property XML summary docs
+    // ✔ Define custom getter/setter for properties
+    /// <summary>
+    /// Docs!
+    /// </summary>
+    public int Count
+    {
+        get => _count;
+        set => _count = value;
+    }
+}
+```
+</details>
+
+<details>
+<summary>Generating enum source code</summary>
+
+```csharp
+// ✔ Define XML summary docs
+// ✔ Define the name of the enum
+/// <summary>
+/// Docs!
+/// </summary>
+public enum DataType
+{
+    // ✔ Define enum members
+    // ✔ Define XML summary docs for enum members
+    // ✔ Define explicit values for enum members
+    /// <summary>
+    /// Docs!
+    /// </summary>
+    Invalid = 0,
+    Incomplete,
+    Complete,
+}
+```
+
+```csharp
+// ✔ Define enum as flags
+// ✔ Auto generated flags-compatible values for enum members
+[System.Flags]
+public enum ExampleFlags
+{
+    None = 0,
+    A = 1,
+    B = 2,
+    C = 4,
+    D = 8,
+}
+```
+</details>
 
 ## Development
 
