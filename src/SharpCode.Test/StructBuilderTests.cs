@@ -64,7 +64,7 @@ namespace SharpCode.Test
         public void CreatingStruct_Works()
         {
             var generatedCode = Code.CreateStruct()
-                .WithSummary("Represents an X/Y position.")
+                .WithSummary("The {fields} represent an X/Y position.")
                 .WithAccessModifier(AccessModifier.ProtectedInternal)
                 .WithName("Position")
                 .WithImplementedInterface("IComparable")
@@ -82,7 +82,7 @@ namespace SharpCode.Test
 
             var expectedCode = @"
 /// <summary>
-/// Represents an X/Y position.
+/// The {fields} represent an X/Y position.
 /// </summary>
 protected internal struct Position : IComparable
 {
