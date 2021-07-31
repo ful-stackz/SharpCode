@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -266,11 +268,11 @@ public static class Config
                 () => Code.CreateClass().ToSourceCode(),
                 "Generating the source code for a class without setting the name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateClass(name: null).ToSourceCode(),
                 "Generating the source for a class with null as a name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateClass().WithName(null).ToSourceCode(),
                 "Generating the source for a class with null as a name should throw an exception.");
 
@@ -301,6 +303,44 @@ public static class Config
                     .WithConstructor(Code.CreateConstructor())
                     .ToSourceCode(),
                 "Generating the source code for a static class with multiple constructors should throw an exception.");
+        }
+
+        [Test]
+        public void ClassBuilder_WithProperties_ApisYieldIdenticalResults()
+        {
+            var enumerableApi = Code.CreateClass("Test")
+                .WithProperties(new List<PropertyBuilder>
+                {
+                    Code.CreateProperty().WithType(typeof(int)).WithName("Count"),
+                    Code.CreateProperty().WithType(typeof(string)).WithName("Name"),
+                })
+                .ToSourceCode();
+
+            var paramsApi = Code.CreateClass("Test")
+                .WithProperties(
+                    Code.CreateProperty().WithType(typeof(int)).WithName("Count"),
+                    Code.CreateProperty().WithType(typeof(string)).WithName("Name"))
+                .ToSourceCode();
+
+            Assert.AreEqual(enumerableApi, paramsApi);
+        }
+
+        [Test]
+        public void ClassBuilder_ToSourceCode_ToString_YieldIdentical()
+        {
+            var toSourceCode = Code.CreateClass("Test")
+                .WithField(Code.CreateField("int", "_count"))
+                .WithConstructor(Code.CreateConstructor())
+                .WithProperty(Code.CreateProperty("string", "Name"))
+                .ToSourceCode();
+
+            var toString = Code.CreateClass("Test")
+                .WithField(Code.CreateField("int", "_count"))
+                .WithConstructor(Code.CreateConstructor())
+                .WithProperty(Code.CreateProperty("string", "Name"))
+                .ToString();
+
+            Assert.AreEqual(toSourceCode, toString);
         }
     }
 }

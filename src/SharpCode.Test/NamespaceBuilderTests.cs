@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -230,10 +231,10 @@ namespace GeneratedCode
                 () => Code.CreateNamespace().ToSourceCode(),
                 "Generating the source code for a namespace without a name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateNamespace(name: null).ToSourceCode(),
                 "Generating the source code for a namespace with null as a name should throw an exception.");
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateNamespace().WithName(null).ToSourceCode(),
                 "Generating the source code for a namespace with null as a name should throw an exception.");
 
