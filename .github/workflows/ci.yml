@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, task/code-coverage ]
+    branches: [ main, task/introspection ]
   pull_request:
     branches: [ main ]
     types: [ opened, synchronize, reopened ]
