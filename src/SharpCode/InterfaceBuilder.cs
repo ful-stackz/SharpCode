@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Optional;
@@ -10,7 +11,6 @@ namespace SharpCode
     /// </summary>
     public class InterfaceBuilder
     {
-        private readonly Interface _interface = new Interface();
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
 
         internal InterfaceBuilder()
@@ -19,16 +19,17 @@ namespace SharpCode
 
         internal InterfaceBuilder(string name, AccessModifier accessModifier)
         {
-            _interface.Name = name;
-            _interface.AccessModifier = accessModifier;
+            Interface = new Interface(accessModifier, Option.Some(name));
         }
+
+        internal Interface Interface { get; private set; } = new Interface(AccessModifier.Public);
 
         /// <summary>
         /// Sets the access modifier of the interface being built.
         /// </summary>
         public InterfaceBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            _interface.AccessModifier = accessModifier;
+            Interface = Interface.With(accessModifier: Option.Some(accessModifier));
             return this;
         }
 
@@ -37,7 +38,7 @@ namespace SharpCode
         /// </summary>
         public InterfaceBuilder WithName(string name)
         {
-            _interface.Name = name;
+            Interface = Interface.With(name: Option.Some(name));
             return this;
         }
 
@@ -69,11 +70,70 @@ namespace SharpCode
         }
 
         /// <summary>
-        /// Adds an interface to the list of interfaces that the interface being built implements.
+        /// Adds an interface to the list of interfaces that the interface implements.
         /// </summary>
+        /// <param name="name">
+        /// The name of the interface that the interface implements.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public InterfaceBuilder WithImplementedInterface(string name)
         {
-            _interface.ImplementedInterfaces.Add(name);
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Interface.ImplementedInterfaces.Add(name);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of interfaces to the list of interfaces that the interface implements.
+        /// </summary>
+        /// <param name="names">
+        /// A collection with the names of interfaces that the interface implements.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
+        public InterfaceBuilder WithImplementedInterfaces(IEnumerable<string> names)
+        {
+            if (names is null)
+            {
+                throw new ArgumentNullException(nameof(names));
+            }
+
+            if (names.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the names is null.");
+            }
+
+            Interface.ImplementedInterfaces.AddRange(names);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of interfaces to the list of interfaces that the interface implements.
+        /// </summary>
+        /// <param name="names">
+        /// A collection with the names of interfaces that the interface implements.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
+        public InterfaceBuilder WithImplementedInterfaces(params string[] names)
+        {
+            if (names.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the names is null.");
+            }
+
+            Interface.ImplementedInterfaces.AddRange(names);
             return this;
         }
 
@@ -83,10 +143,49 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public InterfaceBuilder WithSummary(string summary)
         {
-            _interface.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            Interface = Interface.With(summary: Option.Some(summary));
             return this;
+        }
+
+        /// <summary>
+        /// Checks whether the described member exists in the interface structure.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the member.
+        /// </param>
+        /// <param name="memberType">
+        /// The type of the member. By default all members will be taken into account.
+        /// </param>
+        /// <param name="comparison">
+        /// The comparision type to be performed when comparing the described name against the names of the actual
+        /// members. By default casing is ignored.
+        /// </param>
+        public bool HasMember(
+            string name,
+            MemberType? memberType = default,
+            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+        {
+            if (memberType == MemberType.Property)
+            {
+                return _properties.Any(x => x.Property.Name.Exists(n => n.Equals(name, comparison)));
+            }
+
+            if (!memberType.HasValue)
+            {
+                return HasMember(name, MemberType.Property, comparison);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -95,45 +194,57 @@ namespace SharpCode
         /// <param name="formatted">
         /// Indicates whether to format the source code.
         /// </param>
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
         public string ToSourceCode(bool formatted = true) =>
             Build().ToSourceCode(formatted);
 
         /// <summary>
         /// Returns the source code of the built interface.
         /// </summary>
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
         public override string ToString() =>
             ToSourceCode();
 
         internal Interface Build()
         {
-            if (string.IsNullOrWhiteSpace(_interface.Name))
+            if (string.IsNullOrWhiteSpace(Interface.Name.ValueOr(string.Empty)))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the interface is required when building an interface.");
             }
 
-            _interface.Properties.AddRange(
+            Interface.Properties.AddRange(
                 _properties.Select(builder => builder
                     .WithAccessModifier(AccessModifier.None)
                     .Build()));
-            if (_interface.Properties.Any(prop => prop.DefaultValue.HasValue))
+            if (Interface.Properties.Any(prop => prop.DefaultValue.HasValue))
             {
                 throw new SyntaxException("Interface properties cannot have a default value. (CS8053)");
             }
-            else if (_interface.Properties.Any(prop => !prop.Getter.HasValue && !prop.Setter.HasValue))
+            else if (Interface.Properties.Any(prop => !prop.Getter.HasValue && !prop.Setter.HasValue))
             {
                 throw new SyntaxException("Interface properties should have at least a getter or a setter.");
             }
-            else if (_interface.Properties.Any(prop => prop.Getter.Exists(expr => !string.IsNullOrWhiteSpace(expr))))
+            else if (Interface.Properties.Any(prop => prop.Getter.Exists(expr => !expr.Equals(Property.AutoGetterSetter))))
             {
                 throw new SyntaxException("Interface properties can only define an auto implemented getter.");
             }
-            else if (_interface.Properties.Any(prop => prop.Setter.Exists(expr => !string.IsNullOrWhiteSpace(expr))))
+            else if (Interface.Properties.Any(prop => prop.Setter.Exists(expr => !expr.Equals(Property.AutoGetterSetter))))
             {
                 throw new SyntaxException("Interface properties can only define an auto implemented setter.");
             }
 
-            return _interface;
+            return Interface;
         }
     }
 }

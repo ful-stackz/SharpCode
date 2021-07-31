@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Optional;
@@ -11,7 +12,6 @@ namespace SharpCode
     /// </summary>
     public class StructBuilder
     {
-        private readonly Struct _struct = new Struct();
         private readonly List<ConstructorBuilder> _constructors = new List<ConstructorBuilder>();
         private readonly List<FieldBuilder> _fields = new List<FieldBuilder>();
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
@@ -22,9 +22,10 @@ namespace SharpCode
 
         internal StructBuilder(string name, AccessModifier accessModifier)
         {
-            _struct.Name = name;
-            _struct.AccessModifier = accessModifier;
+            Struct = new Struct(accessModifier, name: Option.Some(name));
         }
+
+        internal Struct Struct { get; private set; } = new Struct(AccessModifier.Public);
 
         /// <summary>
         /// Sets the access modifier of the struct.
@@ -34,7 +35,7 @@ namespace SharpCode
         /// </param>
         public StructBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            _struct.AccessModifier = accessModifier;
+            Struct = Struct.With(accessModifier: Option.Some(accessModifier));
             return this;
         }
 
@@ -44,9 +45,17 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the struct.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithName(string name)
         {
-            _struct.Name = name;
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Struct = Struct.With(name: Option.Some(name));
             return this;
         }
 
@@ -56,9 +65,17 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithSummary(string summary)
         {
-            _struct.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            Struct = Struct.With(summary: Option.Some(summary));
             return this;
         }
 
@@ -68,8 +85,16 @@ namespace SharpCode
         /// <param name="builder">
         /// The configuration of the constructor.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builder"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithConstructor(ConstructorBuilder builder)
         {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             _constructors.Add(builder);
             return this;
         }
@@ -80,8 +105,16 @@ namespace SharpCode
         /// <param name="builder">
         /// The configuration of the field.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builder"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithField(FieldBuilder builder)
         {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             _fields.Add(builder);
             return this;
         }
@@ -92,8 +125,24 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of fields.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithFields(IEnumerable<FieldBuilder> builders)
         {
+            if (builders is null)
+            {
+                throw new ArgumentNullException(nameof(builders));
+            }
+
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the builders is null.");
+            }
+
             _fields.AddRange(builders);
             return this;
         }
@@ -104,8 +153,16 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of fields.
         /// </param>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithFields(params FieldBuilder[] builders)
         {
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the builders is null.");
+            }
+
             _fields.AddRange(builders);
             return this;
         }
@@ -116,8 +173,16 @@ namespace SharpCode
         /// <param name="builder">
         /// The configuration of the property.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builder"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithProperty(PropertyBuilder builder)
         {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             _properties.Add(builder);
             return this;
         }
@@ -128,8 +193,24 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of properties.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithProperties(IEnumerable<PropertyBuilder> builders)
         {
+            if (builders is null)
+            {
+                throw new ArgumentNullException(nameof(builders));
+            }
+
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the builders is null.");
+            }
+
             _properties.AddRange(builders);
             return this;
         }
@@ -140,8 +221,16 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of properties.
         /// </param>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithProperties(params PropertyBuilder[] builders)
         {
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the builders is null.");
+            }
+
             _properties.AddRange(builders);
             return this;
         }
@@ -152,9 +241,17 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the interface that the struct implements.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithImplementedInterface(string name)
         {
-            _struct.ImplementedInterfaces.Add(name);
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Struct.ImplementedInterfaces.Add(name);
             return this;
         }
 
@@ -164,9 +261,25 @@ namespace SharpCode
         /// <param name="names">
         /// A collection with the names of interfaces that the struct implements.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithImplementedInterfaces(IEnumerable<string> names)
         {
-            _struct.ImplementedInterfaces.AddRange(names);
+            if (names is null)
+            {
+                throw new ArgumentNullException(nameof(names));
+            }
+
+            if (names.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the names is null.");
+            }
+
+            Struct.ImplementedInterfaces.AddRange(names);
             return this;
         }
 
@@ -176,10 +289,63 @@ namespace SharpCode
         /// <param name="names">
         /// A collection with the names of interfaces that the struct implements.
         /// </param>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
         public StructBuilder WithImplementedInterfaces(params string[] names)
         {
-            _struct.ImplementedInterfaces.AddRange(names);
+            if (names.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the names is null.");
+            }
+
+            Struct.ImplementedInterfaces.AddRange(names);
             return this;
+        }
+
+        /// <summary>
+        /// Checks whether the described member exists in the struct structure.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the member.
+        /// </param>
+        /// <param name="memberType">
+        /// The type of the member. By default all members will be taken into account.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access modifier of the member. By default all access modifiers will be taken into account.
+        /// </param>
+        /// <param name="comparison">
+        /// The comparision type to be performed when comparing the described name against the names of the actual
+        /// members. By default casing is ignored.
+        /// </param>
+        public bool HasMember(
+            string name,
+            MemberType? memberType = default,
+            AccessModifier? accessModifier = default,
+            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+        {
+            if (memberType == MemberType.Field)
+            {
+                return _fields
+                    .Where(x => !accessModifier.HasValue || x.Field.AccessModifier == accessModifier)
+                    .Any(x => x.Field.Name.Exists(n => n.Equals(name, comparison)));
+            }
+
+            if (memberType == MemberType.Property)
+            {
+                return _properties
+                    .Where(x => !accessModifier.HasValue || x.Property.AccessModifier == accessModifier)
+                    .Any(x => x.Property.Name.Exists(n => n.Equals(name, comparison)));
+            }
+
+            if (!memberType.HasValue)
+            {
+                return HasMember(name, MemberType.Field, accessModifier, comparison) ||
+                    HasMember(name, MemberType.Property, accessModifier, comparison);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -188,45 +354,58 @@ namespace SharpCode
         /// <param name="formatted">
         /// Indicates whether to format the source code.
         /// </param>
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
         public string ToSourceCode(bool formatted = true) =>
             Build().ToSourceCode(formatted);
 
         /// <summary>
         /// Returns the source code of the built struct.
         /// </summary>
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
         public override string ToString() =>
             ToSourceCode();
 
         internal Struct Build()
         {
-            if (string.IsNullOrWhiteSpace(_struct.Name))
+            var structName = Struct.Name.ValueOr(string.Empty);
+            if (string.IsNullOrWhiteSpace(structName))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the struct is required when building a struct.");
             }
 
-            _struct.ImplementedInterfaces
+            Struct.ImplementedInterfaces
                 .FirstOrNone(x => string.IsNullOrWhiteSpace(x))
                 .MatchSome(_ => throw new MissingBuilderSettingException(
                     "Providing the name of the interface is required when adding an implemented interface to a struct."));
 
-            _struct.Fields.AddRange(_fields.Select(field => field.Build()));
-            _struct.Properties.AddRange(_properties.Select(prop => prop.Build()));
-            _struct.Properties
+            Struct.Fields.AddRange(_fields.Select(field => field.Build()));
+            Struct.Properties.AddRange(_properties.Select(prop => prop.Build()));
+            Struct.Properties
                 .FirstOrNone(x => x.DefaultValue.HasValue)
                 .MatchSome(prop => throw new SyntaxException(
                     "Default property values are not allowed in structs. (CS0573)"));
 
-            _struct.Constructors.AddRange(
+            Struct.Constructors.AddRange(
                 _constructors.Select(ctor => ctor
-                    .WithName(_struct.Name!)
+                    .WithName(structName)
                     .Build()));
-            _struct.Constructors
+            Struct.Constructors
                 .FirstOrNone(x => !x.Parameters.Any())
                 .MatchSome(ctor => throw new SyntaxException(
                     "Explicit parameterless contructors are not allowed in structs. (CS0568)"));
 
-            return _struct;
+            return Struct;
         }
   }
 }
