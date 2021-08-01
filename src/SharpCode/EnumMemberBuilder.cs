@@ -1,4 +1,6 @@
+using System;
 using Optional;
+using Optional.Unsafe;
 
 namespace SharpCode
 {
@@ -8,17 +10,19 @@ namespace SharpCode
     /// </summary>
     public class EnumMemberBuilder
     {
-        private readonly EnumerationMember _enumMember = new EnumerationMember();
-
         internal EnumMemberBuilder()
         {
         }
 
         internal EnumMemberBuilder(string name, Option<int> value)
         {
-            _enumMember.Name = name;
-            _enumMember.Value = value;
+            EnumerationMember = new EnumerationMember(
+                name: Option.Some(name),
+                value: value);
         }
+
+        internal EnumerationMember EnumerationMember { get; private set; } = new EnumerationMember(
+            name: Option.None<string>());
 
         /// <summary>
         /// Sets the name of the enum member.
@@ -26,9 +30,17 @@ namespace SharpCode
         /// <param name="name">
         /// The name of the member. Used as-is.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public EnumMemberBuilder WithName(string name)
         {
-            _enumMember.Name = name;
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            EnumerationMember = EnumerationMember.With(name: Option.Some(name));
             return this;
         }
 
@@ -36,12 +48,12 @@ namespace SharpCode
         /// Specifies whether the enum member has an explicit value, and the value itself.
         /// </summary>
         /// <param name="value">
-        /// Use <c>null</c> to specify that the enum member should not have an explicit value. Otherwise provide the
-        /// value of the enum member.
+        /// Use <c>null</c> to specify that the enum member should not have an explicit value (default).
+        /// Otherwise provide the value of the enum member.
         /// </param>
-        public EnumMemberBuilder WithValue(int? value)
+        public EnumMemberBuilder WithValue(int? value = null)
         {
-            _enumMember.Value = value.ToOption();
+            EnumerationMember = EnumerationMember.With(value: value.ToOption());
             return this;
         }
 
@@ -51,21 +63,29 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public EnumMemberBuilder WithSummary(string summary)
         {
-            _enumMember.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            EnumerationMember = EnumerationMember.With(summary: Option.Some(summary));
             return this;
         }
 
         internal EnumerationMember Build()
         {
-            if (string.IsNullOrWhiteSpace(_enumMember.Name))
+            if (string.IsNullOrWhiteSpace(EnumerationMember.Name.ValueOrDefault()))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the enum member is required when building an enum.");
             }
 
-            return _enumMember;
+            return EnumerationMember;
         }
     }
 }

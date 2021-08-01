@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Introspection API via the new .HasMember() method, available on applicable structure builders
+- More null arguments sanitizing in public methods and consecutively more `ArgumentNullException` and `ArgumentException`, which are documented in the respective methods
+
+### Changed
+
+- Refactored the internal structures from `class` to `readonly struct`
+- Made better use of optionals and replaced some nullables
+
 ## [0.2.0] - 2020-10-05
 
 ### Added

@@ -11,19 +11,23 @@ namespace SharpCode
     /// </summary>
     public class ConstructorBuilder
     {
-        private readonly Constructor _constructor = new Constructor();
+        internal ConstructorBuilder()
+        {
+        }
 
         internal ConstructorBuilder(AccessModifier accessModifier)
         {
-            _constructor.AccessModifier = accessModifier;
+            Constructor = new Constructor(accessModifier);
         }
+
+        internal Constructor Constructor { get; private set; } = new Constructor(AccessModifier.Public);
 
         /// <summary>
         /// Sets the access modifier of the constructor being built.
         /// </summary>
         public ConstructorBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            _constructor.AccessModifier = accessModifier;
+            Constructor = Constructor.With(accessModifier: Option.Some(accessModifier));
             return this;
         }
 
@@ -61,14 +65,27 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> or <paramref name="name"/> are <c>null</c>.
+        /// </exception>
         public ConstructorBuilder WithParameter(string type, string name, string? receivingMember = null)
         {
-            _constructor.Parameters.Add(new Parameter
+            if (type is null)
             {
-                Name = name,
-                ReceivingMember = receivingMember,
-                Type = type,
-            });
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Constructor.Parameters.Add(new Parameter(
+                type: type,
+                name: name,
+                receivingMember: string.IsNullOrEmpty(receivingMember)
+                    ? Option.None<string>()
+                    : Option.Some(receivingMember!)));
             return this;
         }
 
@@ -106,14 +123,27 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> or <paramref name="name"/> are <c>null</c>.
+        /// </exception>
         public ConstructorBuilder WithParameter(Type type, string name, string? receivingMember = null)
         {
-            _constructor.Parameters.Add(new Parameter
+            if (type is null)
             {
-                Name = name,
-                ReceivingMember = receivingMember,
-                Type = type.Name,
-            });
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Constructor.Parameters.Add(new Parameter(
+                type: type.Name,
+                name: name,
+                receivingMember: string.IsNullOrEmpty(receivingMember)
+                    ? Option.None<string>()
+                    : Option.Some(receivingMember!)));
             return this;
         }
 
@@ -143,9 +173,17 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
+        /// <exception cref="ArgumentException">
+        /// One of the <paramref name="passedParameters"/> values is <c>null</c>.
+        /// </exception>
         public ConstructorBuilder WithBaseCall(params string[] passedParameters)
         {
-            _constructor.BaseCallParameters = Option.Some<IEnumerable<string>>(passedParameters);
+            if (passedParameters.Any(x => x is null))
+            {
+                throw new ArgumentException($"One of the {nameof(passedParameters)} parameter values was null.");
+            }
+
+            Constructor = Constructor.With(baseCallParameters: Option.Some<IEnumerable<string>>(passedParameters));
             return this;
         }
 
@@ -155,43 +193,56 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public ConstructorBuilder WithSummary(string summary)
         {
-            _constructor.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            Constructor = Constructor.With(summary: Option.Some(summary));
             return this;
         }
 
         internal ConstructorBuilder MakeStatic(bool makeStatic)
         {
-            _constructor.IsStatic = makeStatic;
+            Constructor = Constructor.With(isStatic: Option.Some(makeStatic));
             return this;
         }
 
         internal ConstructorBuilder WithName(string name)
         {
-            _constructor.ClassName = name;
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Constructor = Constructor.With(className: Option.Some(name));
             return this;
         }
 
         internal Constructor Build()
         {
-            if (_constructor.IsStatic)
+            if (Constructor.IsStatic)
             {
-                if (_constructor.AccessModifier != AccessModifier.None)
+                if (Constructor.AccessModifier != AccessModifier.None)
                 {
                     throw new SyntaxException("Access modifiers are not allowed on static constructors. (CS0515)");
                 }
-                else if (_constructor.Parameters.Any())
+                else if (Constructor.Parameters.Any())
                 {
                     throw new SyntaxException("Parameters are not allowed on static constructors. (CS0132)");
                 }
-                else if (_constructor.BaseCallParameters.HasValue)
+                else if (Constructor.BaseCallParameters.HasValue)
                 {
                     throw new SyntaxException("Static constructors cannot call base constructors. (CS0514)");
                 }
             }
 
-            return _constructor;
+            return Constructor;
         }
     }
 }

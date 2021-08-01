@@ -19,147 +19,431 @@ namespace SharpCode
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 
-    internal class Field
+    /// <summary>
+    /// Represents the various types of C# structure members.
+    /// </summary>
+    public enum MemberType
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Private;
-
-        public bool IsReadonly { get; set; }
-
-        public string? Type { get; set; }
-
-        public string? Name { get; set; }
-
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+        Interface,
+        Class,
+        Struct,
+        Enum,
+        EnumMember,
+        Field,
+        Property,
+        UsingStatement,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 
-    internal class Property
+    internal readonly struct Field
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public Field(
+            AccessModifier accessModifier,
+            bool isReadonly = false,
+            Option<string> type = default,
+            Option<string> name = default,
+            Option<string> summary = default)
+        {
+            AccessModifier = accessModifier;
+            IsReadonly = isReadonly;
+            Type = type;
+            Name = name;
+            Summary = summary;
+        }
 
-        public bool IsStatic { get; set; } = false;
+        public readonly AccessModifier AccessModifier { get; }
 
-        public string? Type { get; set; }
+        public readonly bool IsReadonly { get; }
 
-        public string? Name { get; set; }
+        public readonly Option<string> Type { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly Option<string> Name { get; }
 
-        public Option<string> DefaultValue { get; set; } = Option.None<string>();
+        public readonly Option<string> Summary { get; }
 
-        public Option<string?> Getter { get; set; } = Option.Some<string?>(null);
-
-        public Option<string?> Setter { get; set; } = Option.Some<string?>(null);
+        public readonly Field With(
+            Option<AccessModifier> accessModifier = default,
+            Option<bool> isReadonly = default,
+            Option<string> type = default,
+            Option<string> name = default,
+            Option<string> summary = default) =>
+            new Field(
+                accessModifier.ValueOr(AccessModifier),
+                isReadonly.ValueOr(IsReadonly),
+                type.Else(Type),
+                name.Else(Name),
+                summary.Else(Summary));
     }
 
-    internal class Parameter
+    internal readonly struct Property
     {
-        public string? Type { get; set; }
+        public const string AutoGetterSetter = "@auto";
 
-        public string? Name { get; set; }
+        public Property(
+            AccessModifier accessModifier,
+            bool isStatic = false,
+            Option<string> type = default,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<string> defaultValue = default,
+            Option<string> getter = default,
+            Option<string> setter = default)
+        {
+            AccessModifier = accessModifier;
+            IsStatic = isStatic;
+            Type = type;
+            Name = name;
+            Summary = summary;
+            DefaultValue = defaultValue;
+            Getter = getter;
+            Setter = setter;
+        }
 
-        public string? ReceivingMember { get; set; }
+        public readonly AccessModifier AccessModifier { get; }
+
+        public readonly bool IsStatic { get; }
+
+        public readonly Option<string> Type { get; }
+
+        public readonly Option<string> Name { get; }
+
+        public readonly Option<string> Summary { get; }
+
+        public readonly Option<string> DefaultValue { get; }
+
+        public readonly Option<string> Getter { get; }
+
+        public readonly Option<string> Setter { get; }
+
+        public readonly Property With(
+            Option<AccessModifier> accessModifier = default,
+            Option<bool> isStatic = default,
+            Option<string> type = default,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<string> defaultValue = default,
+            Option<Option<string>> getter = default,
+            Option<Option<string>> setter = default) =>
+            new Property(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                isStatic: isStatic.ValueOr(IsStatic),
+                type: type.Else(Type),
+                name: name.Else(Name),
+                summary: summary.Else(Summary),
+                defaultValue: defaultValue.Else(DefaultValue),
+                getter: getter.ValueOr(Getter),
+                setter: setter.ValueOr(Setter));
     }
 
-    internal class Constructor
+    internal readonly struct EnumerationMember
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public EnumerationMember(Option<string> name, Option<int> value = default, Option<string> summary = default)
+        {
+            Name = name;
+            Value = value;
+            Summary = summary;
+        }
 
-        public bool IsStatic { get; set; } = false;
+        public readonly Option<string> Name { get; }
 
-        public string? ClassName { get; set; }
+        public readonly Option<int> Value { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly Option<string> Summary { get; }
 
-        public List<Parameter> Parameters { get; } = new List<Parameter>();
-
-        public Option<IEnumerable<string>> BaseCallParameters { get; set; } = Option.None<IEnumerable<string>>();
+        public readonly EnumerationMember With(
+            Option<string> name = default,
+            Option<int> value = default,
+            Option<string> summary = default) =>
+            new EnumerationMember(
+                name: name.Else(Name),
+                value: value.Else(value),
+                summary: summary.Else(summary));
     }
 
-    internal class Class
+    internal readonly struct Parameter
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public Parameter(string type, string name, Option<string> receivingMember = default)
+        {
+            Type = type;
+            Name = name;
+            ReceivingMember = receivingMember;
+        }
 
-        public bool IsStatic { get; set; } = false;
+        public readonly string Type { get;  }
 
-        public string? Name { get; set; }
+        public readonly string Name { get;  }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
-
-        public Option<string> InheritedClass { get; set; } = Option.None<string>();
-
-        public List<string> ImplementedInterfaces { get; } = new List<string>();
-
-        public List<Field> Fields { get; } = new List<Field>();
-
-        public List<Property> Properties { get; } = new List<Property>();
-
-        public List<Constructor> Constructors { get; } = new List<Constructor>();
+        public readonly Option<string> ReceivingMember { get;  }
     }
 
-    internal class Struct
+    internal readonly struct Constructor
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public Constructor(
+            AccessModifier accessModifier,
+            bool isStatic = false,
+            Option<string> className = default,
+            Option<string> summary = default,
+            Option<List<Parameter>> parameters = default,
+            Option<IEnumerable<string>> baseCallParameters = default)
+        {
+            AccessModifier = accessModifier;
+            IsStatic = isStatic;
+            ClassName = className;
+            Summary = summary;
+            Parameters = parameters.ValueOr(new List<Parameter>());
+            BaseCallParameters = baseCallParameters;
+        }
 
-        public string? Name { get; set; }
+        public readonly AccessModifier AccessModifier { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly bool IsStatic { get; }
 
-        public List<string?> ImplementedInterfaces { get; } = new List<string?>();
+        public readonly Option<string> ClassName { get; }
 
-        public List<Constructor> Constructors { get; } = new List<Constructor>();
+        public readonly Option<string> Summary { get; }
 
-        public List<Field> Fields { get; } = new List<Field>();
+        public readonly List<Parameter> Parameters { get; }
 
-        public List<Property> Properties { get; } = new List<Property>();
+        public readonly Option<IEnumerable<string>> BaseCallParameters { get; }
+
+        public readonly Constructor With(
+            Option<AccessModifier> accessModifier = default,
+            Option<bool> isStatic = default,
+            Option<string> className = default,
+            Option<string> summary = default,
+            Option<IEnumerable<string>> baseCallParameters = default) =>
+            new Constructor(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                isStatic: isStatic.ValueOr(IsStatic),
+                className: className.Else(ClassName),
+                summary: summary.Else(Summary),
+                parameters: Option.Some(Parameters),
+                baseCallParameters: baseCallParameters.Else(BaseCallParameters));
     }
 
-    internal class Interface
+    internal readonly struct Class
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public Class(
+            AccessModifier accessModifier,
+            bool isStatic = false,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<string> inheritedClass = default,
+            Option<List<string>> implementedInterfaces = default,
+            Option<List<Field>> fields = default,
+            Option<List<Property>> properties = default,
+            Option<List<Constructor>> constructors = default)
+        {
+            AccessModifier = accessModifier;
+            IsStatic = isStatic;
+            Name = name;
+            Summary = summary;
+            InheritedClass = inheritedClass;
+            ImplementedInterfaces = implementedInterfaces.ValueOr(new List<string>());
+            Fields = fields.ValueOr(new List<Field>());
+            Properties = properties.ValueOr(new List<Property>());
+            Constructors = constructors.ValueOr(new List<Constructor>());
+        }
 
-        public string? Name { get; set; }
+        public readonly AccessModifier AccessModifier { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly bool IsStatic { get; }
 
-        public List<string> ImplementedInterfaces { get; } = new List<string>();
+        public readonly Option<string> Name { get; }
 
-        public List<Property> Properties { get; } = new List<Property>();
+        public readonly Option<string> Summary { get; }
+
+        public readonly Option<string> InheritedClass { get; }
+
+        public readonly List<string> ImplementedInterfaces { get; }
+
+        public readonly List<Field> Fields { get; }
+
+        public readonly List<Property> Properties { get; }
+
+        public readonly List<Constructor> Constructors { get; }
+
+        public readonly Class With(
+            Option<AccessModifier> accessModifier = default,
+            Option<bool> isStatic = default,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<string> inheritedClass = default) =>
+            new Class(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                isStatic: isStatic.ValueOr(IsStatic),
+                name: name.Else(Name),
+                summary: summary.Else(Summary),
+                inheritedClass: inheritedClass.Else(inheritedClass),
+                implementedInterfaces: Option.Some(ImplementedInterfaces),
+                fields: Option.Some(Fields),
+                properties: Option.Some(Properties),
+                constructors: Option.Some(Constructors));
     }
 
-    internal class EnumerationMember
+    internal readonly struct Struct
     {
-        public string? Name { get; set; }
+        public Struct(
+            AccessModifier accessModifier,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<List<string>> implementedInterfaces = default,
+            Option<List<Constructor>> constructors = default,
+            Option<List<Field>> fields = default,
+            Option<List<Property>> properties = default)
+        {
+            AccessModifier = accessModifier;
+            Name = name;
+            Summary = summary;
+            ImplementedInterfaces = implementedInterfaces.ValueOr(new List<string>());
+            Constructors = constructors.ValueOr(new List<Constructor>());
+            Fields = fields.ValueOr(new List<Field>());
+            Properties = properties.ValueOr(new List<Property>());
+        }
 
-        public Option<int> Value { get; set; } = Option.None<int>();
+        public readonly AccessModifier AccessModifier { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly Option<string> Name { get; }
+
+        public readonly Option<string> Summary { get; }
+
+        public readonly List<string> ImplementedInterfaces { get; }
+
+        public readonly List<Constructor> Constructors { get; }
+
+        public readonly List<Field> Fields { get; }
+
+        public readonly List<Property> Properties { get; }
+
+        public readonly Struct With(
+            Option<AccessModifier> accessModifier = default,
+            Option<string> name = default,
+            Option<string> summary = default) =>
+            new Struct(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                name: name.Else(Name),
+                summary: summary.Else(Summary),
+                implementedInterfaces: Option.Some(ImplementedInterfaces),
+                constructors: Option.Some(Constructors),
+                fields: Option.Some(Fields),
+                properties: Option.Some(Properties));
     }
 
-    internal class Enumeration
+    internal readonly struct Interface
     {
-        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public Interface(
+            AccessModifier accessModifier,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<List<string>> implementedInterfaces = default,
+            Option<List<Property>> properties = default)
+        {
+            AccessModifier = accessModifier;
+            Name = name;
+            Summary = summary;
+            ImplementedInterfaces = implementedInterfaces.ValueOr(new List<string>());
+            Properties = properties.ValueOr(new List<Property>());
+        }
 
-        public string? Name { get; set; }
+        public readonly AccessModifier AccessModifier { get; }
 
-        public Option<string?> Summary { get; set; } = Option.None<string?>();
+        public readonly Option<string> Name { get; }
 
-        public bool IsFlag { get; set; }
+        public readonly Option<string> Summary { get; }
 
-        public List<EnumerationMember> Members { get; } = new List<EnumerationMember>();
+        public readonly List<string> ImplementedInterfaces { get; }
+
+        public readonly List<Property> Properties { get; }
+
+        public Interface With(
+            Option<AccessModifier> accessModifier = default,
+            Option<string> name = default,
+            Option<string> summary = default) =>
+            new Interface(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                name: name.Else(Name),
+                summary: summary.Else(Summary),
+                implementedInterfaces: Option.Some(ImplementedInterfaces),
+                properties: Option.Some(Properties));
     }
 
-    internal class Namespace
+    internal readonly struct Enumeration
     {
-        public string? Name { get; set; }
+        public Enumeration(
+            AccessModifier accessModifier,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<bool> isFlag = default,
+            Option<List<EnumerationMember>> members = default)
+        {
+            AccessModifier = accessModifier;
+            Name = name;
+            Summary = summary;
+            IsFlag = isFlag.ValueOr(false);
+            Members = members.ValueOr(new List<EnumerationMember>());
+        }
 
-        public List<string> Usings { get; } = new List<string>();
+        public readonly AccessModifier AccessModifier { get; }
 
-        public List<Class> Classes { get; } = new List<Class>();
+        public readonly Option<string> Name { get; }
 
-        public List<Struct> Structs { get; } = new List<Struct>();
+        public readonly Option<string> Summary { get; }
 
-        public List<Interface> Interfaces { get; } = new List<Interface>();
+        public readonly bool IsFlag { get; }
 
-        public List<Enumeration> Enums { get; } = new List<Enumeration>();
+        public readonly List<EnumerationMember> Members { get; }
+
+        public readonly Enumeration With(
+            Option<AccessModifier> accessModifier = default,
+            Option<string> name = default,
+            Option<string> summary = default,
+            Option<bool> isFlag = default) =>
+            new Enumeration(
+                accessModifier: accessModifier.ValueOr(AccessModifier),
+                name: name.Else(Name),
+                summary: summary.Else(Summary),
+                isFlag: isFlag.Else(Option.Some(IsFlag)),
+                members: Option.Some(Members));
+    }
+
+    internal readonly struct Namespace
+    {
+        public Namespace(
+            Option<string> name = default,
+            Option<List<string>> usings = default,
+            Option<List<Class>> classes = default,
+            Option<List<Struct>> structs = default,
+            Option<List<Interface>> interfaces = default,
+            Option<List<Enumeration>> enums = default)
+        {
+            Name = name;
+            Usings = usings.ValueOr(new List<string>());
+            Classes = classes.ValueOr(new List<Class>());
+            Structs = structs.ValueOr(new List<Struct>());
+            Interfaces = interfaces.ValueOr(new List<Interface>());
+            Enums = enums.ValueOr(new List<Enumeration>());
+        }
+
+        public readonly Option<string> Name { get; }
+
+        public readonly List<string> Usings { get; }
+
+        public readonly List<Class> Classes { get; }
+
+        public readonly List<Struct> Structs { get; }
+
+        public readonly List<Interface> Interfaces { get; }
+
+        public readonly List<Enumeration> Enums { get; }
+
+        public readonly Namespace With(Option<string> name = default) =>
+            new Namespace(
+                name: name.Else(Name),
+                usings: Option.Some(Usings),
+                classes: Option.Some(Classes),
+                structs: Option.Some(Structs),
+                interfaces: Option.Some(Interfaces),
+                enums: Option.Some(Enums));
     }
 }

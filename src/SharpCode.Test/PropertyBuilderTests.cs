@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -43,6 +44,12 @@ public string Username
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingProperty_WithInvalidSummary_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Code.CreateProperty().WithSummary(null));
         }
 
         [Test]
@@ -103,15 +110,58 @@ private string EmptyString
         }
 
         [Test]
-        public void CreateProperty_Throws_WhenRequiredSettingsNotProvided()
+        public void CreatingProperty_WithoutRequiredSettings_Throws()
         {
+            // --- WithName() API
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateProperty().WithType("string").ToSourceCode(),
-                "Expected generating the source code for a property without setting the name to throw an exception.");
+                "Generating the source code for a property without setting the name should throw an exception.");
 
             Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateProperty().WithName("IHaveNoType").ToSourceCode(),
-                "Expected generating the source code for a property without setting the type to throw an exception.");
+                () => Code.CreateProperty().WithName(string.Empty).WithType("string").ToSourceCode(),
+                "Generating the source code for a property with an empty string as name should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateProperty().WithName("  ").WithType("string").ToSourceCode(),
+                "Generating the source code for a property with whitespace name should throw an exception.");
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithName(null).ToSourceCode(),
+                "Generating the source code for a property with null as name should throw an exception.");
+
+            // --- WithType() API
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateProperty().WithName("count").ToSourceCode(),
+                "Generating the source code for a property without setting the type should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateProperty().WithName("count").WithType(string.Empty).ToSourceCode(),
+                "Generating the source code for a property with an empty string as type should throw an exception.");
+
+            Assert.Throws<MissingBuilderSettingException>(
+                () => Code.CreateProperty().WithName("count").WithType("  ").ToSourceCode(),
+                "Generating the source code for a property with whitespace type should throw an exception.");
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithName("count").WithType((Type)null).ToSourceCode(),
+                "Generating the source code for a property with null as type should throw an exception.");
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithName("count").WithType((string)null).ToSourceCode(),
+                "Generating the source code for a property with null as type should throw an exception.");
+
+            // --- Shorthand API
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty(name: null, type: "string").ToSourceCode(),
+                "Generating the source code for a property with null as name should throw an exception.");
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty(name: "count", type: (Type)null).ToSourceCode(),
+                "Generating the source code for a property with null as type should throw an exception.");
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty(name: "count", type: (string)null).ToSourceCode(),
+                "Generating the source code for a property with null as type should throw an exception.");
         }
 
         [Test]
@@ -236,6 +286,19 @@ public static int Zero
                 expectedCode,
                 generatedCode,
                 "Failed case: static property with auto implemented getter and default value");
+        }
+
+        [Test]
+        public void CreatingProperty_WithInvalidDefaultValue_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Code.CreateProperty().WithDefaultValue(null));
+        }
+
+        [Test]
+        public void PropertyBuilder_ToSourceCode_ToString_YieldSame()
+        {
+            var builder = Code.CreateProperty(typeof(string), "Name", AccessModifier.ProtectedInternal);
+            Assert.AreEqual(builder.ToSourceCode(), builder.ToString());
         }
     }
 }

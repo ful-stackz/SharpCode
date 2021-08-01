@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -13,7 +14,7 @@ namespace SharpCode.Test
                 () => Code.CreateStruct().ToSourceCode(),
                 "Generating the source code for a struct without a name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateStruct().WithName(null).ToSourceCode(),
                 "Generating the source code for a struct with null as name should throw an exception.");
 
@@ -37,7 +38,7 @@ namespace SharpCode.Test
         [Test]
         public void CreatingStruct_WithImplementedInterface_WithInvalidName_Throws()
         {
-            Assert.Throws<MissingBuilderSettingException>(
+            Assert.Throws<ArgumentNullException>(
                 () => Code.CreateStruct(name: "Test").WithImplementedInterface(null).ToSourceCode(),
                 "Generating the source code for a struct with null as name should throw an exception.");
 

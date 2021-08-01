@@ -1,5 +1,6 @@
 using System;
 using Optional;
+using Optional.Unsafe;
 
 namespace SharpCode
 {
@@ -9,17 +10,18 @@ namespace SharpCode
     /// </summary>
     public class PropertyBuilder
     {
-        private readonly Property _property = new Property();
-
         internal PropertyBuilder()
         {
         }
 
         internal PropertyBuilder(AccessModifier accessModifier, string type, string name)
         {
-            _property.AccessModifier = accessModifier;
-            _property.Type = type;
-            _property.Name = name;
+            Property = new Property(
+                accessModifier: accessModifier,
+                type: Option.Some(type),
+                name: Option.Some(name),
+                getter: Option.Some(Property.AutoGetterSetter),
+                setter: Option.Some(Property.AutoGetterSetter));
         }
 
         internal PropertyBuilder(AccessModifier accessModifier, Type type, string name)
@@ -27,39 +29,68 @@ namespace SharpCode
         {
         }
 
+        internal Property Property { get; private set; } = new Property(
+            AccessModifier.Public,
+            getter: Option.Some(Property.AutoGetterSetter),
+            setter: Option.Some(Property.AutoGetterSetter));
+
         /// <summary>
         /// Sets the access modifier of the property being built.
         /// </summary>
         public PropertyBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            _property.AccessModifier = accessModifier;
+            Property = Property.With(accessModifier: Option.Some(accessModifier));
             return this;
         }
 
         /// <summary>
         /// Sets the type of the property being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> is <c>null</c>.
+        /// </exception>
         public PropertyBuilder WithType(string type)
         {
-            _property.Type = type;
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            Property = Property.With(type: Option.Some(type));
             return this;
         }
 
         /// <summary>
         /// Sets the type of the property being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> is <c>null</c>.
+        /// </exception>
         public PropertyBuilder WithType(Type type)
         {
-            _property.Type = type.Name;
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            Property = Property.With(type: Option.Some(type.Name));
             return this;
         }
 
         /// <summary>
         /// Sets the name of the property being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public PropertyBuilder WithName(string name)
         {
-            _property.Name = name;
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Property = Property.With(name: Option.Some(name));
             return this;
         }
 
@@ -111,7 +142,10 @@ namespace SharpCode
         /// </example>
         public PropertyBuilder WithGetter(string? expression = null)
         {
-            _property.Getter = Option.Some(expression);
+            var expressionNormalized = string.IsNullOrWhiteSpace(expression)
+                ? Property.AutoGetterSetter
+                : expression!;
+            Property = Property.With(getter: Option.Some(Option.Some(expressionNormalized)));
             return this;
         }
 
@@ -120,7 +154,7 @@ namespace SharpCode
         /// </summary>
         public PropertyBuilder WithoutGetter()
         {
-            _property.Getter = Option.None<string?>();
+            Property = Property.With(getter: Option.Some(Option.None<string>()));
             return this;
         }
 
@@ -174,7 +208,10 @@ namespace SharpCode
         /// </example>
         public PropertyBuilder WithSetter(string? expression = null)
         {
-            _property.Setter = Option.Some(expression);
+            var expressionNormalized = string.IsNullOrWhiteSpace(expression)
+                ? Property.AutoGetterSetter
+                : expression!;
+            Property = Property.With(setter: Option.Some(Option.Some(expressionNormalized)));
             return this;
         }
 
@@ -183,7 +220,7 @@ namespace SharpCode
         /// </summary>
         public PropertyBuilder WithoutSetter()
         {
-            _property.Setter = Option.None<string?>();
+            Property = Property.With(setter: Option.Some(Option.None<string>()));
             return this;
         }
 
@@ -195,9 +232,17 @@ namespace SharpCode
         /// escaped quotes. For example,
         /// <c>WithDefaultValue(defaultValue: "\"this will be generated as a string\"")</c>.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="defaultValue"/> is <c>null</c>.
+        /// </exception>
         public PropertyBuilder WithDefaultValue(string defaultValue)
         {
-            _property.DefaultValue = Option.Some(defaultValue);
+            if (defaultValue is null)
+            {
+                throw new ArgumentNullException(nameof(defaultValue));
+            }
+
+            Property = Property.With(defaultValue: Option.Some(defaultValue));
             return this;
         }
 
@@ -209,7 +254,7 @@ namespace SharpCode
         /// </param>
         public PropertyBuilder MakeStatic(bool makeStatic = true)
         {
-            _property.IsStatic = makeStatic;
+            Property = Property.With(isStatic: Option.Some(makeStatic));
             return this;
         }
 
@@ -219,9 +264,17 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public PropertyBuilder WithSummary(string summary)
         {
-            _property.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            Property = Property.With(summary: Option.Some<string>(summary));
             return this;
         }
 
@@ -231,54 +284,62 @@ namespace SharpCode
         /// <param name="formatted">
         /// Indicates whether to format the source code.
         /// </param>
-        public string ToSourceCode(bool formatted = true)
-        {
-            return Build().ToSourceCode(formatted);
-        }
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
+        public string ToSourceCode(bool formatted = true) =>
+            Build().ToSourceCode(formatted);
 
         /// <summary>
         /// Returns the source code of the built property.
         /// </summary>
-        public override string ToString()
-        {
-            return ToSourceCode();
-        }
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
+        public override string ToString() =>
+            ToSourceCode();
 
         internal Property Build()
         {
-            if (string.IsNullOrWhiteSpace(_property.Name))
+            if (string.IsNullOrWhiteSpace(Property.Name.ValueOrDefault()))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the property is required when building a property.");
             }
-            else if (string.IsNullOrWhiteSpace(_property.Type))
+            else if (string.IsNullOrWhiteSpace(Property.Type.ValueOrDefault()))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the type of the property is required when building a property.");
             }
-            else if (_property.Setter.Exists(value => string.IsNullOrWhiteSpace(value)))
+            else if (Property.Setter.Exists(value => value.Equals(Property.AutoGetterSetter)))
             {
-                if (!_property.Getter.HasValue)
+                if (!Property.Getter.HasValue)
                 {
                     throw new SyntaxException(
                         "Properties with auto implemented setters must also have auto implemented getters. (CS8051)");
                 }
-                else if (_property.Getter.Exists(value => !string.IsNullOrWhiteSpace(value)))
+                else if (Property.Getter.Exists(value => !value.Equals(Property.AutoGetterSetter)))
                 {
                     throw new SyntaxException(
                         "Properties with custom getters cannot have auto implemented setters.");
                 }
             }
-            else if (_property.DefaultValue.HasValue)
+            else if (Property.DefaultValue.HasValue)
             {
-                if (_property.Getter.Exists(value => !string.IsNullOrWhiteSpace(value)) ||
-                    _property.Setter.Exists(value => !string.IsNullOrWhiteSpace(value)))
+                if (Property.Getter.Exists(value => !value.Equals(Property.AutoGetterSetter)) ||
+                    Property.Setter.Exists(value => !value.Equals(Property.AutoGetterSetter)))
                 {
                     throw new SyntaxException("Only auto implemented properties can have a default value. (CS8050)");
                 }
             }
 
-            return _property;
+            return Property;
         }
     }
 }

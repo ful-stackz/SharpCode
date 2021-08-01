@@ -1,5 +1,6 @@
 ﻿using System;
 using Optional;
+using Optional.Unsafe;
 
 namespace SharpCode
 {
@@ -8,17 +9,16 @@ namespace SharpCode
     /// </summary>
     public class FieldBuilder
     {
-        private readonly Field _field = new Field();
-
         internal FieldBuilder()
         {
         }
 
         internal FieldBuilder(AccessModifier accessModifier, string type, string name)
         {
-            _field.AccessModifier = accessModifier;
-            _field.Type = type;
-            _field.Name = name;
+            Field = new Field(
+                accessModifier: accessModifier,
+                name: Option.Some(name),
+                type: Option.Some(type));
         }
 
         internal FieldBuilder(AccessModifier accessModifier, Type type, string name)
@@ -26,39 +26,65 @@ namespace SharpCode
         {
         }
 
+        internal Field Field { get; private set; } = new Field(AccessModifier.Private);
+
         /// <summary>
         /// Sets accessibilty modifier of the field being built.
         /// </summary>
         public FieldBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            _field.AccessModifier = accessModifier;
+            Field = Field.With(accessModifier: Option.Some(accessModifier));
             return this;
         }
 
         /// <summary>
         /// Sets the type of the field being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> is <c>null</c>.
+        /// </exception>
         public FieldBuilder WithType(string type)
         {
-            _field.Type = type;
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            Field = Field.With(type: Option.Some(type));
             return this;
         }
 
         /// <summary>
         /// Sets the type of the field being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="type"/> is <c>null</c>.
+        /// </exception>
         public FieldBuilder WithType(Type type)
         {
-            _field.Type = type.Name;
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            Field = Field.With(type: Option.Some(type.Name));
             return this;
         }
 
         /// <summary>
         /// Sets the name of the field being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
         public FieldBuilder WithName(string name)
         {
-            _field.Name = name;
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Field = Field.With(name: Option.Some(name));
             return this;
         }
 
@@ -70,7 +96,7 @@ namespace SharpCode
         /// </param>
         public FieldBuilder MakeReadonly(bool makeReadonly = true)
         {
-            _field.IsReadonly = makeReadonly;
+            Field = Field.With(isReadonly: Option.Some(makeReadonly));
             return this;
         }
 
@@ -80,9 +106,17 @@ namespace SharpCode
         /// <param name="summary">
         /// The content of the summary documentation.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="summary"/> is <c>null</c>.
+        /// </exception>
         public FieldBuilder WithSummary(string summary)
         {
-            _field.Summary = Option.Some<string?>(summary);
+            if (summary is null)
+            {
+                throw new ArgumentNullException(nameof(summary));
+            }
+
+            Field = Field.With(summary: Option.Some(summary));
             return this;
         }
 
@@ -92,33 +126,41 @@ namespace SharpCode
         /// <param name="formatted">
         /// Indicates whether to format the source code.
         /// </param>
-        public string ToSourceCode(bool formatted = true)
-        {
-            return Build().ToSourceCode(formatted);
-        }
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
+        public string ToSourceCode(bool formatted = true) =>
+            Build().ToSourceCode(formatted);
 
         /// <summary>
         /// Returns the source code of the built field.
         /// </summary>
-        public override string ToString()
-        {
-            return ToSourceCode();
-        }
+        /// <exception cref="MissingBuilderSettingException">
+        /// A setting that is required to build a valid class structure is missing.
+        /// </exception>
+        /// <exception cref="SyntaxException">
+        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// </exception>
+        public override string ToString() =>
+            ToSourceCode();
 
         internal Field Build()
         {
-            if (string.IsNullOrWhiteSpace(_field.Type))
+            if (string.IsNullOrWhiteSpace(Field.Type.ValueOrDefault()))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the type of the field is required when building a field.");
             }
-            else if (string.IsNullOrWhiteSpace(_field.Name))
+            else if (string.IsNullOrWhiteSpace(Field.Name.ValueOrDefault()))
             {
                 throw new MissingBuilderSettingException(
                     "Providing the name of the field is required when building a field.");
             }
 
-            return _field;
+            return Field;
         }
     }
 }
