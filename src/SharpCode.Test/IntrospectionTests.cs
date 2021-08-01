@@ -132,11 +132,13 @@ namespace SharpCode.Test
         public void NamespaceBuilder_HasMember_Works()
         {
             var builder = Code.CreateNamespace("Container")
+                .WithUsing("System.Collections.Generic")
                 .WithClass(Code.CreateClass("TestClass"))
                 .WithEnum(Code.CreateEnum("TestEnum"))
                 .WithInterface(Code.CreateInterface("ITest"))
                 .WithStruct(Code.CreateStruct("TestStruct"));
 
+            Assert.IsTrue(builder.HasMember("System.Collections.Generic"));
             Assert.IsTrue(builder.HasMember("TestClass", MemberType.Class));
             Assert.IsTrue(builder.HasMember("TestEnum", MemberType.Enum));
             Assert.IsTrue(builder.HasMember("ITest", MemberType.Interface));

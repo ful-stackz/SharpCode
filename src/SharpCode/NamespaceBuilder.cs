@@ -374,12 +374,18 @@ namespace SharpCode
                     .Any(x => x.Struct.Name.Exists(n => n.Equals(name, comparison)));
             }
 
+            if (memberType == MemberType.UsingStatement)
+            {
+                return Namespace.Usings.Any(x => x.Equals(name, comparison));
+            }
+
             if (!memberType.HasValue)
             {
                 return HasMember(name, MemberType.Class, accessModifier, comparison) ||
                     HasMember(name, MemberType.Enum, accessModifier, comparison) ||
                     HasMember(name, MemberType.Interface, accessModifier, comparison) ||
-                    HasMember(name, MemberType.Struct, accessModifier, comparison);
+                    HasMember(name, MemberType.Struct, accessModifier, comparison) ||
+                    HasMember(name, MemberType.UsingStatement, accessModifier, comparison);
             }
 
             return false;
