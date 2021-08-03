@@ -27,7 +27,7 @@ internal enum UserStatus
     Inactive,
     Active,
     Blocked,
-    NotConfirmed,
+    NotConfirmed
 }
             ".Trim().WithUnixEOL();
 
@@ -58,7 +58,7 @@ private enum UserStatus
     Inactive,
     Active,
     Blocked,
-    NotConfirmed,
+    NotConfirmed
 }
             ".Trim().WithUnixEOL();
 
@@ -89,7 +89,7 @@ internal enum UserStatus
     /// Like, all the time
     /// </summary>
     Active,
-    Asleep,
+    Asleep
 }
             ".Trim().WithUnixEOL();
 
@@ -126,7 +126,7 @@ internal enum UserStatus
     /// Like, all the time
     /// </summary>
     Active,
-    Asleep,
+    Asleep
 }
             ".Trim().WithUnixEOL();
 
@@ -157,7 +157,7 @@ public enum Colors
     Green = 1,
     Blue = 2,
     Orange = 4,
-    Black = 8,
+    Black = 8
 }
             ".Trim().WithUnixEOL();
 
@@ -181,7 +181,7 @@ public enum Color
     None = 0,
     Red = 100,
     Green = 222,
-    Blue = 404,
+    Blue = 404
 }
             ".Trim().WithUnixEOL();
 
@@ -209,7 +209,7 @@ public enum Storage
     HardDrive = 1,
     SolidStateDrive = 2,
     FlashStick,
-    ExternalHardDrive = 4,
+    ExternalHardDrive = 4
 }
             ".Trim().WithUnixEOL();
 

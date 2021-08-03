@@ -179,7 +179,7 @@ namespace GeneratedCode
     {
         Low,
         Medium,
-        High,
+        High
     }
 }
             ".Trim().WithUnixEOL();
@@ -216,7 +216,7 @@ namespace GeneratedCode
         Medium = 4,
         High = 8,
         ExtraHigh = 16,
-        Max = 32,
+        Max = 32
     }
 }
             ".Trim().WithUnixEOL();
