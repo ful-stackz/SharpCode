@@ -11,11 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Introspection API via the new .HasMember() method, available on applicable structure builders
 - More null arguments sanitizing in public methods and consecutively more `ArgumentNullException` and `ArgumentException`, which are documented in the respective methods
+- Using Roslyn APIs to generate the source code via an actual AST, rather than string templates hydration
 
 ### Changed
 
+- **[breaking]** `.ToSourceCode(bool)` has been changed to `.ToSourceCode()`; all generated code is now formatted by default
 - Refactored the internal structures from `class` to `readonly struct`
 - Made better use of optionals and replaced some nullables
+- Enums no longer have a trailing comma
+
+### Fixed
+
+- Fixes the issue described in [PR#13](https://github.com/ful-stackz/SharpCode/pull/13) - source code template strings were breaking when hydration keywords were used by consumer code
 
 ## [0.2.0] - 2020-10-05
 
