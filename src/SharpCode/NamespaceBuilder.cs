@@ -394,17 +394,19 @@ namespace SharpCode
         /// <summary>
         /// Returns the source code of the built namespace.
         /// </summary>
-        /// <param name="formatted">
-        /// Indicates whether to format the source code.
-        /// </param>
         /// <exception cref="MissingBuilderSettingException">
         /// A setting that is required to build a valid class structure is missing.
         /// </exception>
         /// <exception cref="SyntaxException">
         /// The class builder is configured in such a way that the resulting code would be invalid.
         /// </exception>
-        public string ToSourceCode(bool formatted = true) =>
-            Build().ToSourceCode(formatted);
+        public string ToSourceCode()
+        {
+            var build = Build();
+            var container = Ast.NamespaceContainer(build.Usings);
+            var @namespace = Ast.FromDefinition(build);
+            return Ast.Stringify(container.AddMembers(@namespace));
+        }
 
         /// <summary>
         /// Returns the source code of the built namespace.
@@ -431,28 +433,28 @@ namespace SharpCode
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "A class defined under a namespace cannot have the access modifier " +
-                    $"'{item.AccessModifier.ToSourceCode()}'."));
+                    $"'{item.AccessModifier}'."));
 
             Namespace.Structs.AddRange(_structs.Select(builder => builder.Build()));
             Namespace.Structs
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "A struct defined under a namespace cannot have the access modifier " +
-                    $"'{item.AccessModifier.ToSourceCode()}'."));
+                    $"'{item.AccessModifier}'."));
 
             Namespace.Interfaces.AddRange(_interfaces.Select(builder => builder.Build()));
             Namespace.Interfaces
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "An interface defined under a namespace cannot have the access modifier " +
-                    $"'{item.AccessModifier.ToSourceCode()}'."));
+                    $"'{item.AccessModifier}'."));
 
             Namespace.Enums.AddRange(_enums.Select(builder => builder.Build()));
             Namespace.Enums
                 .FirstOrNone(item => !AllowedMemberAccessModifiers.Contains(item.AccessModifier))
                 .MatchSome(item => throw new SyntaxException(
                     "An enum defined under a namespace cannot have the access modifier " +
-                    $"'{item.AccessModifier.ToSourceCode()}'."));
+                    $"'{item.AccessModifier}'."));
 
             return Namespace;
         }

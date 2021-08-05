@@ -280,19 +280,14 @@ namespace SharpCode
         /// <summary>
         /// Returns the source code of the built class.
         /// </summary>
-        /// <param name="formatted">
-        /// Indicates whether to format the source code.
-        /// </param>
         /// <exception cref="MissingBuilderSettingException">
         /// A setting that is required to build a valid class structure is missing.
         /// </exception>
         /// <exception cref="SyntaxException">
         /// The class builder is configured in such a way that the resulting code would be invalid.
         /// </exception>
-        public string ToSourceCode(bool formatted = true)
-        {
-            return Build().ToSourceCode(formatted);
-        }
+        public string ToSourceCode() =>
+            Ast.Stringify(Ast.FromDefinition(Build()));
 
         /// <summary>
         /// Returns the source code of the built class.
@@ -303,10 +298,8 @@ namespace SharpCode
         /// <exception cref="SyntaxException">
         /// The class builder is configured in such a way that the resulting code would be invalid.
         /// </exception>
-        public override string ToString()
-        {
-            return ToSourceCode();
-        }
+        public override string ToString() =>
+            ToSourceCode();
 
         internal Class Build()
         {

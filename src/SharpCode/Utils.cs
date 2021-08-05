@@ -1,13 +1,7 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-
 namespace SharpCode
 {
     internal static class Utils
     {
-        public static string FormatSourceCode(string sourceCode) =>
-            SyntaxNodeExtensions
-                .NormalizeWhitespace(CSharpSyntaxTree.ParseText(sourceCode).GetRoot())
-                .ToFullString();
+        public static T[] AsArray<T>(params T[] items) => items;
     }
 }

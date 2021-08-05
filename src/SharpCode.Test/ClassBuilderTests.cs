@@ -11,7 +11,7 @@ namespace SharpCode.Test
         public void CreateClass_WithNoMembers_Works()
         {
             var generatedCode = Code.CreateClass("User")
-                .ToSourceCode(formatted: true)
+                .ToSourceCode()
                 .WithUnixEOL();
 
             var expectedCode = @"
@@ -28,7 +28,7 @@ public class User
         {
             var generatedCode = Code.CreateClass("User")
                 .WithSummary("A user of the application")
-                .ToSourceCode(formatted: true)
+                .ToSourceCode()
                 .WithUnixEOL();
 
             var expectedCode = @"
@@ -50,7 +50,7 @@ public class User
                 .WithField(Code.CreateField("int", "_hypotenuse"))
                 .WithField(Code.CreateField("double", "_adjacent"))
                 .WithField(Code.CreateField("float", "_opposite"))
-                .ToSourceCode(formatted: true)
+                .ToSourceCode()
                 .WithUnixEOL();
 
             var expectedCode = @"
