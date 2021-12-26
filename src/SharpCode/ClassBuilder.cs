@@ -262,19 +262,29 @@ namespace SharpCode
 
             if (memberType == MemberType.Property)
             {
-                return _properties
-                    .Where(x => !accessModifier.HasValue || x.Property.AccessModifier == accessModifier)
-                    .Any(x => x.Property.Name.Exists(n => n.Equals(name, comparison)));
+                throw new SyntaxException("HasMember memberType == MemberType.Property must be used HasProperty!");
             }
 
             if (!memberType.HasValue)
             {
                 // Lookup all possible members
                 return HasMember(name, MemberType.Field, accessModifier, comparison) ||
-                    HasMember(name, MemberType.Property, accessModifier, comparison);
+                       HasMember(name, MemberType.Property, accessModifier, comparison);
             }
 
             return false;
+        }
+
+        public bool HasProperty(
+            string name,
+            AccessModifier? accessModifier = default,
+            AccessModifier? setterAccessModifier = default,
+            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase)
+        {
+            return _properties
+                .Where(x => (!accessModifier.HasValue || x.Property.AccessModifier == accessModifier) &&
+                            (!setterAccessModifier.HasValue || x.Property.SetterAccessModifier == setterAccessModifier))
+                .Any(x => x.Property.Name.Exists(n => n.Equals(name, comparison)));
         }
 
         /// <summary>

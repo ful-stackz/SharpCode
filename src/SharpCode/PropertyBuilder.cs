@@ -18,6 +18,7 @@ namespace SharpCode
         {
             Property = new Property(
                 accessModifier: accessModifier,
+                setterAccessModifier: accessModifier,
                 type: Option.Some(type),
                 name: Option.Some(name),
                 getter: Option.Some(Property.AutoGetterSetter),
@@ -30,7 +31,8 @@ namespace SharpCode
         }
 
         internal Property Property { get; private set; } = new Property(
-            AccessModifier.Public,
+            accessModifier: AccessModifier.Public,
+            setterAccessModifier: AccessModifier.Public,
             getter: Option.Some(Property.AutoGetterSetter),
             setter: Option.Some(Property.AutoGetterSetter));
 
@@ -39,7 +41,13 @@ namespace SharpCode
         /// </summary>
         public PropertyBuilder WithAccessModifier(AccessModifier accessModifier)
         {
-            Property = Property.With(accessModifier: Option.Some(accessModifier));
+            Property = Property.With(accessModifier: Option.Some(accessModifier), setterAccessModifier: Option.Some(accessModifier));
+            return this;
+        }
+
+        public PropertyBuilder WithAccessModifier(AccessModifier getterAccessModifier, AccessModifier setterAccessModifier)
+        {
+            Property = Property.With(accessModifier: Option.Some(getterAccessModifier), setterAccessModifier: Option.Some(setterAccessModifier));
             return this;
         }
 

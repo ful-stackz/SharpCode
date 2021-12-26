@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -16,9 +17,9 @@ namespace SharpCode
 
                 AccessModifier.Private => Utils.AsArray(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
 
-                AccessModifier.PrivateInternal => Utils.AsArray(
+                AccessModifier.PrivateProtected => Utils.AsArray(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
-                    SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
+                    SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
 
                 AccessModifier.Protected => Utils.AsArray(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
 
@@ -81,9 +82,15 @@ namespace SharpCode
 
             definition.Setter.Map(x => x.Trim()).MatchSome(body =>
             {
+                AccessorDeclarationSyntax accessor = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration);
+
+                if (IsHigher(definition.AccessModifier, definition.SetterAccessModifier))
+                {
+                    accessor = accessor.WithModifiers(ListFromDefinition(definition.SetterAccessModifier));
+                }
+
                 declaration = declaration.AddAccessorListAccessors(
-                    AddBodyToAccessor(
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration), body));
+                    AddBodyToAccessor(accessor, body));
             });
 
             definition.DefaultValue.MatchSome(value =>
@@ -133,6 +140,94 @@ namespace SharpCode
                 return accessor
                     .WithExpressionBody(SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ParseExpression(body)))
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            }
+
+            static SyntaxTokenList ListFromDefinition(AccessModifier accessModifier) =>
+                accessModifier switch
+                {
+                    AccessModifier.Internal => Utils.AsList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
+
+                    AccessModifier.Private => Utils.AsList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
+
+                    AccessModifier.PrivateProtected => Utils.AsList(
+                        SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
+                        SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
+                    AccessModifier.Protected => Utils.AsList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
+
+                    AccessModifier.ProtectedInternal => Utils.AsList(
+                        SyntaxFactory.Token(SyntaxKind.ProtectedKeyword),
+                        SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
+
+                    AccessModifier.Public => Utils.AsList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+
+                    _ => Utils.AsList(),
+                };
+
+            static bool IsHigher(AccessModifier left, AccessModifier right)
+            {
+                switch (left)
+                {
+                    case AccessModifier.None:
+                    case AccessModifier.Private:
+                        return false;
+                    case AccessModifier.Internal:
+                        switch (right)
+                        {
+                            case AccessModifier.Private:
+                            case AccessModifier.PrivateProtected:
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    case AccessModifier.Protected:
+                        switch (right)
+                        {
+                            case AccessModifier.Private:
+                            case AccessModifier.PrivateProtected:
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    case AccessModifier.Public:
+                        switch (right)
+                        {
+                            case AccessModifier.Private:
+                            case AccessModifier.PrivateProtected:
+                            case AccessModifier.Internal:
+                            case AccessModifier.Protected:
+                            case AccessModifier.ProtectedInternal:
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    case AccessModifier.PrivateProtected:
+                        switch (right)
+                        {
+                            case AccessModifier.Private:
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    case AccessModifier.ProtectedInternal:
+                        switch (right)
+                        {
+                            case AccessModifier.Private:
+                            case AccessModifier.Internal:
+                            case AccessModifier.Protected:
+                            case AccessModifier.PrivateProtected:
+                            case AccessModifier.ProtectedInternal:
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    default:
+                        return false;
+                }
             }
         }
 
