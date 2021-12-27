@@ -82,11 +82,18 @@ namespace SharpCode
 
             definition.Setter.Map(x => x.Trim()).MatchSome(body =>
             {
-                AccessorDeclarationSyntax accessor = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration);
+                AccessorDeclarationSyntax accessor =
+                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration);
 
                 if (IsHigher(definition.AccessModifier, definition.SetterAccessModifier))
                 {
-                    accessor = accessor.WithModifiers(ListFromDefinition(definition.SetterAccessModifier));
+                    accessor = accessor.WithModifiers(
+                        new SyntaxTokenList(FromDefinition(definition.SetterAccessModifier)));
+                }
+                else if (definition.AccessModifier != definition.SetterAccessModifier)
+                {
+                    throw new SyntaxException(
+                        $"The accessibility modifier of the accessor must be more restrictive than the property '{definition.Name.ValueOrFailure()}'");
                 }
 
                 declaration = declaration.AddAccessorListAccessors(
@@ -141,27 +148,6 @@ namespace SharpCode
                     .WithExpressionBody(SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ParseExpression(body)))
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             }
-
-            static SyntaxTokenList ListFromDefinition(AccessModifier accessModifier) =>
-                accessModifier switch
-                {
-                    AccessModifier.Internal => Utils.AsList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-
-                    AccessModifier.Private => Utils.AsList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
-
-                    AccessModifier.PrivateProtected => Utils.AsList(
-                        SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
-                        SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-                    AccessModifier.Protected => Utils.AsList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
-
-                    AccessModifier.ProtectedInternal => Utils.AsList(
-                        SyntaxFactory.Token(SyntaxKind.ProtectedKeyword),
-                        SyntaxFactory.Token(SyntaxKind.InternalKeyword)),
-
-                    AccessModifier.Public => Utils.AsList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-
-                    _ => Utils.AsList(),
-                };
 
             static bool IsHigher(AccessModifier left, AccessModifier right)
             {
@@ -272,7 +258,8 @@ namespace SharpCode
                         .WithArgumentList(
                             SyntaxFactory.ArgumentList(
                                 SyntaxFactory.SeparatedList(
-                                    parameters.Select(param => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(param)))))));
+                                    parameters.Select(param =>
+                                        SyntaxFactory.Argument(SyntaxFactory.IdentifierName(param)))))));
             });
 
             var parametersWithAssignment = definition.Parameters.Where(x => x.ReceivingMember.HasValue);
@@ -458,7 +445,8 @@ namespace SharpCode
 
         public static NamespaceDeclarationSyntax FromDefinition(Namespace definition)
         {
-            var declaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(definition.Name.ValueOrFailure()));
+            var declaration =
+                SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(definition.Name.ValueOrFailure()));
 
             if (definition.Interfaces.Any())
             {
@@ -513,12 +501,12 @@ namespace SharpCode
                                     .WithTextTokens(
                                         SyntaxFactory.TokenList(
                                             SyntaxFactory.XmlTextLiteral(
-                                                leading: SyntaxFactory.TriviaList(SyntaxFactory.DocumentationCommentExterior("///")),
+                                                leading: SyntaxFactory.TriviaList(
+                                                    SyntaxFactory.DocumentationCommentExterior("///")),
                                                 text: " ",
                                                 value: " ",
                                                 trailing: SyntaxFactory.TriviaList()))),
-                                CreateXmlDocBlock("summary", summary),
-                                SyntaxFactory
+                                CreateXmlDocBlock("summary", summary), SyntaxFactory
                                     .XmlText()
                                     .WithTextTokens(
                                         SyntaxFactory.TokenList(

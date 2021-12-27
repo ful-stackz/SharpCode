@@ -55,7 +55,7 @@ namespace SharpCode.Test
                 .WithConstructor(Code.CreateConstructor(AccessModifier.Private)
                     .WithSummary("Privately initializes a new instance of the Test class.")
                     .WithParameter("string", "name"))
-                .WithConstructor(Code.CreateConstructor(AccessModifier.PrivateInternal)
+                .WithConstructor(Code.CreateConstructor(AccessModifier.PrivateProtected)
                     .WithParameter("string", "name")
                     .WithParameter("int", "count"))
                 .ToSourceCode()
@@ -78,7 +78,7 @@ public class Test
     {
     }
 
-    private internal Test(string name, int count)
+    private protected Test(string name, int count)
     {
     }
 }

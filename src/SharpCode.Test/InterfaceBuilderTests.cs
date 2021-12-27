@@ -104,8 +104,8 @@ public interface ITest : IHaveTests, IFailNot
                 expectedCode.Replace("{access-modifier}", "private").Trim(),
                 Code.CreateInterface("ITest", AccessModifier.Private).ToSourceCode().WithUnixEOL());
             Assert.AreEqual(
-                expectedCode.Replace("{access-modifier}", "private internal").Trim(),
-                Code.CreateInterface("ITest", AccessModifier.PrivateInternal).ToSourceCode().WithUnixEOL());
+                expectedCode.Replace("{access-modifier}", "private protected").Trim(),
+                Code.CreateInterface("ITest", AccessModifier.PrivateProtected).ToSourceCode().WithUnixEOL());
             Assert.AreEqual(
                 expectedCode.Replace("{access-modifier}", "internal").Trim(),
                 Code.CreateInterface("ITest", AccessModifier.Internal).ToSourceCode().WithUnixEOL());

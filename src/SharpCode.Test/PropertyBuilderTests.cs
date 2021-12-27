@@ -25,6 +25,30 @@ public string Username
         }
 
         [Test]
+        public void CreateProperty_Works_WithAccessModifier()
+        {
+            var generatedCode = Code.CreateProperty("string", "Username").WithAccessModifier(AccessModifier.Public, AccessModifier.Private)
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public string Username
+{
+    get;
+    private set;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreatingProperty_WithAccessModifier_Throws()
+        {
+            Assert.Throws<SyntaxException>(() => Code.CreateProperty("string", "Username").WithAccessModifier(AccessModifier.Private, AccessModifier.Public).ToSourceCode().WithUnixEOL());
+        }
+
+        [Test]
         public void CreateProperty_Works_WithSummary()
         {
             var generatedCode = Code.CreateProperty("string", "Username")
