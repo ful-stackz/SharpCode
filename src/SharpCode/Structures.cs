@@ -14,7 +14,7 @@ namespace SharpCode
         Internal,
         Protected,
         Public,
-        PrivateInternal,
+        PrivateProtected,
         ProtectedInternal,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
@@ -82,6 +82,7 @@ namespace SharpCode
 
         public Property(
             AccessModifier accessModifier,
+            AccessModifier setterAccessModifier,
             bool isStatic = false,
             Option<string> type = default,
             Option<string> name = default,
@@ -91,6 +92,7 @@ namespace SharpCode
             Option<string> setter = default)
         {
             AccessModifier = accessModifier;
+            SetterAccessModifier = setterAccessModifier;
             IsStatic = isStatic;
             Type = type;
             Name = name;
@@ -101,6 +103,8 @@ namespace SharpCode
         }
 
         public readonly AccessModifier AccessModifier { get; }
+
+        public readonly AccessModifier SetterAccessModifier { get; }
 
         public readonly bool IsStatic { get; }
 
@@ -118,6 +122,7 @@ namespace SharpCode
 
         public readonly Property With(
             Option<AccessModifier> accessModifier = default,
+            Option<AccessModifier> setterAccessModifier = default,
             Option<bool> isStatic = default,
             Option<string> type = default,
             Option<string> name = default,
@@ -127,6 +132,7 @@ namespace SharpCode
             Option<Option<string>> setter = default) =>
             new Property(
                 accessModifier: accessModifier.ValueOr(AccessModifier),
+                setterAccessModifier: setterAccessModifier.ValueOr(SetterAccessModifier),
                 isStatic: isStatic.ValueOr(IsStatic),
                 type: type.Else(Type),
                 name: name.Else(Name),
@@ -170,11 +176,11 @@ namespace SharpCode
             ReceivingMember = receivingMember;
         }
 
-        public readonly string Type { get;  }
+        public readonly string Type { get; }
 
-        public readonly string Name { get;  }
+        public readonly string Name { get; }
 
-        public readonly Option<string> ReceivingMember { get;  }
+        public readonly Option<string> ReceivingMember { get; }
     }
 
     internal readonly struct Constructor

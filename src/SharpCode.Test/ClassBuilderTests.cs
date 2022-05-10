@@ -126,7 +126,7 @@ public class Triangle
             var expectedCode = @"
 internal class User
 {
-    private internal string _username;
+    private protected string _username;
     public User(string username)
     {
         _username = username;
@@ -135,7 +135,7 @@ internal class User
             ".Trim().WithUnixEOL();
 
             var generatedCode = Code.CreateClass("User", AccessModifier.Internal)
-                .WithField(Code.CreateField("string", "_username", AccessModifier.PrivateInternal))
+                .WithField(Code.CreateField("string", "_username", AccessModifier.PrivateProtected))
                 .WithConstructor(Code.CreateConstructor()
                     .WithParameter("string", "username", "_username"))
                 .ToSourceCode()

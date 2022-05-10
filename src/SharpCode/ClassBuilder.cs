@@ -271,7 +271,7 @@ namespace SharpCode
             {
                 // Lookup all possible members
                 return HasMember(name, MemberType.Field, accessModifier, comparison) ||
-                    HasMember(name, MemberType.Property, accessModifier, comparison);
+                       HasMember(name, MemberType.Property, accessModifier, comparison);
             }
 
             return false;

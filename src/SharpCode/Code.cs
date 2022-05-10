@@ -277,7 +277,45 @@ namespace SharpCode
                 throw new ArgumentNullException(nameof(name));
             }
 
-            return new PropertyBuilder(accessModifier, type, name);
+            return new PropertyBuilder(accessModifier, accessModifier, type, name);
+        }
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="PropertyBuilder"/> instance for building properties. Configures the
+        /// <see cref="PropertyBuilder"/> with the specified <paramref name="type"/>, <paramref name="name"/> and
+        /// <paramref name="accessModifier"/>.
+        /// </summary>
+        /// <param name="type">
+        /// The type of the property, eg. <c>int</c>, <c>string</c>, <c>User</c>. Used as-is.
+        /// </param>
+        /// <param name="name">
+        /// The name of the property. Used as-is.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the property.
+        /// </param>
+        /// <param name="setterAccessModifier">
+        /// The access of modifier of the property setter.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// </exception>
+        public static PropertyBuilder CreateProperty(
+            string type,
+            string name,
+            AccessModifier accessModifier,
+            AccessModifier setterAccessModifier)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            else if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
         }
 
         /// <summary>
@@ -313,7 +351,47 @@ namespace SharpCode
                 throw new ArgumentNullException(nameof(name));
             }
 
-            return new PropertyBuilder(accessModifier, type, name);
+            return new PropertyBuilder(accessModifier, accessModifier, type, name);
+        }
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="PropertyBuilder"/> instance for building properties. Configures the
+        /// <see cref="PropertyBuilder"/> with the specified <paramref name="type"/>, <paramref name="name"/> and
+        /// <paramref name="accessModifier"/>.
+        /// </summary>
+        /// <param name="type">
+        /// Used to derive the type of the property. The derived type of the field will use the framework keyword
+        /// instead of the language keyword, eg. <c>Int32</c> instead of <c>int</c> and <c>String</c> instead of
+        /// <c>string</c>.
+        /// </param>
+        /// <param name="name">
+        /// The name of the property. Used as-is.
+        /// </param>
+        /// <param name="accessModifier">
+        /// The access of modifier of the property.
+        /// </param>
+        /// <param name="setterAccessModifier">
+        /// The access of modifier of the property setter.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// </exception>
+        public static PropertyBuilder CreateProperty(
+            Type type,
+            string name,
+            AccessModifier accessModifier,
+            AccessModifier setterAccessModifier)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            else if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
         }
     }
 }

@@ -265,9 +265,9 @@ namespace GeneratedCode
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
-                    .WithClass(Code.CreateClass("Test", AccessModifier.PrivateInternal))
+                    .WithClass(Code.CreateClass("Test", AccessModifier.PrivateProtected))
                     .ToSourceCode(),
-                "Generating the source code for a private internal class inside a namespace should throw an exception.");
+                "Generating the source code for a private protected class inside a namespace should throw an exception.");
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
@@ -290,9 +290,9 @@ namespace GeneratedCode
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
-                    .WithStruct(Code.CreateStruct("Test", AccessModifier.PrivateInternal))
+                    .WithStruct(Code.CreateStruct("Test", AccessModifier.PrivateProtected))
                     .ToSourceCode(),
-                "Generating the source code for a private internal struct inside a namespace should throw an exception.");
+                "Generating the source code for a private protected struct inside a namespace should throw an exception.");
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
@@ -315,9 +315,9 @@ namespace GeneratedCode
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
-                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.PrivateInternal))
+                    .WithInterface(Code.CreateInterface("ITest", AccessModifier.PrivateProtected))
                     .ToSourceCode(),
-                "Generating the source code for a private internal interface inside a namespace should throw an exception.");
+                "Generating the source code for a private protected interface inside a namespace should throw an exception.");
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
@@ -340,9 +340,9 @@ namespace GeneratedCode
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")
-                    .WithEnum(Code.CreateEnum("Test", AccessModifier.PrivateInternal))
+                    .WithEnum(Code.CreateEnum("Test", AccessModifier.PrivateProtected))
                     .ToSourceCode(),
-                "Generating the source code for a private internal enum inside a namespace should throw an exception.");
+                "Generating the source code for a private protected enum inside a namespace should throw an exception.");
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateNamespace("Test")

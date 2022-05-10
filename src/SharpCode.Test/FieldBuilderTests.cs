@@ -94,7 +94,7 @@ namespace SharpCode.Test
         public void CreatingField_WithSummary_Works()
         {
             var generatedCode = Code.CreateField()
-                .WithAccessModifier(AccessModifier.PrivateInternal)
+                .WithAccessModifier(AccessModifier.PrivateProtected)
                 .WithSummary("Stores the name of the thing.")
                 .WithType("string")
                 .WithName("_name")
@@ -106,7 +106,7 @@ namespace SharpCode.Test
 /// <summary>
 /// Stores the name of the thing.
 /// </summary>
-private internal readonly string _name;
+private protected readonly string _name;
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
