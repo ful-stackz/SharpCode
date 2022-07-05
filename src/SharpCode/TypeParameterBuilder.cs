@@ -6,22 +6,33 @@ using Optional.Unsafe;
 
 namespace SharpCode;
 
+/// <summary>
+/// Provides functionalty for building type parameters.
+/// <see cref="TypeParameterBuilder"/> instances are <b>not</b> immutable.
+/// </summary>
 public class TypeParameterBuilder
 {
-    public TypeParameterBuilder()
+    internal TypeParameterBuilder()
     {
     }
 
-    public TypeParameterBuilder(string name, Option<IEnumerable<string>> constraints = default)
+    internal TypeParameterBuilder(string name, Option<IEnumerable<string>> constraints = default)
     {
         TypeParameter = new TypeParameter(name: Option.Some(name), constraints.Map(x => x.ToList()));
     }
 
     internal TypeParameter TypeParameter { get; private set; } = new TypeParameter(name: Option.None<string>());
 
+    /// <summary>
+    /// Sets the name of the type parameter.
+    /// </summary>
+    /// <param name="name">The name of the type parameter.</param>
+    /// <exception cref="ArgumentNullException">
+    /// The specified <paramref name="name"/> is <c>null</c>.
+    /// </exception>
     public TypeParameterBuilder WithName(string name)
     {
-        if (string.IsNullOrEmpty(name))
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }
@@ -30,9 +41,20 @@ public class TypeParameterBuilder
         return this;
     }
 
+    /// <summary>
+    /// Adds a constraint to the the type parameter. See <see cref="TypeParameterConstraint"/>
+    /// for various constraints and their explanations.
+    /// </summary>
+    /// <param name="constraint">
+    /// The constraint to be added to the type parameter.
+    /// Optionally, you can use <see cref="TypeParameterConstraint"/> members.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// The specific <paramref name="constraint"/> is <c>null</c>.
+    /// </exception>
     public TypeParameterBuilder WithConstraint(string constraint)
     {
-        if (string.IsNullOrWhiteSpace(constraint))
+        if (constraint is null)
         {
             throw new ArgumentNullException(nameof(constraint));
         }
@@ -41,6 +63,18 @@ public class TypeParameterBuilder
         return this;
     }
 
+    /// <summary>
+    /// Adds a bunch of constraints to the type parameter. See <see cref="TypeParameterConstraint"/>
+    /// for various constraints and their explanations.
+    /// </summary>
+    /// <param name="constraints">
+    /// The constraints to be added to the type parameter.
+    /// Optionally, you can use <see cref="TypeParameterConstraint"/> members.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// One of the specified <paramref name="constraints"/> is <c>null</c> or
+    /// an empty (invalid) string.
+    /// </exception>
     public TypeParameterBuilder WithConstraints(params string[] constraints)
     {
         if (constraints.Any(string.IsNullOrWhiteSpace))
@@ -52,6 +86,21 @@ public class TypeParameterBuilder
         return this;
     }
 
+    /// <summary>
+    /// Adds a bunch of constraints to the type parameter. See <see cref="TypeParameterConstraint"/>
+    /// for various constraints and their explanations.
+    /// </summary>
+    /// <param name="constraints">
+    /// The constraints to be added to the type parameter.
+    /// Optionally, you can use <see cref="TypeParameterConstraint"/> members.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// The specified <paramref name="constraints"/> is <c>null</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// One of the specified <paramref name="constraints"/> is <c>null</c> or
+    /// an empty (invalid) string.
+    /// </exception>
     public TypeParameterBuilder WithConstraints(IEnumerable<string> constraints)
     {
         if (constraints is null)

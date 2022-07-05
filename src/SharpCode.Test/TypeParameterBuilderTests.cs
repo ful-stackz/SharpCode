@@ -13,7 +13,7 @@ public class TypeParameterBuilderTests
             () => Code.CreateTypeParameter().Build(),
             "Generating the source code for a type parameter without setting the name should throw an exception.");
 
-        Assert.Throws<ArgumentNullException>(
+        Assert.Throws<MissingBuilderSettingException>(
             () => Code.CreateTypeParameter().WithName(string.Empty).Build(),
             "Generating the source code for a type parameter with an empty string as name should throw an exception.");
 
