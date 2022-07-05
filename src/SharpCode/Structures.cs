@@ -36,6 +36,24 @@ namespace SharpCode
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 
+    internal readonly struct TypeParameter
+    {
+        public TypeParameter(Option<string> name = default, Option<List<string>> constraints = default)
+        {
+            Name = name;
+            Constraints = constraints.ValueOr(new List<string>());
+        }
+
+        public readonly Option<string> Name { get; }
+
+        public readonly List<string> Constraints { get; }
+
+        public TypeParameter With(Option<string> name) =>
+            new TypeParameter(
+                name: name.Else(Name),
+                constraints: Option.Some(Constraints));
+    }
+
     internal readonly struct Field
     {
         public Field(

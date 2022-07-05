@@ -471,6 +471,15 @@ namespace SharpCode
             return declaration;
         }
 
+        public static TypeParameterSyntax FromDefinition(TypeParameter definition) =>
+            SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(definition.Name.ValueOrFailure()));
+
+        public static TypeParameterConstraintClauseSyntax GetTypeParameterConstraints(TypeParameter definition) =>
+            SyntaxFactory
+                .TypeParameterConstraintClause(SyntaxFactory.IdentifierName(definition.Name.ValueOrFailure()))
+                .WithConstraints(SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>(
+                    definition.Constraints.Select(constraint => SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraint)))));
+
         public static CompilationUnitSyntax NamespaceContainer(List<string> usings) =>
             SyntaxFactory.CompilationUnit().WithUsings(
                 SyntaxFactory.List(

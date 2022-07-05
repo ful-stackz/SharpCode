@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Optional;
 
 namespace SharpCode
@@ -393,5 +394,17 @@ namespace SharpCode
 
             return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
         }
+
+        public static TypeParameterBuilder CreateTypeParameter() =>
+            new TypeParameterBuilder();
+
+        public static TypeParameterBuilder CreateTypeParameter(string name) =>
+            new TypeParameterBuilder(name);
+
+        public static TypeParameterBuilder CreateTypeParameter(string name, params string[] constraints) =>
+            new TypeParameterBuilder(name, Option.Some<IEnumerable<string>>(constraints));
+
+        public static TypeParameterBuilder CreateTypeParameter(string name, IEnumerable<string> constraints) =>
+            new TypeParameterBuilder(name, Option.Some(constraints));
     }
 }
