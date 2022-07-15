@@ -124,10 +124,10 @@ namespace SharpCode
         /// Returns the source code of the built field.
         /// </summary>
         /// <exception cref="MissingBuilderSettingException">
-        /// A setting that is required to build a valid class structure is missing.
+        /// A setting that is required to build a valid field structure is missing.
         /// </exception>
         /// <exception cref="SyntaxException">
-        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// The field builder is configured in such a way that the resulting code would be invalid.
         /// </exception>
         public string ToSourceCode() =>
             Ast.Stringify(Ast.FromDefinition(Build()));
@@ -136,10 +136,10 @@ namespace SharpCode
         /// Returns the source code of the built field.
         /// </summary>
         /// <exception cref="MissingBuilderSettingException">
-        /// A setting that is required to build a valid class structure is missing.
+        /// A setting that is required to build a valid field structure is missing.
         /// </exception>
         /// <exception cref="SyntaxException">
-        /// The class builder is configured in such a way that the resulting code would be invalid.
+        /// The field builder is configured in such a way that the resulting code would be invalid.
         /// </exception>
         public override string ToString() =>
             ToSourceCode();
