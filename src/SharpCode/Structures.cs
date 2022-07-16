@@ -373,13 +373,15 @@ namespace SharpCode
             Option<string> name = default,
             Option<string> summary = default,
             Option<List<string>> implementedInterfaces = default,
-            Option<List<Property>> properties = default)
+            Option<List<Property>> properties = default,
+            Option<List<TypeParameter>> typeParameters = default)
         {
             AccessModifier = accessModifier;
             Name = name;
             Summary = summary;
             ImplementedInterfaces = implementedInterfaces.ValueOr(new List<string>());
             Properties = properties.ValueOr(new List<Property>());
+            TypeParameters = typeParameters.ValueOr(new List<TypeParameter>());
         }
 
         public readonly AccessModifier AccessModifier { get; }
@@ -391,6 +393,8 @@ namespace SharpCode
         public readonly List<string> ImplementedInterfaces { get; }
 
         public readonly List<Property> Properties { get; }
+
+        public readonly List<TypeParameter> TypeParameters { get; }
 
         public Interface With(
             Option<AccessModifier> accessModifier = default,

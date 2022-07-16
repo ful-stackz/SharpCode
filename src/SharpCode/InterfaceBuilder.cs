@@ -12,6 +12,7 @@ namespace SharpCode
     public class InterfaceBuilder
     {
         private readonly List<PropertyBuilder> _properties = new List<PropertyBuilder>();
+        private readonly List<TypeParameterBuilder> _typeParameters = new List<TypeParameterBuilder>();
 
         internal InterfaceBuilder()
         {
@@ -158,6 +159,65 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds a type parameter to the interface being built.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builder"/> is <c>null</c>.
+        /// </exception>
+        public InterfaceBuilder WithTypeParameter(TypeParameterBuilder builder)
+        {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            _typeParameters.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of type parameters to the interface being built.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        public InterfaceBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
+        {
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the type parameter builders is null.");
+            }
+
+            _typeParameters.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of type parameters to the interface being built.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        public InterfaceBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
+        {
+            if (builders is null)
+            {
+                throw new ArgumentNullException(nameof(builders));
+            }
+
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the type parameter builders is null.");
+            }
+
+            _typeParameters.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Checks whether the described member exists in the interface structure.
         /// </summary>
         /// <param name="name">
@@ -240,6 +300,8 @@ namespace SharpCode
             {
                 throw new SyntaxException("Interface properties can only define an auto implemented setter.");
             }
+
+            Interface.TypeParameters.AddRange(_typeParameters.Select(builder => builder.Build()));
 
             return Interface;
         }
