@@ -476,6 +476,20 @@ namespace SharpCode
                 declaration = declaration.WithLeadingTrivia(CreateXmlDoc(summary));
             });
 
+            if (definition.TypeParameters.Any())
+            {
+                declaration = declaration
+                    .WithTypeParameterList(
+                        SyntaxFactory.TypeParameterList(
+                            SyntaxFactory.SeparatedList(
+                                definition.TypeParameters.Select(FromDefinition))))
+                    .WithConstraintClauses(
+                        SyntaxFactory.List(
+                            definition.TypeParameters
+                                .Where(x => x.Constraints.Any())
+                                .Select(GetTypeParameterConstraints)));
+            }
+
             if (definition.ImplementedInterfaces.Any())
             {
                 declaration = declaration.AddBaseListTypes(

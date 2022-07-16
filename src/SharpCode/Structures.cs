@@ -327,7 +327,8 @@ namespace SharpCode
             Option<List<string>> implementedInterfaces = default,
             Option<List<Constructor>> constructors = default,
             Option<List<Field>> fields = default,
-            Option<List<Property>> properties = default)
+            Option<List<Property>> properties = default,
+            Option<List<TypeParameter>> typeParameters = default)
         {
             AccessModifier = accessModifier;
             Name = name;
@@ -336,6 +337,7 @@ namespace SharpCode
             Constructors = constructors.ValueOr(new List<Constructor>());
             Fields = fields.ValueOr(new List<Field>());
             Properties = properties.ValueOr(new List<Property>());
+            TypeParameters = typeParameters.ValueOr(new List<TypeParameter>());
         }
 
         public readonly AccessModifier AccessModifier { get; }
@@ -351,6 +353,8 @@ namespace SharpCode
         public readonly List<Field> Fields { get; }
 
         public readonly List<Property> Properties { get; }
+
+        public readonly List<TypeParameter> TypeParameters { get; }
 
         public readonly Struct With(
             Option<AccessModifier> accessModifier = default,
