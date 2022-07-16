@@ -261,7 +261,8 @@ namespace SharpCode
             Option<List<string>> implementedInterfaces = default,
             Option<List<Field>> fields = default,
             Option<List<Property>> properties = default,
-            Option<List<Constructor>> constructors = default)
+            Option<List<Constructor>> constructors = default,
+            Option<List<TypeParameter>> typeParameters = default)
         {
             AccessModifier = accessModifier;
             IsStatic = isStatic;
@@ -272,6 +273,7 @@ namespace SharpCode
             Fields = fields.ValueOr(new List<Field>());
             Properties = properties.ValueOr(new List<Property>());
             Constructors = constructors.ValueOr(new List<Constructor>());
+            TypeParameters = typeParameters.ValueOr(new List<TypeParameter>());
         }
 
         public readonly AccessModifier AccessModifier { get; }
@@ -291,6 +293,8 @@ namespace SharpCode
         public readonly List<Property> Properties { get; }
 
         public readonly List<Constructor> Constructors { get; }
+
+        public readonly List<TypeParameter> TypeParameters { get; }
 
         public readonly Class With(
             Option<AccessModifier> accessModifier = default,

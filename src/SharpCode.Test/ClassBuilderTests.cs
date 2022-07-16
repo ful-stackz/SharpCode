@@ -294,6 +294,86 @@ public static class Config
         }
 
         [Test]
+        public void CreateClass_WithTypeParameter_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("TKey"),
+                            Code.CreateTypeParameter("TValue"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+    private readonly Dictionary<TKey, TValue> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+    private readonly Dictionary<K, V> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+    private readonly Dictionary<K, V> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void CreatingStaticClass_WithMultipleConstructors_Throws()
         {
             Assert.Throws<SyntaxException>(
