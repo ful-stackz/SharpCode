@@ -61,13 +61,15 @@ namespace SharpCode
             bool isReadonly = false,
             Option<string> type = default,
             Option<string> name = default,
-            Option<string> summary = default)
+            Option<string> summary = default,
+            Option<List<TypeParameter>> typeParameters = default)
         {
             AccessModifier = accessModifier;
             IsReadonly = isReadonly;
             Type = type;
             Name = name;
             Summary = summary;
+            TypeParameters = typeParameters.ValueOr(new List<TypeParameter>());
         }
 
         public readonly AccessModifier AccessModifier { get; }
@@ -79,6 +81,8 @@ namespace SharpCode
         public readonly Option<string> Name { get; }
 
         public readonly Option<string> Summary { get; }
+
+        public readonly List<TypeParameter> TypeParameters { get; }
 
         public readonly Field With(
             Option<AccessModifier> accessModifier = default,

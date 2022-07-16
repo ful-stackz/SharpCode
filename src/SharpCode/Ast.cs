@@ -34,9 +34,21 @@ namespace SharpCode
 
         public static FieldDeclarationSyntax FromDefinition(Field definition)
         {
-            var variableDeclaration = SyntaxFactory
-                .VariableDeclaration(SyntaxFactory.ParseTypeName(definition.Type.ValueOrFailure()))
-                .AddVariables(SyntaxFactory.VariableDeclarator(definition.Name.ValueOrFailure()));
+            var variableDeclaration = definition.TypeParameters.Any()
+                /* create variable declaration with type parameters, ie. "Dictionary<TKey, TValue> _store" */
+                ? SyntaxFactory
+                    .VariableDeclaration(
+                        SyntaxFactory.GenericName(definition.Type.ValueOrFailure())
+                            .WithTypeArgumentList(
+                                SyntaxFactory.TypeArgumentList(
+                                    SyntaxFactory.SeparatedList(
+                                        definition.TypeParameters.Select<TypeParameter, TypeSyntax>(
+                                            typeParam => SyntaxFactory.IdentifierName(typeParam.Name.ValueOrFailure()))))))
+                    .AddVariables(SyntaxFactory.VariableDeclarator(definition.Name.ValueOrFailure()))
+                /* create regular variable declaration, ie. "string _name" */
+                : SyntaxFactory
+                    .VariableDeclaration(SyntaxFactory.ParseTypeName(definition.Type.ValueOrFailure()))
+                    .AddVariables(SyntaxFactory.VariableDeclarator(definition.Name.ValueOrFailure()));
 
             var fieldDeclaration = SyntaxFactory
                 .FieldDeclaration(variableDeclaration)
