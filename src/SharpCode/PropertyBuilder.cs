@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Optional;
 using Optional.Unsafe;
 
@@ -10,6 +12,8 @@ namespace SharpCode
     /// </summary>
     public class PropertyBuilder
     {
+        private readonly List<TypeParameterBuilder> _typeParameters = new List<TypeParameterBuilder>();
+
         internal PropertyBuilder()
         {
         }
@@ -290,6 +294,65 @@ namespace SharpCode
         }
 
         /// <summary>
+        /// Adds a type parameter to the property being built.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builder"/> is <c>null</c>.
+        /// </exception>
+        public PropertyBuilder WithTypeParameter(TypeParameterBuilder builder)
+        {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            _typeParameters.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of type parameters to the property being built.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        public PropertyBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
+        {
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the type parameter builders is null.");
+            }
+
+            _typeParameters.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a bunch of type parameters to the property being built.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// One of the specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
+        public PropertyBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
+        {
+            if (builders is null)
+            {
+                throw new ArgumentNullException(nameof(builders));
+            }
+
+            if (builders.Any(x => x is null))
+            {
+                throw new ArgumentException("One of the type parameter builders is null.");
+            }
+
+            _typeParameters.AddRange(builders);
+            return this;
+        }
+
+        /// <summary>
         /// Returns the source code of the built property.
         /// </summary>
         /// <exception cref="MissingBuilderSettingException">
@@ -346,6 +409,8 @@ namespace SharpCode
                     throw new SyntaxException("Only auto implemented properties can have a default value. (CS8050)");
                 }
             }
+
+            Property.TypeParameters.AddRange(_typeParameters.Select(builder => builder.Build()));
 
             return Property;
         }

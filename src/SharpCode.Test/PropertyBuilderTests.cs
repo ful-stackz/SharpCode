@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -316,6 +317,68 @@ public static int Zero
         public void CreatingProperty_WithInvalidDefaultValue_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => Code.CreateProperty().WithDefaultValue(null));
+        }
+
+        [Test]
+        public void CreateProperty_WithTypeParameter_Works()
+        {
+            var generatedCode = Code.CreateProperty("Dictionary", "Store")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public Dictionary<TKey, TValue> Store
+{
+    get;
+    set;
+}"
+            .Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateProperty_WithTypeParameters_Works()
+        {
+            var generatedCode = Code.CreateProperty("List", "Users")
+                .WithTypeParameters(Code.CreateTypeParameter("User"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public List<User> Users
+{
+    get;
+    set;
+}"
+            .Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateProperty_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateProperty("Map", "Coordinates")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("string"),
+                    Code.CreateTypeParameter("(double X, double Y)"),
+                })
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public Map<string, (double X, double Y)> Coordinates
+{
+    get;
+    set;
+}"
+            .Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
         }
 
         [Test]

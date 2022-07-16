@@ -111,7 +111,8 @@ namespace SharpCode
             Option<string> summary = default,
             Option<string> defaultValue = default,
             Option<string> getter = default,
-            Option<string> setter = default)
+            Option<string> setter = default,
+            Option<List<TypeParameter>> typeParameters = default)
         {
             AccessModifier = accessModifier;
             SetterAccessModifier = setterAccessModifier;
@@ -122,6 +123,7 @@ namespace SharpCode
             DefaultValue = defaultValue;
             Getter = getter;
             Setter = setter;
+            TypeParameters = typeParameters.ValueOr(new List<TypeParameter>());
         }
 
         public readonly AccessModifier AccessModifier { get; }
@@ -141,6 +143,8 @@ namespace SharpCode
         public readonly Option<string> Getter { get; }
 
         public readonly Option<string> Setter { get; }
+
+        public readonly List<TypeParameter> TypeParameters { get; }
 
         public readonly Property With(
             Option<AccessModifier> accessModifier = default,

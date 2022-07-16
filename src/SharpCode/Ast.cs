@@ -71,7 +71,16 @@ namespace SharpCode
         {
             var declaration = SyntaxFactory
                 .PropertyDeclaration(
-                    type: SyntaxFactory.ParseTypeName(definition.Type.ValueOrFailure()),
+                    type: definition.TypeParameters.Any()
+                        /* create property declaration with type parameters, ie. "Dictionary<TKey, TValue> Store" */
+                        ? SyntaxFactory.GenericName(definition.Type.ValueOrFailure())
+                            .WithTypeArgumentList(
+                                SyntaxFactory.TypeArgumentList(
+                                    SyntaxFactory.SeparatedList(
+                                        definition.TypeParameters.Select<TypeParameter, TypeSyntax>(
+                                            typeParam => SyntaxFactory.IdentifierName(typeParam.Name.ValueOrFailure())))))
+                        /* create regular property declaration, ie. "string Name" */
+                        : SyntaxFactory.ParseTypeName(definition.Type.ValueOrFailure()),
                     identifier: definition.Name.ValueOrFailure())
                 .AddModifiers(FromDefinition(definition.AccessModifier));
 

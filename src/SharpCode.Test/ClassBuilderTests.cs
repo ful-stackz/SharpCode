@@ -299,6 +299,65 @@ public static class Config
             var generatedCode = Code.CreateClass("Dict")
                 .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
                 .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_Params_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_WithField_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
                 .WithField(
                     Code.CreateField("Dictionary", "_store")
                         .WithTypeParameters(
@@ -320,7 +379,7 @@ public class Dict<TKey, TValue>
         }
 
         [Test]
-        public void CreateClass_WithTypeParameters_Works()
+        public void CreateClass_WithTypeParameters_Params_WithField_Works()
         {
             var generatedCode = Code.CreateClass("Dict")
                 .WithTypeParameters(
@@ -346,7 +405,7 @@ public class Dict<K, V>
         }
 
         [Test]
-        public void CreateClass_WithTypeParameters_IEnumerable_Works()
+        public void CreateClass_WithTypeParameters_IEnumerable_WithField_Works()
         {
             var generatedCode = Code.CreateClass("Dict")
                 .WithTypeParameters(new List<TypeParameterBuilder>()
@@ -367,6 +426,95 @@ public class Dict<K, V>
 public class Dict<K, V>
 {
     private readonly Dictionary<K, V> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("TKey"),
+                            Code.CreateTypeParameter("TValue")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+    public Dictionary<TKey, TValue> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_Params_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+    public Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateClass_WithTypeParameters_IEnumerable_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateClass("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public class Dict<K, V>
+{
+    public Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
 }
             ".Trim().WithUnixEOL();
 
