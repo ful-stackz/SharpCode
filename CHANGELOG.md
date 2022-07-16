@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New access modifier - `AccessModifier.PrivateProtected` - `private protected`
+- Support for setting the access modifier of a property' getter and setter individually via the `PropertyBuilder.WithAccessModifier(AccessModifier getterAccessModifier, AccessModifier setterAccessModifier)` overloaded method
+- Support for defining type parameters when building classes, structs, interfaces, fields and parameters
+
+### Fixed
+
+- Removed the invalid access modifier `AccessModifier.PrivateInternal` - `private internal`
+
 ## [0.3.0] - 2021-08-05
 
 ### Added
