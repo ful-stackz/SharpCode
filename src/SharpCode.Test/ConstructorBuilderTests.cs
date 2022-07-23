@@ -9,39 +9,35 @@ namespace SharpCode.Test
         [Test]
         public void CreatingStaticConstructor_WithAccessModifier_Throws()
         {
-            // @ConstructorBuilder does not expose an API for setting whether it is static.
-            // Create a static class, instead, which makes the constructor static internally.
             Assert.Throws<SyntaxException>(
-                () => Code.CreateClass("Test")
-                    .MakeStatic()
-                    .WithConstructor(Code.CreateConstructor().WithAccessModifier(AccessModifier.Public))
-                    .ToSourceCode(),
-                "Generating the source code for a static constructor with an access modifier should throw an exception.");
+                () => Code.CreateConstructor()
+                    .WithAccessModifier(AccessModifier.Public)
+                    .MakeStatic(true)
+                    .Build(),
+                "Generating the source code for a static constructor with a specified access modifier should throw an exception.");
         }
 
         [Test]
         public void CreatingStaticConstructor_WithParameters_Throws()
         {
-            // @ConstructorBuilder does not expose an API for setting whether it is static.
-            // Create a static class, instead, which makes the constructor static internally.
             Assert.Throws<SyntaxException>(
-                () => Code.CreateClass("Test")
-                    .MakeStatic()
-                    .WithConstructor(Code.CreateConstructor().WithParameter("int", "num"))
-                    .ToSourceCode(),
+                () => Code.CreateConstructor()
+                    .WithAccessModifier(AccessModifier.None)
+                    .WithParameter(typeof(string), "name")
+                    .MakeStatic(true)
+                    .Build(),
                 "Generating the source code for a static constructor with parameters should throw an exception.");
         }
 
         [Test]
         public void CreatingStaticConstructor_WithBaseCall_Throws()
         {
-            // @ConstructorBuilder does not expose an API for setting whether it is static.
-            // Create a static class, instead, which makes the constructor static internally.
             Assert.Throws<SyntaxException>(
-                () => Code.CreateClass("Test")
-                    .MakeStatic()
-                    .WithConstructor(Code.CreateConstructor().WithBaseCall())
-                    .ToSourceCode(),
+                () => Code.CreateConstructor()
+                    .WithAccessModifier(AccessModifier.None)
+                    .WithBaseCall()
+                    .MakeStatic(true)
+                    .Build(),
                 "Generating the source code for a static constructor with a base call should throw an exception.");
         }
 
@@ -164,6 +160,12 @@ public class Test
                     type: null as string,
                     name: "something"),
                 "Adding parameter with type '(string)null' to a constructor should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateConstructor().WithParameter(
+                    type: string.Empty,
+                    name: "something"),
+                "Adding parameter with an empty string for type to a constructor should throw an exception.");
 
             Assert.Throws<ArgumentNullException>(
                 () => Code.CreateConstructor().WithParameter(
