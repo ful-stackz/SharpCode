@@ -71,14 +71,16 @@ namespace SharpCode
         public ConstructorBuilder WithParameter(string type, string name, string? receivingMember = null)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
+
+            if (string.IsNullOrWhiteSpace(type))
+                throw new ArgumentException("Providing a valid parameter type is required.", nameof(type));
 
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Providing a valid parameter name is required.", nameof(name));
 
             Constructor.Parameters.Add(new Parameter(
                 type: type,
@@ -86,6 +88,7 @@ namespace SharpCode
                 receivingMember: string.IsNullOrEmpty(receivingMember)
                     ? Option.None<string>()
                     : Option.Some(receivingMember!)));
+
             return this;
         }
 
@@ -129,14 +132,13 @@ namespace SharpCode
         public ConstructorBuilder WithParameter(Type type, string name, string? receivingMember = null)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
 
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Providing a valid parameter name is required.", nameof(name));
 
             Constructor.Parameters.Add(new Parameter(
                 type: type.Name,
@@ -144,6 +146,48 @@ namespace SharpCode
                 receivingMember: string.IsNullOrEmpty(receivingMember)
                     ? Option.None<string>()
                     : Option.Some(receivingMember!)));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the <c>base()</c> call of the constructor with the specified <paramref name="passedParameter" />.
+        /// </summary>
+        /// <param name="passedParameter">
+        /// The parameter that will be passed to the <c>base()</c> call.
+        /// </param>
+        /// <example>
+        /// This example shows the generated code for a constructor with a base call.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithBaseCall();
+        /// public User(): base()
+        /// {
+        /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// This example shows the generated code for a constructor with a base call with passed parameters.
+        ///
+        /// <code>
+        /// // ConstructorBuilder.WithParameter("string", "username").WithBaseCall("username");
+        /// public User(string username): base(username)
+        /// {
+        /// }
+        /// </code>
+        /// </example>
+        /// <exception cref="ArgumentException">
+        /// The specified he <paramref name="passedParameter"/> value is <c>null</c>.
+        /// </exception>
+        public ConstructorBuilder WithBaseCall(string passedParameter)
+        {
+            if (passedParameter is null)
+                throw new ArgumentNullException(nameof(passedParameter));
+
+            if (string.IsNullOrWhiteSpace(passedParameter))
+                throw new ArgumentException("The base call parameter must be a valid parameter name.", nameof(passedParameter));
+
+            Constructor = Constructor.With(baseCallParameters: Option.Some<IEnumerable<string>>(new string[] { passedParameter }));
             return this;
         }
 
@@ -167,8 +211,11 @@ namespace SharpCode
         /// This example shows the generated code for a constructor with a base call with passed parameters.
         ///
         /// <code>
-        /// // ConstructorBuilder.WithParameter("string", "username").WithBaseCall("username");
-        /// public User(string username): base(username)
+        /// // ConstructorBuilder
+        /// //   .WithParameter("string", "username")
+        /// //   .WithParameter("int", "age")
+        /// //   .WithBaseCall("username", "age);
+        /// public User(string username, int age): base(username, age)
         /// {
         /// }
         /// </code>
@@ -178,10 +225,8 @@ namespace SharpCode
         /// </exception>
         public ConstructorBuilder WithBaseCall(params string[] passedParameters)
         {
-            if (passedParameters.Any(x => x is null))
-            {
+            if (passedParameters.Any(x => string.IsNullOrWhiteSpace(x)))
                 throw new ArgumentException($"One of the {nameof(passedParameters)} parameter values was null.");
-            }
 
             Constructor = Constructor.With(baseCallParameters: Option.Some<IEnumerable<string>>(passedParameters));
             return this;
@@ -199,9 +244,7 @@ namespace SharpCode
         public ConstructorBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Constructor = Constructor.With(summary: Option.Some(summary));
             return this;
@@ -215,11 +258,7 @@ namespace SharpCode
 
         internal ConstructorBuilder WithName(string name)
         {
-            if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
+            // Parameter 'name' is never null, as it is passed down from class/struct builder after being validated
             Constructor = Constructor.With(className: Option.Some(name));
             return this;
         }
