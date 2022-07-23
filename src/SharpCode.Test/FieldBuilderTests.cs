@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -116,6 +117,49 @@ private protected readonly string _name;
         public void CreatingField_WithInvalidSummary_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => Code.CreateField().WithSummary(null));
+        }
+
+        [Test]
+        public void CreateField_WithTypeParameter_Works()
+        {
+            var generatedCode = Code.CreateField("Dictionary", "_store")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue"))
+                .ToSourceCode();
+
+            var expectedCode = "private Dictionary<TKey, TValue> _store;";
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateField_WithTypeParameters_Works()
+        {
+            var generatedCode = Code.CreateField("List", "_users", AccessModifier.Private)
+                .MakeReadonly()
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("User"))
+                .ToSourceCode();
+
+            var expectedCode = "private readonly List<User> _users;";
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateField_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateField("Map", "_coordinates")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("string"),
+                    Code.CreateTypeParameter("(double X, double Y)"),
+                })
+                .ToSourceCode();
+
+            var expectedCode = "private Map<string, (double X, double Y)> _coordinates;";
+
+            Assert.AreEqual(expectedCode, generatedCode);
         }
 
         [Test]

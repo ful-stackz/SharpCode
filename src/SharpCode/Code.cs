@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Optional;
 
 namespace SharpCode
@@ -393,5 +394,40 @@ namespace SharpCode
 
             return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
         }
+
+        /// <summary>
+        /// Creates a new <see cref="TypeParameterBuilder"/> instance for building type parameters.
+        /// </summary>
+        public static TypeParameterBuilder CreateTypeParameter() =>
+            new TypeParameterBuilder();
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="TypeParameterBuilder"/> instance for building type parameters.
+        /// Configures the <see cref="TypeParameterBuilder"/> instance with the
+        /// specified <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the type parameter.</param>
+        public static TypeParameterBuilder CreateTypeParameter(string name) =>
+            new TypeParameterBuilder(name);
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="TypeParameterBuilder"/> instance for building type parameters.
+        /// Configures the <see cref="TypeParameterBuilder"/> instance with the
+        /// specified <paramref name="name"/> and <paramref name="constraints"/>.
+        /// </summary>
+        /// <param name="name">The name of the type parameter.</param>
+        /// <param name="constraints">The constraints of the type parameter.</param>
+        public static TypeParameterBuilder CreateTypeParameter(string name, params string[] constraints) =>
+            new TypeParameterBuilder(name, Option.Some<IEnumerable<string>>(constraints));
+
+        /// <summary>
+        /// Creates a new pre-configured <see cref="TypeParameterBuilder"/> instance for building type parameters.
+        /// Configures the <see cref="TypeParameterBuilder"/> instance with the
+        /// specified <paramref name="name"/> and <paramref name="constraints"/>.
+        /// </summary>
+        /// <param name="name">The name of the type parameter.</param>
+        /// <param name="constraints">The constraints of the type parameter.</param>
+        public static TypeParameterBuilder CreateTypeParameter(string name, IEnumerable<string> constraints) =>
+            new TypeParameterBuilder(name, Option.Some(constraints));
     }
 }

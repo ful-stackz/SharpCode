@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace SharpCode.Test
@@ -165,6 +166,154 @@ public interface ITest
 /// </summary>
 public interface ISerializable
 {
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameter_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameters_Params_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameters_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("TKey"),
+                            Code.CreateTypeParameter("TValue")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+    Dictionary<TKey, TValue> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameters_Params_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<K, V>
+{
+    Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithTypeParameters_IEnumerable_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateInterface("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public interface Dict<K, V>
+{
+    Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
 }
             ".Trim().WithUnixEOL();
 

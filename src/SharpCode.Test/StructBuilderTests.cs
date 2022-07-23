@@ -221,6 +221,234 @@ public struct Position
         }
 
         [Test]
+        public void CreateStruct_WithTypeParameter_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_Params_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_IEnumerable_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_WithField_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("TKey"),
+                            Code.CreateTypeParameter("TValue"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+    private readonly Dictionary<TKey, TValue> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_Params_WithField_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+    private readonly Dictionary<K, V> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_IEnumerable_WithField_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .WithField(
+                    Code.CreateField("Dictionary", "_store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V"))
+                        .MakeReadonly())
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+    private readonly Dictionary<K, V> _store;
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameter(Code.CreateTypeParameter("TKey", "IEquatable<TKey>"))
+                .WithTypeParameter(Code.CreateTypeParameter("TValue", TypeParameterConstraint.NotNull))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("TKey"),
+                            Code.CreateTypeParameter("TValue")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<TKey, TValue>
+    where TKey : IEquatable<TKey> where TValue : notnull
+{
+    public Dictionary<TKey, TValue> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_Params_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"))
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+    public Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateStruct_WithTypeParameters_IEnumerable_WithProperty_Works()
+        {
+            var generatedCode = Code.CreateStruct("Dict")
+                .WithTypeParameters(new List<TypeParameterBuilder>()
+                {
+                    Code.CreateTypeParameter("K"),
+                    Code.CreateTypeParameter("V"),
+                })
+                .WithProperty(
+                    Code.CreateProperty("Dictionary", "Store")
+                        .WithTypeParameters(
+                            Code.CreateTypeParameter("K"),
+                            Code.CreateTypeParameter("V")))
+                .ToSourceCode()
+                .WithUnixEOL();
+
+            var expectedCode = @"
+public struct Dict<K, V>
+{
+    public Dictionary<K, V> Store
+    {
+        get;
+        set;
+    }
+}
+            ".Trim().WithUnixEOL();
+
+            Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
         public void StructBuilder_ToSourceCode_ToString_Identical()
         {
             var toSourceCode = Code.CreateStruct()
