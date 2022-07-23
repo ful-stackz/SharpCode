@@ -2,9 +2,10 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1101" Action="None" /> <!-- Prefix local calls with this -->
     <Rule Id="SA1200" Action="None" /> <!-- Using directives must be placed inside the namespace -->
-    <Rule Id="SA1305" Action="Warning" /> <!-- Field names must not use hungarian notation -->
+    <Rule Id="SA1305" Action="Warning" /> <!-- Field names must not use Hungarian notation -->
     <Rule Id="SA1309" Action="None" /> <!-- Field names must not begin with underscore -->
     <Rule Id="SA1402" Action="None" /> <!-- File may only contain a single type -->
+    <Rule Id="SA1503" Action="None" /> <!-- Allow omitting opening and closing braces for single line usage -->
     <Rule Id="SA1600" Action="None" /> <!-- All elements must be documented -->
     <Rule Id="SA1602" Action="None" /> <!-- Enumeration items must be documented -->
     <Rule Id="SA1604" Action="Warning" /> <!-- Elements must have a <summary> documentation -->
