@@ -68,26 +68,33 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="type"/> or <paramref name="name"/> are <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/>, <paramref name="name"/> or
+        /// <paramref name="receivingMember"/> have an empty or invalid value.
+        /// </exception>
         public ConstructorBuilder WithParameter(string type, string name, string? receivingMember = null)
         {
             if (type is null)
                 throw new ArgumentNullException(nameof(type));
 
             if (string.IsNullOrWhiteSpace(type))
-                throw new ArgumentException("Providing a valid parameter type is required.", nameof(type));
+                throw new ArgumentException($"Providing a non-empty and valid parameter type is required.", nameof(type));
 
             if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Providing a valid parameter name is required.", nameof(name));
+                throw new ArgumentException($"Providing a non-empty and valid parameter name is required.", nameof(name));
+
+            if (receivingMember is not null && string.IsNullOrWhiteSpace(receivingMember))
+                throw new ArgumentException($"Providing a non-empty and valid {nameof(receivingMember)} is required.", nameof(receivingMember));
 
             Constructor.Parameters.Add(new Parameter(
                 type: type,
                 name: name,
-                receivingMember: string.IsNullOrEmpty(receivingMember)
+                receivingMember: receivingMember is null
                     ? Option.None<string>()
-                    : Option.Some(receivingMember!)));
+                    : Option.Some(receivingMember)));
 
             return this;
         }
@@ -129,6 +136,10 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="type"/> or <paramref name="name"/> are <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> or <paramref name="receivingMember"/>
+        /// have an empty or invalid value.
+        /// </exception>
         public ConstructorBuilder WithParameter(Type type, string name, string? receivingMember = null)
         {
             if (type is null)
@@ -140,12 +151,15 @@ namespace SharpCode
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Providing a valid parameter name is required.", nameof(name));
 
+            if (receivingMember is not null && string.IsNullOrWhiteSpace(receivingMember))
+                throw new ArgumentException($"Providing a non-empty and valid {nameof(receivingMember)} is required.", nameof(receivingMember));
+
             Constructor.Parameters.Add(new Parameter(
                 type: type.Name,
                 name: name,
-                receivingMember: string.IsNullOrEmpty(receivingMember)
+                receivingMember: receivingMember is null
                     ? Option.None<string>()
-                    : Option.Some(receivingMember!)));
+                    : Option.Some(receivingMember)));
 
             return this;
         }
@@ -176,8 +190,11 @@ namespace SharpCode
         /// }
         /// </code>
         /// </example>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="passedParameter"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
-        /// The specified he <paramref name="passedParameter"/> value is <c>null</c>.
+        /// The specified he <paramref name="passedParameter"/> value is empty or invalid.
         /// </exception>
         public ConstructorBuilder WithBaseCall(string passedParameter)
         {

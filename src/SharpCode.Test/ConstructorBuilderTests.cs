@@ -187,6 +187,40 @@ public class Test
         }
 
         [Test]
+        public void CreateConstructor_WithInvalidReceivingMember_Throws()
+        {
+            // WithParameter(Type type, ...) API
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateConstructor().WithParameter(
+                    type: typeof(string),
+                    name: "something",
+                    receivingMember: string.Empty),
+                "Adding parameter with an empty receiving member to a constructor should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateConstructor().WithParameter(
+                    type: typeof(string),
+                    name: "something",
+                    receivingMember: "  "),
+                "Adding parameter with a whitespace receiving member to a constructor should throw an exception.");
+
+            // WithParameter(string type, ...) API
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateConstructor().WithParameter(
+                    type: "string",
+                    name: "something",
+                    receivingMember: string.Empty),
+                "Adding parameter with an empty receiving member to a constructor should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateConstructor().WithParameter(
+                    type: "string",
+                    name: "something",
+                    receivingMember: "  "),
+                "Adding parameter with a whitespace receiving member to a constructor should throw an exception.");
+        }
+
+        [Test]
         public void CreateConstructor_WithInvalidBaseCall_Throws()
         {
             // WithBaseCall(string passedParameter) API
