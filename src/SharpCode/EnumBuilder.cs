@@ -41,12 +41,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public EnumBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The enum name must be a valid, non-empty string.", nameof(name));
 
             Enumeration = Enumeration.With(name: Option.Some(name));
             return this;
@@ -61,9 +65,7 @@ namespace SharpCode
         public EnumBuilder WithMember(EnumMemberBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _members.Add(builder);
             return this;
@@ -72,15 +74,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of members to the enum being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public EnumBuilder WithMembers(params EnumMemberBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _members.AddRange(builders);
             return this;
@@ -98,14 +104,10 @@ namespace SharpCode
         public EnumBuilder WithMembers(IEnumerable<EnumMemberBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _members.AddRange(builders);
             return this;
@@ -137,9 +139,7 @@ namespace SharpCode
         public EnumBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Enumeration = Enumeration.With(summary: Option.Some(summary));
             return this;
