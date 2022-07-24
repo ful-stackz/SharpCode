@@ -25,10 +25,11 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static NamespaceBuilder CreateNamespace(string name) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new NamespaceBuilder(name);
+            new NamespaceBuilder().WithName(name);
 
         /// <summary>
         /// Creates a new <see cref="EnumBuilder"/> instance for building enums.
@@ -130,10 +131,11 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static ClassBuilder CreateClass(string name, AccessModifier accessModifier = AccessModifier.Public) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new ClassBuilder(accessModifier, name);
+            new ClassBuilder().WithAccessModifier(accessModifier).WithName(name);
 
         /// <summary>
         /// Creates a new <see cref="StructBuilder"/> instance for building structs.

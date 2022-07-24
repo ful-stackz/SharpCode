@@ -267,30 +267,6 @@ public static class Config
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateClass().ToSourceCode(),
                 "Generating the source code for a class without setting the name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateClass(name: null).ToSourceCode(),
-                "Generating the source for a class with null as a name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateClass().WithName(null).ToSourceCode(),
-                "Generating the source for a class with null as a name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateClass(name: string.Empty).ToSourceCode(),
-                "Generating the source for a class with an empty name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateClass().WithName(string.Empty).ToSourceCode(),
-                "Generating the source for a class with an empty name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateClass(name: "  ").ToSourceCode(),
-                "Generating the source for a class with a whitespace name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateClass().WithName("  ").ToSourceCode(),
-                "Generating the source for a class with a whitespace name should throw an exception.");
         }
 
         [Test]
@@ -569,6 +545,117 @@ public class Dict<K, V>
                 .ToString();
 
             Assert.AreEqual(toSourceCode, toString);
+        }
+
+        [Test]
+        public void CreateClass_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithName(null),
+                "Generating the source code for a class with null as a name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithName(string.Empty),
+                "Generating the source code for a class with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithName("  "),
+                "Generating the source code for a class with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateClass_WithInvalidSummary_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithSummary(null),
+                "Generating the source code for a class with null as summary should throw an exception.");
+        }
+
+        [Test]
+        public void CreateClass_WithInvalidInheritedClass_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithInheritedClass(null),
+                "Adding an inherited class with 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithInheritedClass(string.Empty),
+                "Adding an inherited class with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithInheritedClass("  "),
+                "Adding an inherited class with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateClass_WithInvalidImplementedInterface_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithImplementedInterface(null),
+                "Adding an implemented interface with 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithImplementedInterface(string.Empty),
+                "Adding an implemented interface with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithImplementedInterface("  "),
+                "Adding an implemented interface with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateClass_WithInvalidBuilders_Throws()
+        {
+            // WithTypeParameter()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithTypeParameter(null));
+
+            // WithTypeParameters(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithTypeParameters(null as TypeParameterBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithTypeParameters(new TypeParameterBuilder[] { null }));
+
+            // WithTypeParameters(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithTypeParameters(null as IEnumerable<TypeParameterBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithTypeParameters(new List<TypeParameterBuilder> { null }));
+
+            // WithField()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithField(null));
+
+            // WithFields(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithFields(null as FieldBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithFields(new FieldBuilder[] { null }));
+
+            // WithProperty()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithProperty(null));
+
+            // WithProperties(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithProperties(null as PropertyBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithProperties(new PropertyBuilder[] { null }));
+
+            // WithProperties(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithProperties(null as IEnumerable<PropertyBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateClass().WithProperties(new List<PropertyBuilder> { null }));
+
+            // WithConstructor()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateClass().WithConstructor(null));
         }
     }
 }
