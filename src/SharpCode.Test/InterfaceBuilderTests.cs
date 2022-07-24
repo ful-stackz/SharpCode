@@ -26,7 +26,7 @@ namespace SharpCode.Test
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateInterface("ITest")
-                    .WithProperty(Code.CreateProperty("int", "Test").WithGetter("_value"))
+                    .WithProperty(Code.CreateProperty("int", "Test").WithGetter("_value").WithSetter("_value = value"))
                     .ToSourceCode(),
                 "Generating the source code for an interface with a property that has " +
                     "a non auto implemented getter should throw an exception.");
@@ -65,12 +65,13 @@ public interface ITest
         {
             var generatedCode = Code.CreateInterface("ITest")
                 .WithImplementedInterface("IHaveTests")
-                .WithImplementedInterface("IFailNot")
+                .WithImplementedInterfaces("IFailNot", "IHaveCoverage")
+                .WithImplementedInterfaces(new List<string> { "IHaveNiceComments" })
                 .ToSourceCode()
                 .WithUnixEOL();
 
             var expectedCode = @"
-public interface ITest : IHaveTests, IFailNot
+public interface ITest : IHaveTests, IFailNot, IHaveCoverage, IHaveNiceComments
 {
 }
             ".Trim().WithUnixEOL();
@@ -115,7 +116,11 @@ public interface ITest : IHaveTests, IFailNot
         {
             var generatedCode = Code.CreateInterface("ITest")
                 .WithProperty(Code.CreateProperty("int", "Number"))
-                .WithProperty(Code.CreateProperty("string", "Stringy"))
+                .WithProperties(Code.CreateProperty("string", "Stringy"))
+                .WithProperties(new List<PropertyBuilder>
+                {
+                    Code.CreateProperty("bool", "Booly"),
+                })
                 .ToSourceCode()
                 .WithUnixEOL();
 
@@ -129,6 +134,12 @@ public interface ITest
     }
 
     string Stringy
+    {
+        get;
+        set;
+    }
+
+    bool Booly
     {
         get;
         set;
