@@ -482,14 +482,14 @@ public struct Dict<K, V>
             Assert.Throws<ArgumentNullException>(
                 () => Code.CreateStruct().WithImplementedInterfaces(null as string[]));
 
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => Code.CreateStruct().WithImplementedInterfaces(new string[] { null }));
 
             // WithImplementedInterfaces(IEnumerable)
             Assert.Throws<ArgumentNullException>(
                 () => Code.CreateStruct().WithImplementedInterfaces(null as IEnumerable<string>));
 
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => Code.CreateStruct().WithImplementedInterfaces(new List<string> { null }));
         }
 
