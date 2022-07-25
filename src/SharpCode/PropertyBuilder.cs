@@ -64,12 +64,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="type"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/> is empty or invalid.
+        /// </exception>
         public PropertyBuilder WithType(string type)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
+
+            if (string.IsNullOrWhiteSpace(type))
+                throw new ArgumentException("Property type must be a valid, non-empty string.", nameof(type));
 
             Property = Property.With(type: Option.Some(type));
             return this;
@@ -84,9 +88,7 @@ namespace SharpCode
         public PropertyBuilder WithType(Type type)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
 
             Property = Property.With(type: Option.Some(type.Name));
             return this;
@@ -98,12 +100,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public PropertyBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Property name must be a valid, non-empty string.", nameof(name));
 
             Property = Property.With(name: Option.Some(name));
             return this;
@@ -250,11 +256,20 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="defaultValue"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="defaultValue"/> is empty or invalid.
+        /// </exception>
         public PropertyBuilder WithDefaultValue(string defaultValue)
         {
             if (defaultValue is null)
-            {
                 throw new ArgumentNullException(nameof(defaultValue));
+
+            if (string.IsNullOrWhiteSpace(defaultValue))
+            {
+                throw new ArgumentException(
+                    "Property default value must be a valid, non-empty string. " +
+                        "For default value of an empty string please use WithDefaultValue(\"string.Empty\").",
+                    nameof(defaultValue));
             }
 
             Property = Property.With(defaultValue: Option.Some(defaultValue));
@@ -285,9 +300,7 @@ namespace SharpCode
         public PropertyBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Property = Property.With(summary: Option.Some<string>(summary));
             return this;
@@ -302,9 +315,7 @@ namespace SharpCode
         public PropertyBuilder WithTypeParameter(TypeParameterBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _typeParameters.Add(builder);
             return this;
@@ -313,15 +324,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of type parameters to the property being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public PropertyBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -339,14 +354,10 @@ namespace SharpCode
         public PropertyBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
