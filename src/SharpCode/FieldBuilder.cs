@@ -47,12 +47,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="type"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/> is empty or invalid.
+        /// </exception>
         public FieldBuilder WithType(string type)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
+
+            if (string.IsNullOrWhiteSpace(type))
+                throw new ArgumentException("Field type must be a valid, non-empty string.", nameof(type));
 
             Field = Field.With(type: Option.Some(type));
             return this;
@@ -67,9 +71,7 @@ namespace SharpCode
         public FieldBuilder WithType(Type type)
         {
             if (type is null)
-            {
                 throw new ArgumentNullException(nameof(type));
-            }
 
             Field = Field.With(type: Option.Some(type.Name));
             return this;
@@ -81,12 +83,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public FieldBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Field name must be a valid, non-empty string.", nameof(name));
 
             Field = Field.With(name: Option.Some(name));
             return this;
@@ -116,9 +122,7 @@ namespace SharpCode
         public FieldBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Field = Field.With(summary: Option.Some(summary));
             return this;
@@ -133,9 +137,7 @@ namespace SharpCode
         public FieldBuilder WithTypeParameter(TypeParameterBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _typeParameters.Add(builder);
             return this;
@@ -144,15 +146,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of type parameters to the field being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public FieldBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -170,14 +176,10 @@ namespace SharpCode
         public FieldBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
