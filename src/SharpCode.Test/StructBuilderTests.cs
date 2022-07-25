@@ -13,18 +13,6 @@ namespace SharpCode.Test
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateStruct().ToSourceCode(),
                 "Generating the source code for a struct without a name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateStruct().WithName(null).ToSourceCode(),
-                "Generating the source code for a struct with null as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateStruct().WithName(string.Empty).ToSourceCode(),
-                "Generating the source code for a struct with an empty string as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateStruct().WithName("   ").ToSourceCode(),
-                "Generating the source code for a struct with whitespace as name should throw an exception.");
         }
 
         [Test]
@@ -33,22 +21,6 @@ namespace SharpCode.Test
             Assert.Throws<SyntaxException>(
                 () => Code.CreateStruct(name: "Test").WithConstructor(Code.CreateConstructor()).ToSourceCode(),
                 "Generating the source code for a struct with a parameterless constructor should throw an exception.");
-        }
-
-        [Test]
-        public void CreatingStruct_WithImplementedInterface_WithInvalidName_Throws()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateStruct(name: "Test").WithImplementedInterface(null).ToSourceCode(),
-                "Generating the source code for a struct with null as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateStruct(name: "Test").WithImplementedInterface(string.Empty).ToSourceCode(),
-                "Generating the source code for a struct with an empty string as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateStruct(name: "Test").WithImplementedInterface("   ").ToSourceCode(),
-                "Generating the source code for a struct with whitespace as name should throw an exception.");
         }
 
         [Test]
@@ -464,6 +436,123 @@ public struct Dict<K, V>
                 .ToString();
 
             Assert.AreEqual(toSourceCode, toString);
+        }
+
+        [Test]
+        public void CreateStruct_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithName(null),
+                "Generating the source code for a struct with null as a name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithName(string.Empty),
+                "Generating the source code for a struct with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithName("  "),
+                "Generating the source code for a struct with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateStruct_WithInvalidSummary_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithSummary(null),
+                "Generating the source code for a struct with null as summary should throw an exception.");
+        }
+
+        [Test]
+        public void CreateStruct_WithInvalidImplementedInterface_Throws()
+        {
+            // WithImplementedInterface
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithImplementedInterface(null),
+                "Adding an implemented interface with 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithImplementedInterface(string.Empty),
+                "Adding an implemented interface with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithImplementedInterface("  "),
+                "Adding an implemented interface with a whitespace name should throw an exception.");
+
+            // WithImplementedInterfaces(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithImplementedInterfaces(null as string[]));
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithImplementedInterfaces(new string[] { null }));
+
+            // WithImplementedInterfaces(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithImplementedInterfaces(null as IEnumerable<string>));
+
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithImplementedInterfaces(new List<string> { null }));
+        }
+
+        [Test]
+        public void CreateStruct_WithInvalidBuilders_Throws()
+        {
+            // WithTypeParameter()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithTypeParameter(null));
+
+            // WithTypeParameters(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithTypeParameters(null as TypeParameterBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithTypeParameters(new TypeParameterBuilder[] { null }));
+
+            // WithTypeParameters(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithTypeParameters(null as IEnumerable<TypeParameterBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithTypeParameters(new List<TypeParameterBuilder> { null }));
+
+            // WithField()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithField(null));
+
+            // WithFields(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithFields(null as FieldBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithFields(new FieldBuilder[] { null }));
+
+            // WithFields(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithFields(null as IEnumerable<FieldBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithFields(new List<FieldBuilder> { null }));
+
+            // WithProperty()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithProperty(null));
+
+            // WithProperties(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithProperties(null as PropertyBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithProperties(new PropertyBuilder[] { null }));
+
+            // WithProperties(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithProperties(null as IEnumerable<PropertyBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateStruct().WithProperties(new List<PropertyBuilder> { null }));
+
+            // WithConstructor()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateStruct().WithConstructor(null));
         }
     }
 }
