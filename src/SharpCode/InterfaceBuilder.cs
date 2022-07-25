@@ -18,11 +18,6 @@ namespace SharpCode
         {
         }
 
-        internal InterfaceBuilder(string name, AccessModifier accessModifier)
-        {
-            Interface = new Interface(accessModifier, Option.Some(name));
-        }
-
         internal Interface Interface { get; private set; } = new Interface(AccessModifier.Public);
 
         /// <summary>

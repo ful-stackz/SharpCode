@@ -18,22 +18,6 @@ namespace SharpCode
         {
         }
 
-        internal PropertyBuilder(AccessModifier accessModifier, AccessModifier setterAccessModifier, string type, string name)
-        {
-            Property = new Property(
-                accessModifier: accessModifier,
-                setterAccessModifier: setterAccessModifier,
-                type: Option.Some(type),
-                name: Option.Some(name),
-                getter: Option.Some(Property.AutoGetterSetter),
-                setter: Option.Some(Property.AutoGetterSetter));
-        }
-
-        internal PropertyBuilder(AccessModifier accessModifier, AccessModifier setterAccessModifier, Type type, string name)
-            : this(accessModifier, setterAccessModifier, type.Name, name)
-        {
-        }
-
         internal Property Property { get; private set; } = new Property(
             accessModifier: AccessModifier.Public,
             setterAccessModifier: AccessModifier.Public,

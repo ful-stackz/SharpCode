@@ -17,19 +17,6 @@ namespace SharpCode
         {
         }
 
-        internal FieldBuilder(AccessModifier accessModifier, string type, string name)
-        {
-            Field = new Field(
-                accessModifier: accessModifier,
-                name: Option.Some(name),
-                type: Option.Some(type));
-        }
-
-        internal FieldBuilder(AccessModifier accessModifier, Type type, string name)
-            : this(accessModifier, type.Name, name)
-        {
-        }
-
         internal Field Field { get; private set; } = new Field(AccessModifier.Private);
 
         /// <summary>

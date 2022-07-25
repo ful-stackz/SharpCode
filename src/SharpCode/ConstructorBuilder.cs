@@ -15,11 +15,6 @@ namespace SharpCode
         {
         }
 
-        internal ConstructorBuilder(AccessModifier accessModifier)
-        {
-            Constructor = new Constructor(accessModifier);
-        }
-
         internal Constructor Constructor { get; private set; } = new Constructor(AccessModifier.Public);
 
         /// <summary>

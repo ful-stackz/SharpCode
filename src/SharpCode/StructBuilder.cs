@@ -21,11 +21,6 @@ namespace SharpCode
         {
         }
 
-        internal StructBuilder(string name, AccessModifier accessModifier)
-        {
-            Struct = new Struct(accessModifier, name: Option.Some(name));
-        }
-
         internal Struct Struct { get; private set; } = new Struct(AccessModifier.Public);
 
         /// <summary>

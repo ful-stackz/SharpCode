@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Optional;
 
 namespace SharpCode
 {
@@ -51,10 +50,11 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static EnumBuilder CreateEnum(string name, AccessModifier accessModifier = AccessModifier.Public) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new EnumBuilder(name, accessModifier);
+            new EnumBuilder().WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="EnumMemberBuilder"/> instance for building enum members.
@@ -79,10 +79,11 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static EnumMemberBuilder CreateEnumMember(string name, int? value = null) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new EnumMemberBuilder(name, value.ToOption());
+            new EnumMemberBuilder().WithName(name).WithValue(value);
 
         /// <summary>
         /// Creates a new <see cref="InterfaceBuilder"/> instance for building interface structures.
@@ -104,12 +105,13 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static InterfaceBuilder CreateInterface(
             string name,
             AccessModifier accessModifier = AccessModifier.Public) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new InterfaceBuilder(name, accessModifier);
+            new InterfaceBuilder().WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="ClassBuilder"/> instance for building class structures.
@@ -135,7 +137,7 @@ namespace SharpCode
         /// The specified <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static ClassBuilder CreateClass(string name, AccessModifier accessModifier = AccessModifier.Public) =>
-            new ClassBuilder().WithAccessModifier(accessModifier).WithName(name);
+            new ClassBuilder().WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="StructBuilder"/> instance for building structs.
@@ -157,10 +159,11 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static StructBuilder CreateStruct(string name, AccessModifier accessModifier = AccessModifier.Public) =>
-            name is null
-            ? throw new ArgumentNullException(nameof(name))
-            : new StructBuilder(name, accessModifier);
+            new StructBuilder().WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="FieldBuilder"/> instance for building fields.
@@ -183,24 +186,16 @@ namespace SharpCode
         /// The access of modifier of the field.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/> or <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static FieldBuilder CreateField(
             string type,
             string name,
-            AccessModifier accessModifier = AccessModifier.Private)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new FieldBuilder(accessModifier, type, name);
-        }
+            AccessModifier accessModifier = AccessModifier.Private) =>
+            new FieldBuilder().WithType(type).WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="FieldBuilder"/> instance for building fields. Configures the
@@ -218,30 +213,22 @@ namespace SharpCode
         /// The access of modifier of the field.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static FieldBuilder CreateField(
             Type type,
             string name,
-            AccessModifier accessModifier = AccessModifier.Private)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new FieldBuilder(accessModifier, type, name);
-        }
+            AccessModifier accessModifier = AccessModifier.Private) =>
+            new FieldBuilder().WithType(type).WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="ConstructorBuilder"/> instance for building constructors.
         /// </summary>
         public static ConstructorBuilder CreateConstructor(AccessModifier accessModifier = AccessModifier.Public) =>
-            new ConstructorBuilder(accessModifier);
+            new ConstructorBuilder().WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new <see cref="PropertyBuilder"/> instance for building properties.
@@ -264,24 +251,16 @@ namespace SharpCode
         /// The access of modifier of the property.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/> or <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static PropertyBuilder CreateProperty(
             string type,
             string name,
-            AccessModifier accessModifier = AccessModifier.Public)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new PropertyBuilder(accessModifier, accessModifier, type, name);
-        }
+            AccessModifier accessModifier = AccessModifier.Public) =>
+            new PropertyBuilder().WithType(type).WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="PropertyBuilder"/> instance for building properties. Configures the
@@ -301,25 +280,20 @@ namespace SharpCode
         /// The access of modifier of the property setter.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="type"/> or <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static PropertyBuilder CreateProperty(
             string type,
             string name,
             AccessModifier accessModifier,
-            AccessModifier setterAccessModifier)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
-        }
+            AccessModifier setterAccessModifier) =>
+            new PropertyBuilder()
+                .WithType(type)
+                .WithName(name)
+                .WithAccessModifier(accessModifier, setterAccessModifier);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="PropertyBuilder"/> instance for building properties. Configures the
@@ -338,24 +312,16 @@ namespace SharpCode
         /// The access of modifier of the property.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static PropertyBuilder CreateProperty(
             Type type,
             string name,
-            AccessModifier accessModifier = AccessModifier.Public)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new PropertyBuilder(accessModifier, accessModifier, type, name);
-        }
+            AccessModifier accessModifier = AccessModifier.Public) =>
+            new PropertyBuilder().WithType(type).WithName(name).WithAccessModifier(accessModifier);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="PropertyBuilder"/> instance for building properties. Configures the
@@ -377,25 +343,20 @@ namespace SharpCode
         /// The access of modifier of the property setter.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// If the specified <paramref name="type"/> and/or <paramref name="name"/> are <c>null</c>.
+        /// If the specified <paramref name="type"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
         /// </exception>
         public static PropertyBuilder CreateProperty(
             Type type,
             string name,
             AccessModifier accessModifier,
-            AccessModifier setterAccessModifier)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            else if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return new PropertyBuilder(accessModifier, setterAccessModifier, type, name);
-        }
+            AccessModifier setterAccessModifier) =>
+            new PropertyBuilder()
+                .WithType(type)
+                .WithName(name)
+                .WithAccessModifier(accessModifier, setterAccessModifier);
 
         /// <summary>
         /// Creates a new <see cref="TypeParameterBuilder"/> instance for building type parameters.
@@ -409,8 +370,14 @@ namespace SharpCode
         /// specified <paramref name="name"/>.
         /// </summary>
         /// <param name="name">The name of the type parameter.</param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static TypeParameterBuilder CreateTypeParameter(string name) =>
-            new TypeParameterBuilder(name);
+            new TypeParameterBuilder().WithName(name);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="TypeParameterBuilder"/> instance for building type parameters.
@@ -419,8 +386,14 @@ namespace SharpCode
         /// </summary>
         /// <param name="name">The name of the type parameter.</param>
         /// <param name="constraints">The constraints of the type parameter.</param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static TypeParameterBuilder CreateTypeParameter(string name, params string[] constraints) =>
-            new TypeParameterBuilder(name, Option.Some<IEnumerable<string>>(constraints));
+            new TypeParameterBuilder().WithName(name).WithConstraints(constraints);
 
         /// <summary>
         /// Creates a new pre-configured <see cref="TypeParameterBuilder"/> instance for building type parameters.
@@ -429,7 +402,13 @@ namespace SharpCode
         /// </summary>
         /// <param name="name">The name of the type parameter.</param>
         /// <param name="constraints">The constraints of the type parameter.</param>
+        /// <exception cref="ArgumentNullException">
+        /// If the specified <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public static TypeParameterBuilder CreateTypeParameter(string name, IEnumerable<string> constraints) =>
-            new TypeParameterBuilder(name, Option.Some(constraints));
+            new TypeParameterBuilder().WithName(name).WithConstraints(constraints);
     }
 }

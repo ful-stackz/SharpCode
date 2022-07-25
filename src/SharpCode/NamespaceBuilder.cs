@@ -28,11 +28,6 @@ namespace SharpCode
         {
         }
 
-        internal NamespaceBuilder(string name)
-        {
-            Namespace = new Namespace(name: Option.Some(name));
-        }
-
         internal Namespace Namespace { get; private set; } = new Namespace(name: Option.None<string>());
 
         /// <summary>

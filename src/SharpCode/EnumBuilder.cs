@@ -19,11 +19,6 @@ namespace SharpCode
         {
         }
 
-        internal EnumBuilder(string name, AccessModifier accessModifier)
-        {
-            Enumeration = new Enumeration(accessModifier, name: Option.Some(name));
-        }
-
         internal Enumeration Enumeration { get; private set; } = new Enumeration(AccessModifier.Public);
 
         /// <summary>

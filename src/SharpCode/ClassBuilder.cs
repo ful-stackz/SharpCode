@@ -21,13 +21,6 @@ namespace SharpCode
         {
         }
 
-        internal ClassBuilder(AccessModifier accessModifier, string name)
-        {
-            Class = new Class(
-                accessModifier: accessModifier,
-                name: Option.Some(name));
-        }
-
         internal Class Class { get; private set; } = new Class(AccessModifier.Public);
 
         /// <summary>

@@ -16,11 +16,6 @@ public class TypeParameterBuilder
     {
     }
 
-    internal TypeParameterBuilder(string name, Option<IEnumerable<string>> constraints = default)
-    {
-        TypeParameter = new TypeParameter(name: Option.Some(name), constraints.Map(x => x.ToList()));
-    }
-
     internal TypeParameter TypeParameter { get; private set; } = new TypeParameter(name: Option.None<string>());
 
     /// <summary>

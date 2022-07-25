@@ -14,13 +14,6 @@ namespace SharpCode
         {
         }
 
-        internal EnumMemberBuilder(string name, Option<int> value)
-        {
-            EnumerationMember = new EnumerationMember(
-                name: Option.Some(name),
-                value: value);
-        }
-
         internal EnumerationMember EnumerationMember { get; private set; } = new EnumerationMember(
             name: Option.None<string>());
 
