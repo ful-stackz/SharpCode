@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -103,10 +102,9 @@ namespace SharpCode
 
             definition.Setter.Map(x => x.Trim()).MatchSome(body =>
             {
-                AccessorDeclarationSyntax accessor =
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration);
+                var accessor = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration);
 
-                if (IsHigher(definition.AccessModifier, definition.SetterAccessModifier))
+                if (IsAccessModifierLessRestrictive(definition.AccessModifier, definition.SetterAccessModifier))
                 {
                     accessor = accessor.WithModifiers(
                         new SyntaxTokenList(FromDefinition(definition.SetterAccessModifier)));
@@ -168,73 +166,6 @@ namespace SharpCode
                 return accessor
                     .WithExpressionBody(SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ParseExpression(body)))
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
-            }
-
-            static bool IsHigher(AccessModifier left, AccessModifier right)
-            {
-                switch (left)
-                {
-                    case AccessModifier.None:
-                    case AccessModifier.Private:
-                        return false;
-                    case AccessModifier.Internal:
-                        switch (right)
-                        {
-                            case AccessModifier.Private:
-                            case AccessModifier.PrivateProtected:
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    case AccessModifier.Protected:
-                        switch (right)
-                        {
-                            case AccessModifier.Private:
-                            case AccessModifier.PrivateProtected:
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    case AccessModifier.Public:
-                        switch (right)
-                        {
-                            case AccessModifier.Private:
-                            case AccessModifier.PrivateProtected:
-                            case AccessModifier.Internal:
-                            case AccessModifier.Protected:
-                            case AccessModifier.ProtectedInternal:
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    case AccessModifier.PrivateProtected:
-                        switch (right)
-                        {
-                            case AccessModifier.Private:
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    case AccessModifier.ProtectedInternal:
-                        switch (right)
-                        {
-                            case AccessModifier.Private:
-                            case AccessModifier.Internal:
-                            case AccessModifier.Protected:
-                            case AccessModifier.PrivateProtected:
-                            case AccessModifier.ProtectedInternal:
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    default:
-                        return false;
-                }
             }
         }
 
@@ -634,5 +565,39 @@ namespace SharpCode
                                 SyntaxFactory.Identifier(name))));
             }
         }
+
+        /// <summary>
+        /// Checks whether <paramref name="left"/> is a less restrictive access modifier than <paramref name="right"/>,
+        /// eg. <c>public</c> is less restrictive than <c>protected</c>
+        /// and <c>protected</c> is less restricitve than <c>private</c>.
+        /// </summary>
+        private static bool IsAccessModifierLessRestrictive(AccessModifier left, AccessModifier right) =>
+            (left, right) switch {
+                // private protected
+                (AccessModifier.PrivateProtected, AccessModifier.Private) => true,
+
+                // internal
+                (AccessModifier.Internal, AccessModifier.Private) => true,
+                (AccessModifier.Internal, AccessModifier.PrivateProtected) => true,
+
+                // protected
+                (AccessModifier.Protected, AccessModifier.Private) => true,
+                (AccessModifier.Protected, AccessModifier.PrivateProtected) => true,
+
+                // protected internal
+                (AccessModifier.ProtectedInternal, AccessModifier.Private) => true,
+                (AccessModifier.ProtectedInternal, AccessModifier.PrivateProtected) => true,
+                (AccessModifier.ProtectedInternal, AccessModifier.Internal) => true,
+                (AccessModifier.ProtectedInternal, AccessModifier.Protected) => true,
+
+                // public
+                (AccessModifier.Public, AccessModifier.Private) => true,
+                (AccessModifier.Public, AccessModifier.PrivateProtected) => true,
+                (AccessModifier.Public, AccessModifier.Internal) => true,
+                (AccessModifier.Public, AccessModifier.Protected) => true,
+                (AccessModifier.Public, AccessModifier.ProtectedInternal) => true,
+
+                _ => false
+            };
     }
 }
