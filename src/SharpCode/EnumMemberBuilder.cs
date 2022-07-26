@@ -14,13 +14,6 @@ namespace SharpCode
         {
         }
 
-        internal EnumMemberBuilder(string name, Option<int> value)
-        {
-            EnumerationMember = new EnumerationMember(
-                name: Option.Some(name),
-                value: value);
-        }
-
         internal EnumerationMember EnumerationMember { get; private set; } = new EnumerationMember(
             name: Option.None<string>());
 
@@ -33,12 +26,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// If the specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// If the specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public EnumMemberBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The enum member name must be a valid, non-empty string.", nameof(name));
 
             EnumerationMember = EnumerationMember.With(name: Option.Some(name));
             return this;
@@ -69,9 +66,7 @@ namespace SharpCode
         public EnumMemberBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             EnumerationMember = EnumerationMember.With(summary: Option.Some(summary));
             return this;

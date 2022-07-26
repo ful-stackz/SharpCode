@@ -230,27 +230,6 @@ namespace GeneratedCode
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateNamespace().ToSourceCode(),
                 "Generating the source code for a namespace without a name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateNamespace(name: null).ToSourceCode(),
-                "Generating the source code for a namespace with null as a name should throw an exception.");
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateNamespace().WithName(null).ToSourceCode(),
-                "Generating the source code for a namespace with null as a name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateNamespace(name: string.Empty).ToSourceCode(),
-                "Generating the source code for a namespace with an empty name should throw an exception.");
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateNamespace().WithName(string.Empty).ToSourceCode(),
-                "Generating the source code for a namespace with an empty name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateNamespace(name: "  ").ToSourceCode(),
-                "Generating the source code for a namespace with a whitespace name should throw an exception.");
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateNamespace().WithName("  ").ToSourceCode(),
-                "Generating the source code for a namespace with a whitespace name should throw an exception.");
         }
 
         [Test]
@@ -533,6 +512,114 @@ namespace Geometry
                 .ToSourceCode();
 
             Assert.AreEqual(enumerableApi, paramsApi);
+        }
+
+        [Test]
+        public void CreateNamespace_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithName(null),
+                "Generating the source code for a namespace with null as a name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithName(string.Empty),
+                "Generating the source code for a namespace with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithName("  "),
+                "Generating the source code for a namespace with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateNamespace_WithInvalidUsing_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithUsing(null),
+                "Adding a using with 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithUsing(string.Empty),
+                "Adding a using with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithUsing("  "),
+                "Adding a using with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateNamespace_WithInvalidBuilders_Throws()
+        {
+            // WithClass()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithClass(null));
+
+            // WithClasses(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithClasses(null as ClassBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithClasses(new ClassBuilder[] { null }));
+
+            // WithClasses(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithClasses(null as IEnumerable<ClassBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithClasses(new List<ClassBuilder> { null }));
+
+            // WithInterface()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithInterface(null));
+
+            // WithInterfaces(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithInterfaces(null as InterfaceBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithInterfaces(new InterfaceBuilder[] { null }));
+
+            // WithInterfaces(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithInterfaces(null as IEnumerable<InterfaceBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithInterfaces(new List<InterfaceBuilder> { null }));
+
+            // WithEnum()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithEnum(null));
+
+            // WithEnums(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithEnums(null as EnumBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithEnums(new EnumBuilder[] { null }));
+
+            // WithEnums(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithEnums(null as IEnumerable<EnumBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithEnums(new List<EnumBuilder> { null }));
+
+            // WithStruct()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithStruct(null));
+
+            // WithStructs(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithStructs(null as StructBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithStructs(new StructBuilder[] { null }));
+
+            // WithStructs(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateNamespace().WithStructs(null as IEnumerable<StructBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateNamespace().WithStructs(new List<StructBuilder> { null }));
         }
     }
 }

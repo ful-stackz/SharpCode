@@ -28,11 +28,6 @@ namespace SharpCode
         {
         }
 
-        internal NamespaceBuilder(string name)
-        {
-            Namespace = new Namespace(name: Option.Some(name));
-        }
-
         internal Namespace Namespace { get; private set; } = new Namespace(name: Option.None<string>());
 
         /// <summary>
@@ -41,12 +36,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public NamespaceBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The interface name must be a valid, non-empty string.", nameof(name));
 
             Namespace = Namespace.With(name: Option.Some(name));
             return this;
@@ -62,12 +61,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="usingDirective"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="usingDirective"/> is empty or invalid.
+        /// </exception>
         public NamespaceBuilder WithUsing(string usingDirective)
         {
             if (usingDirective is null)
-            {
                 throw new ArgumentNullException(nameof(usingDirective));
-            }
+
+            if (string.IsNullOrWhiteSpace(usingDirective))
+                throw new ArgumentException("The using directive must be a valid, non-empty string.", nameof(usingDirective));
 
             Namespace.Usings.Add(usingDirective.Replace(";", string.Empty));
             return this;
@@ -82,9 +85,7 @@ namespace SharpCode
         public NamespaceBuilder WithClass(ClassBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _classes.Add(builder);
             return this;
@@ -93,15 +94,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of classes to the namespace being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public NamespaceBuilder WithClasses(params ClassBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException($"One of the {nameof(builders)} parameter values is null.");
-            }
 
             _classes.AddRange(builders);
             return this;
@@ -119,14 +124,10 @@ namespace SharpCode
         public NamespaceBuilder WithClasses(IEnumerable<ClassBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _classes.AddRange(builders);
             return this;
@@ -144,9 +145,7 @@ namespace SharpCode
         public NamespaceBuilder WithInterface(InterfaceBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _interfaces.Add(builder);
             return this;
@@ -155,15 +154,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of interface definitions to the namespace being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public NamespaceBuilder WithInterfaces(params InterfaceBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _interfaces.AddRange(builders);
             return this;
@@ -181,14 +184,10 @@ namespace SharpCode
         public NamespaceBuilder WithInterfaces(IEnumerable<InterfaceBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _interfaces.AddRange(builders);
             return this;
@@ -206,9 +205,7 @@ namespace SharpCode
         public NamespaceBuilder WithEnum(EnumBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _enums.Add(builder);
             return this;
@@ -217,15 +214,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of enum definitions to the namespace being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public NamespaceBuilder WithEnums(params EnumBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _enums.AddRange(builders);
             return this;
@@ -243,14 +244,10 @@ namespace SharpCode
         public NamespaceBuilder WithEnums(IEnumerable<EnumBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _enums.AddRange(builders);
             return this;
@@ -268,9 +265,7 @@ namespace SharpCode
         public NamespaceBuilder WithStruct(StructBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _structs.Add(builder);
             return this;
@@ -282,15 +277,19 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of structs which will be added to the namespace.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public NamespaceBuilder WithStructs(params StructBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _structs.AddRange(builders);
             return this;
@@ -311,14 +310,10 @@ namespace SharpCode
         public NamespaceBuilder WithStructs(IEnumerable<StructBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _structs.AddRange(builders);
             return this;

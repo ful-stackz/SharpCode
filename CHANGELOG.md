@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New access modifier - `AccessModifier.PrivateProtected` - `private protected`
 - Support for setting the access modifier of a property' getter and setter individually via the `PropertyBuilder.WithAccessModifier(AccessModifier getterAccessModifier, AccessModifier setterAccessModifier)` overloaded method
 - Support for defining type parameters when building classes, structs, interfaces, fields and parameters
+- More validation added to fluent `With...()` and `Code.Create...()` methods that accept `string` parameters; empty or whitespace strings will now result in an `ArgumentException`
+
+### Changed
+
+- `Code.cs`, the entry point for creating a structure, has been modified to use the fluent APIs of each structure instead of using overridden constructors; this reduces duplicated validation code
 
 ### Fixed
 

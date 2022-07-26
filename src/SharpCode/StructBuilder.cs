@@ -21,11 +21,6 @@ namespace SharpCode
         {
         }
 
-        internal StructBuilder(string name, AccessModifier accessModifier)
-        {
-            Struct = new Struct(accessModifier, name: Option.Some(name));
-        }
-
         internal Struct Struct { get; private set; } = new Struct(AccessModifier.Public);
 
         /// <summary>
@@ -49,12 +44,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public StructBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Struct name must be a valid, non-empty string.", nameof(name));
 
             Struct = Struct.With(name: Option.Some(name));
             return this;
@@ -72,9 +71,7 @@ namespace SharpCode
         public StructBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Struct = Struct.With(summary: Option.Some(summary));
             return this;
@@ -92,9 +89,7 @@ namespace SharpCode
         public StructBuilder WithConstructor(ConstructorBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _constructors.Add(builder);
             return this;
@@ -112,9 +107,7 @@ namespace SharpCode
         public StructBuilder WithField(FieldBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _fields.Add(builder);
             return this;
@@ -135,14 +128,10 @@ namespace SharpCode
         public StructBuilder WithFields(IEnumerable<FieldBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _fields.AddRange(builders);
             return this;
@@ -154,15 +143,19 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of fields.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public StructBuilder WithFields(params FieldBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _fields.AddRange(builders);
             return this;
@@ -180,9 +173,7 @@ namespace SharpCode
         public StructBuilder WithProperty(PropertyBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _properties.Add(builder);
             return this;
@@ -203,14 +194,10 @@ namespace SharpCode
         public StructBuilder WithProperties(IEnumerable<PropertyBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _properties.AddRange(builders);
             return this;
@@ -222,15 +209,19 @@ namespace SharpCode
         /// <param name="builders">
         /// A collection of properties.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public StructBuilder WithProperties(params PropertyBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the builders is null.");
-            }
 
             _properties.AddRange(builders);
             return this;
@@ -245,12 +236,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public StructBuilder WithImplementedInterface(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Implemented interface name must be a valid, non-empty string.", nameof(name));
 
             Struct.ImplementedInterfaces.Add(name);
             return this;
@@ -266,19 +261,15 @@ namespace SharpCode
         /// The specified <paramref name="names"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// One of the specified <paramref name="names"/> is <c>null</c> or invalid.
         /// </exception>
         public StructBuilder WithImplementedInterfaces(IEnumerable<string> names)
         {
             if (names is null)
-            {
                 throw new ArgumentNullException(nameof(names));
-            }
 
-            if (names.Any(x => x is null))
-            {
-                throw new ArgumentException("One of the names is null.");
-            }
+            if (names.Any(x => string.IsNullOrWhiteSpace(x)))
+                throw new ArgumentException("One of the names is null or invalid.");
 
             Struct.ImplementedInterfaces.AddRange(names);
             return this;
@@ -290,15 +281,19 @@ namespace SharpCode
         /// <param name="names">
         /// A collection with the names of interfaces that the struct implements.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="names"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
-        /// One of the specified <paramref name="names"/> is <c>null</c>.
+        /// One of the specified <paramref name="names"/> is <c>null</c> or invalid.
         /// </exception>
         public StructBuilder WithImplementedInterfaces(params string[] names)
         {
-            if (names.Any(x => x is null))
-            {
-                throw new ArgumentException("One of the names is null.");
-            }
+            if (names is null)
+                throw new ArgumentNullException(nameof(names));
+
+            if (names.Any(x => string.IsNullOrWhiteSpace(x)))
+                throw new ArgumentException("One of the names is null or invalid.");
 
             Struct.ImplementedInterfaces.AddRange(names);
             return this;
@@ -313,9 +308,7 @@ namespace SharpCode
         public StructBuilder WithTypeParameter(TypeParameterBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _typeParameters.Add(builder);
             return this;
@@ -324,15 +317,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of type parameters to the struct being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public StructBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -350,14 +347,10 @@ namespace SharpCode
         public StructBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -440,11 +433,6 @@ namespace SharpCode
                 throw new MissingBuilderSettingException(
                     "Providing the name of the struct is required when building a struct.");
             }
-
-            Struct.ImplementedInterfaces
-                .FirstOrNone(x => string.IsNullOrWhiteSpace(x))
-                .MatchSome(_ => throw new MissingBuilderSettingException(
-                    "Providing the name of the interface is required when adding an implemented interface to a struct."));
 
             Struct.Fields.AddRange(_fields.Select(field => field.Build()));
             Struct.Properties.AddRange(_properties.Select(prop => prop.Build()));

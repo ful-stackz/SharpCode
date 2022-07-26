@@ -222,30 +222,6 @@ public enum Storage
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateEnum().ToSourceCode(),
                 "Generating the source code for an enum without setting the name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateEnum(name: null).ToSourceCode(),
-                "Generating the source for an enum with null as a name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateEnum().WithName(null).ToSourceCode(),
-                "Generating the source for an enum with null as a name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateEnum(name: string.Empty).ToSourceCode(),
-                "Generating the source for an enum with an empty name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateEnum().WithName(string.Empty).ToSourceCode(),
-                "Generating the source for an enum with an empty name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateEnum(name: "  ").ToSourceCode(),
-                "Generating the source for an enum with a whitespace name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateEnum().WithName("  ").ToSourceCode(),
-                "Generating the source for an enum with a whitespace name should throw an exception.");
         }
 
         [Test]
@@ -285,6 +261,52 @@ public enum Storage
             var toSourceCode = Code.CreateEnum("Type").WithMember(Code.CreateEnumMember("Some")).ToSourceCode();
             var toString = Code.CreateEnum("Type").WithMember(Code.CreateEnumMember("Some")).ToString();
             Assert.AreEqual(toSourceCode, toString);
+        }
+
+        [Test]
+        public void CreateEnum_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateEnum().WithName(null),
+                "Generating the source for an enum with null as a name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateEnum().WithName(string.Empty),
+                "Generating the source for an enum with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateEnum().WithName("  "),
+                "Generating the source for an enum with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateEnum_WithInvalidSummary_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateEnum().WithSummary(null),
+                "Generating the source for an enum with null summary should throw an exception.");
+        }
+
+        [Test]
+        public void CreateEnum_WithInvalidBuilders_Throws()
+        {
+            // WithMember()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateEnum().WithMember(null));
+
+            // WithMembers(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateEnum().WithMembers(null as EnumMemberBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateEnum().WithMembers(new EnumMemberBuilder[] { null }));
+
+            // WithMembers(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateEnum().WithMembers(null as IEnumerable<EnumMemberBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateEnum().WithMembers(new List<EnumMemberBuilder> { null }));
         }
     }
 }

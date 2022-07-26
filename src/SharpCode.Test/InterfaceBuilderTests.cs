@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -12,18 +13,6 @@ namespace SharpCode.Test
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateInterface().ToSourceCode(),
                 "Generating the source code for an interface without a name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateInterface().WithName(null).ToSourceCode(),
-                "Generating the source code for an interface with null as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateInterface().WithName(string.Empty).ToSourceCode(),
-                "Generating the source code for an interface with an empty string as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateInterface().WithName("   ").ToSourceCode(),
-                "Generating the source code for an interface with whitespace as name should throw an exception.");
         }
 
         [Test]
@@ -37,7 +26,7 @@ namespace SharpCode.Test
 
             Assert.Throws<SyntaxException>(
                 () => Code.CreateInterface("ITest")
-                    .WithProperty(Code.CreateProperty("int", "Test").WithGetter("_value"))
+                    .WithProperty(Code.CreateProperty("int", "Test").WithGetter("_value").WithSetter("_value = value"))
                     .ToSourceCode(),
                 "Generating the source code for an interface with a property that has " +
                     "a non auto implemented getter should throw an exception.");
@@ -76,12 +65,13 @@ public interface ITest
         {
             var generatedCode = Code.CreateInterface("ITest")
                 .WithImplementedInterface("IHaveTests")
-                .WithImplementedInterface("IFailNot")
+                .WithImplementedInterfaces("IFailNot", "IHaveCoverage")
+                .WithImplementedInterfaces(new List<string> { "IHaveNiceComments" })
                 .ToSourceCode()
                 .WithUnixEOL();
 
             var expectedCode = @"
-public interface ITest : IHaveTests, IFailNot
+public interface ITest : IHaveTests, IFailNot, IHaveCoverage, IHaveNiceComments
 {
 }
             ".Trim().WithUnixEOL();
@@ -126,7 +116,11 @@ public interface ITest : IHaveTests, IFailNot
         {
             var generatedCode = Code.CreateInterface("ITest")
                 .WithProperty(Code.CreateProperty("int", "Number"))
-                .WithProperty(Code.CreateProperty("string", "Stringy"))
+                .WithProperties(Code.CreateProperty("string", "Stringy"))
+                .WithProperties(new List<PropertyBuilder>
+                {
+                    Code.CreateProperty("bool", "Booly"),
+                })
                 .ToSourceCode()
                 .WithUnixEOL();
 
@@ -140,6 +134,12 @@ public interface ITest
     }
 
     string Stringy
+    {
+        get;
+        set;
+    }
+
+    bool Booly
     {
         get;
         set;
@@ -318,6 +318,117 @@ public interface Dict<K, V>
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
+        }
+
+        [Test]
+        public void CreateInterface_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithName(null),
+                "Setting interface name to 'null' should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithName(string.Empty),
+                "Setting interface name to an empty string should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithName("  "),
+                "Setting interface name to a whitespace string should throw an exception.");
+        }
+
+        [Test]
+        public void CreateInterface_WithInvalidImplementedInterface_Throws()
+        {
+            // WithImplementedInterface()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithImplementedInterface(null),
+                "Adding an implemented interface with a 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterface(string.Empty),
+                "Adding an implemented interface with an empty name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterface("  "),
+                "Adding an implemented interface with a whitespace name should throw an exception.");
+
+            // WithImplementedInterfaces(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithImplementedInterfaces(null as string[]),
+                "Adding implemented interfaces from a 'null' collection should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterfaces("IEnumerable", null),
+                "Adding an implemented interface with a 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterfaces("IEnumerable", string.Empty),
+                "Adding an implemented interface with a whitespace name should throw an exception.");
+
+            // WithImplementedInterfaces(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithImplementedInterfaces(null as IEnumerable<string>),
+                "Adding implemented interfaces from a 'null' collection should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterfaces(new List<string> { "IEnumerable", null }),
+                "Adding an implemented interface with a 'null' name should throw an exception.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithImplementedInterfaces(new List<string> { "IEnumerable", string.Empty }),
+                "Adding an implemented interface with a whitespace name should throw an exception.");
+        }
+
+        [Test]
+        public void CreateInterface_WithInvalidSummary_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithSummary(null),
+                "Setting interface summary to 'null' should throw an exception.");
+        }
+
+        [Test]
+        public void CreateInterface_WithInvalidProperty_Throws()
+        {
+            // WithProperty()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithProperty(null));
+
+            // WithProperties(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithProperties(null as PropertyBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithProperties(new PropertyBuilder[] { null }));
+
+            // WithProperties(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithProperties(null as IEnumerable<PropertyBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithProperties(new List<PropertyBuilder> { null }));
+        }
+
+        [Test]
+        public void CreateInterface_WithInvalidTypeParameter_Throws()
+        {
+            // WithProperty()
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithTypeParameter(null));
+
+            // WithTypeParameters(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithTypeParameters(null as TypeParameterBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithTypeParameters(new TypeParameterBuilder[] { null }));
+
+            // WithTypeParameters(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateInterface().WithTypeParameters(null as IEnumerable<TypeParameterBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateInterface().WithTypeParameters(new List<TypeParameterBuilder> { null }));
         }
     }
 }

@@ -44,51 +44,10 @@ namespace SharpCode.Test
                 () => Code.CreateField().WithType("string").ToSourceCode(),
                 "Generating the source code for a field without setting the name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateField().WithName(string.Empty).WithType("string").ToSourceCode(),
-                "Generating the source code for a field with an empty string as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateField().WithName("  ").WithType("string").ToSourceCode(),
-                "Generating the source code for a field with whitespace name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField().WithName(null).ToSourceCode(),
-                "Generating the source code for a field with null as name should throw an exception.");
-
             // --- WithType() API
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateField().WithName("count").ToSourceCode(),
                 "Generating the source code for a field without setting the type should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateField().WithName("count").WithType(string.Empty).ToSourceCode(),
-                "Generating the source code for a field with an empty string as type should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateField().WithName("count").WithType("  ").ToSourceCode(),
-                "Generating the source code for a field with whitespace type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField().WithName("count").WithType((Type)null).ToSourceCode(),
-                "Generating the source code for a field with null as type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField().WithName("count").WithType((string)null).ToSourceCode(),
-                "Generating the source code for a field with null as type should throw an exception.");
-
-            // --- Shorthand API
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField(name: null, type: "string").ToSourceCode(),
-                "Generating the source code for a field with null as name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField(name: "count", type: (Type)null).ToSourceCode(),
-                "Generating the source code for a field with null as type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateField(name: "count", type: (string)null).ToSourceCode(),
-                "Generating the source code for a field with null as type should throw an exception.");
         }
 
         [Test]
@@ -167,6 +126,66 @@ private protected readonly string _name;
         {
             var builder = Code.CreateField(typeof(int), "_count", AccessModifier.ProtectedInternal);
             Assert.AreEqual(builder.ToSourceCode(), builder.ToString());
+        }
+
+        [Test]
+        public void CreateField_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithName(null),
+                "Setting the field name to 'null' should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithName(string.Empty),
+                "Setting the field name to an empty string should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithName("  "),
+                "Setting the field name to a whitespace string should throw.");
+        }
+
+        [Test]
+        public void CreateField_WithInvalidType_Throws()
+        {
+            // WithType(string)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithType(null as string),
+                "Setting the field type to 'null' (string) should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithType(string.Empty),
+                "Setting the field type to an empty string should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithType("  "),
+                "Setting the field type to a whitespace string should throw.");
+
+            // WithType(Type)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithType(null as Type),
+                "Setting the field type to 'null' (Type) should throw.");
+        }
+
+        [Test]
+        public void CreateField_WithInvalidBuilders_Throws()
+        {
+            // WithTypeParameter(...)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithTypeParameter(null));
+
+            // WithTypeParameters(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithTypeParameters(null as TypeParameterBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithTypeParameters(new TypeParameterBuilder[] { null }));
+
+            // WithTypeParameters(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateField().WithTypeParameters(null as IEnumerable<TypeParameterBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateField().WithTypeParameters(new List<TypeParameterBuilder> { null }));
         }
     }
 }

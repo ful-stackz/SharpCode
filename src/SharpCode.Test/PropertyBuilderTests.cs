@@ -142,51 +142,10 @@ private string EmptyString
                 () => Code.CreateProperty().WithType("string").ToSourceCode(),
                 "Generating the source code for a property without setting the name should throw an exception.");
 
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateProperty().WithName(string.Empty).WithType("string").ToSourceCode(),
-                "Generating the source code for a property with an empty string as name should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateProperty().WithName("  ").WithType("string").ToSourceCode(),
-                "Generating the source code for a property with whitespace name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty().WithName(null).ToSourceCode(),
-                "Generating the source code for a property with null as name should throw an exception.");
-
             // --- WithType() API
             Assert.Throws<MissingBuilderSettingException>(
                 () => Code.CreateProperty().WithName("count").ToSourceCode(),
                 "Generating the source code for a property without setting the type should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateProperty().WithName("count").WithType(string.Empty).ToSourceCode(),
-                "Generating the source code for a property with an empty string as type should throw an exception.");
-
-            Assert.Throws<MissingBuilderSettingException>(
-                () => Code.CreateProperty().WithName("count").WithType("  ").ToSourceCode(),
-                "Generating the source code for a property with whitespace type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty().WithName("count").WithType((Type)null).ToSourceCode(),
-                "Generating the source code for a property with null as type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty().WithName("count").WithType((string)null).ToSourceCode(),
-                "Generating the source code for a property with null as type should throw an exception.");
-
-            // --- Shorthand API
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty(name: null, type: "string").ToSourceCode(),
-                "Generating the source code for a property with null as name should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty(name: "count", type: (Type)null).ToSourceCode(),
-                "Generating the source code for a property with null as type should throw an exception.");
-
-            Assert.Throws<ArgumentNullException>(
-                () => Code.CreateProperty(name: "count", type: (string)null).ToSourceCode(),
-                "Generating the source code for a property with null as type should throw an exception.");
         }
 
         [Test]
@@ -386,6 +345,66 @@ public Map<string, (double X, double Y)> Coordinates
         {
             var builder = Code.CreateProperty(typeof(string), "Name", AccessModifier.ProtectedInternal);
             Assert.AreEqual(builder.ToSourceCode(), builder.ToString());
+        }
+
+        [Test]
+        public void CreateProperty_WithInvalidName_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithName(null),
+                "Setting the property name to 'null' should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithName(string.Empty),
+                "Setting the property name to an empty string should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithName("  "),
+                "Setting the property name to a whitespace string should throw.");
+        }
+
+        [Test]
+        public void CreateProperty_WithInvalidType_Throws()
+        {
+            // WithType(string)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithType(null as string),
+                "Setting the property type to 'null' (string) should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithType(string.Empty),
+                "Setting the property type to an empty string should throw.");
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithType("  "),
+                "Setting the property type to a whitespace string should throw.");
+
+            // WithType(Type)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithType(null as Type),
+                "Setting the property type to 'null' (Type) should throw.");
+        }
+
+        [Test]
+        public void CreateProperty_WithInvalidBuilders_Throws()
+        {
+            // WithTypeParameter(...)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithTypeParameter(null));
+
+            // WithTypeParameters(params)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithTypeParameters(null as TypeParameterBuilder[]));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithTypeParameters(new TypeParameterBuilder[] { null }));
+
+            // WithTypeParameters(IEnumerable)
+            Assert.Throws<ArgumentNullException>(
+                () => Code.CreateProperty().WithTypeParameters(null as IEnumerable<TypeParameterBuilder>));
+
+            Assert.Throws<ArgumentException>(
+                () => Code.CreateProperty().WithTypeParameters(new List<TypeParameterBuilder> { null }));
         }
     }
 }

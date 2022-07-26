@@ -21,13 +21,6 @@ namespace SharpCode
         {
         }
 
-        internal ClassBuilder(AccessModifier accessModifier, string name)
-        {
-            Class = new Class(
-                accessModifier: accessModifier,
-                name: Option.Some(name));
-        }
-
         internal Class Class { get; private set; } = new Class(AccessModifier.Public);
 
         /// <summary>
@@ -45,12 +38,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public ClassBuilder WithName(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The class name must be a valid, non-empty string.", nameof(name));
 
             Class = Class.With(name: Option.Some(name));
             return this;
@@ -62,12 +59,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public ClassBuilder WithInheritedClass(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The implemented class name must be a valid, non-empty string.", nameof(name));
 
             Class = Class.With(inheritedClass: Option.Some(name));
             return this;
@@ -79,12 +80,16 @@ namespace SharpCode
         /// <exception cref="ArgumentNullException">
         /// The specified <paramref name="name"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="name"/> is empty or invalid.
+        /// </exception>
         public ClassBuilder WithImplementedInterface(string name)
         {
             if (name is null)
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The implemented interface name must be a valid, non-empty string.", nameof(name));
 
             Class.ImplementedInterfaces.Add(name);
             return this;
@@ -102,9 +107,7 @@ namespace SharpCode
         public ClassBuilder WithSummary(string summary)
         {
             if (summary is null)
-            {
                 throw new ArgumentNullException(nameof(summary));
-            }
 
             Class = Class.With(summary: Option.Some(summary));
             return this;
@@ -119,9 +122,7 @@ namespace SharpCode
         public ClassBuilder WithTypeParameter(TypeParameterBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _typeParameters.Add(builder);
             return this;
@@ -130,15 +131,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of type parameters to the class being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public ClassBuilder WithTypeParameters(params TypeParameterBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -156,14 +161,10 @@ namespace SharpCode
         public ClassBuilder WithTypeParameters(IEnumerable<TypeParameterBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
                 throw new ArgumentException("One of the type parameter builders is null.");
-            }
 
             _typeParameters.AddRange(builders);
             return this;
@@ -178,9 +179,7 @@ namespace SharpCode
         public ClassBuilder WithField(FieldBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _fields.Add(builder);
             return this;
@@ -189,15 +188,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of fields to the class being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public ClassBuilder WithFields(params FieldBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
-                throw new ArgumentException($"On of the {nameof(builders)} parameter values is null.");
-            }
+                throw new ArgumentException("One of the field builders is null.");
 
             _fields.AddRange(builders);
             return this;
@@ -212,9 +215,7 @@ namespace SharpCode
         public ClassBuilder WithProperty(PropertyBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _properties.Add(builder);
             return this;
@@ -223,15 +224,19 @@ namespace SharpCode
         /// <summary>
         /// Adds a bunch of properties to the class being built.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The specified <paramref name="builders"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One of the specified <paramref name="builders"/> is <c>null</c>.
         /// </exception>
         public ClassBuilder WithProperties(params PropertyBuilder[] builders)
         {
+            if (builders is null)
+                throw new ArgumentNullException(nameof(builders));
+
             if (builders.Any(x => x is null))
-            {
-                throw new ArgumentException($"One of the {nameof(builders)} parameter values is null.");
-            }
+                throw new ArgumentException("One of the property builders is null.");
 
             _properties.AddRange(builders);
             return this;
@@ -249,14 +254,10 @@ namespace SharpCode
         public ClassBuilder WithProperties(IEnumerable<PropertyBuilder> builders)
         {
             if (builders is null)
-            {
                 throw new ArgumentNullException(nameof(builders));
-            }
 
             if (builders.Any(x => x is null))
-            {
-                throw new ArgumentException($"One of the {nameof(builders)} parameter values is null.");
-            }
+                throw new ArgumentException("One of the property builders is null.");
 
             _properties.AddRange(builders);
             return this;
@@ -271,9 +272,7 @@ namespace SharpCode
         public ClassBuilder WithConstructor(ConstructorBuilder builder)
         {
             if (builder is null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             _constructors.Add(builder);
             return this;

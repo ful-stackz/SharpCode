@@ -16,11 +16,6 @@ public class TypeParameterBuilder
     {
     }
 
-    internal TypeParameterBuilder(string name, Option<IEnumerable<string>> constraints = default)
-    {
-        TypeParameter = new TypeParameter(name: Option.Some(name), constraints.Map(x => x.ToList()));
-    }
-
     internal TypeParameter TypeParameter { get; private set; } = new TypeParameter(name: Option.None<string>());
 
     /// <summary>
@@ -30,12 +25,16 @@ public class TypeParameterBuilder
     /// <exception cref="ArgumentNullException">
     /// The specified <paramref name="name"/> is <c>null</c>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The specified <paramref name="name"/> is empty or invalid.
+    /// </exception>
     public TypeParameterBuilder WithName(string name)
     {
         if (name is null)
-        {
             throw new ArgumentNullException(nameof(name));
-        }
+
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("The type parameter name must be a valid, non-empty string.", nameof(name));
 
         TypeParameter = TypeParameter.With(name: Option.Some(name));
         return this;
@@ -52,12 +51,16 @@ public class TypeParameterBuilder
     /// <exception cref="ArgumentNullException">
     /// The specific <paramref name="constraint"/> is <c>null</c>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The specific <paramref name="constraint"/> is empty or invalid.
+    /// </exception>
     public TypeParameterBuilder WithConstraint(string constraint)
     {
         if (constraint is null)
-        {
             throw new ArgumentNullException(nameof(constraint));
-        }
+
+        if (string.IsNullOrWhiteSpace(constraint))
+            throw new ArgumentException("The type parameter constraint must be a valid, non-empty string.", nameof(constraint));
 
         TypeParameter.Constraints.Add(constraint);
         return this;
@@ -78,9 +81,7 @@ public class TypeParameterBuilder
     public TypeParameterBuilder WithConstraints(params string[] constraints)
     {
         if (constraints.Any(string.IsNullOrWhiteSpace))
-        {
             throw new ArgumentException("One of the constraints value is null or empty.");
-        }
 
         TypeParameter.Constraints.AddRange(constraints);
         return this;
@@ -104,14 +105,10 @@ public class TypeParameterBuilder
     public TypeParameterBuilder WithConstraints(IEnumerable<string> constraints)
     {
         if (constraints is null)
-        {
             throw new ArgumentNullException(nameof(constraints));
-        }
 
         if (constraints.Any(string.IsNullOrWhiteSpace))
-        {
             throw new ArgumentException("One of the constraints value is null or empty.");
-        }
 
         TypeParameter.Constraints.AddRange(constraints);
         return this;
