@@ -67,17 +67,9 @@ protected internal struct Position : IComparable
         _y = y;
     }
 
-    public int X
-    {
-        get => _x;
-        set => _x = value;
-    }
+    public int X { get => _x; set => _x = value; }
 
-    public int Y
-    {
-        get => _y;
-        set => _y = value;
-    }
+    public int Y { get => _y; set => _y = value; }
 }
             ".Trim().WithUnixEOL();
 
@@ -103,17 +95,9 @@ public struct Position
 {
     private int _x;
     private int _y;
-    public int X
-    {
-        get => _x;
-        set => _x = value;
-    }
+    public int X { get => _x; set => _x = value; }
 
-    public int Y
-    {
-        get => _y;
-        set => _y = value;
-    }
+    public int Y { get => _y; set => _y = value; }
 }
             ".Trim().WithUnixEOL();
 
@@ -349,11 +333,7 @@ public struct Dict<K, V>
 public struct Dict<TKey, TValue>
     where TKey : IEquatable<TKey> where TValue : notnull
 {
-    public Dictionary<TKey, TValue> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<TKey, TValue> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -378,11 +358,7 @@ public struct Dict<TKey, TValue>
             var expectedCode = @"
 public struct Dict<K, V>
 {
-    public Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -409,11 +385,7 @@ public struct Dict<K, V>
             var expectedCode = @"
 public struct Dict<K, V>
 {
-    public Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 

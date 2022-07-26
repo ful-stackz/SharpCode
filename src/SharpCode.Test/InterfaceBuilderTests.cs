@@ -127,23 +127,11 @@ public interface ITest : IHaveTests, IFailNot, IHaveCoverage, IHaveNiceComments
             var expectedCode = @"
 public interface ITest
 {
-    int Number
-    {
-        get;
-        set;
-    }
+    int Number { get; set; }
 
-    string Stringy
-    {
-        get;
-        set;
-    }
+    string Stringy { get; set; }
 
-    bool Booly
-    {
-        get;
-        set;
-    }
+    bool Booly { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -249,11 +237,7 @@ public interface Dict<K, V>
 public interface Dict<TKey, TValue>
     where TKey : IEquatable<TKey> where TValue : notnull
 {
-    Dictionary<TKey, TValue> Store
-    {
-        get;
-        set;
-    }
+    Dictionary<TKey, TValue> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -278,11 +262,7 @@ public interface Dict<TKey, TValue>
             var expectedCode = @"
 public interface Dict<K, V>
 {
-    Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -309,11 +289,7 @@ public interface Dict<K, V>
             var expectedCode = @"
 public interface Dict<K, V>
 {
-    Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 

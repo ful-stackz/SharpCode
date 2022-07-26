@@ -95,29 +95,23 @@ namespace Vehicles
     public class Car : Vehicle
     {
         private readonly int _maxSpeed;
-        public Car(int maxSpeed): base(4)
+        public Car(int maxSpeed) : base(4)
         {
             _maxSpeed = maxSpeed;
         }
 
-        public int MaxSpeed
-        {
-            get => _maxSpeed;
-        }
+        public int MaxSpeed { get => _maxSpeed; }
     }
 
     public class Motorbike : Vehicle
     {
         private readonly int _maxSpeed;
-        public Motorbike(int maxSpeed): base(2)
+        public Motorbike(int maxSpeed) : base(2)
         {
             _maxSpeed = maxSpeed;
         }
 
-        public int MaxSpeed
-        {
-            get => _maxSpeed;
-        }
+        public int MaxSpeed { get => _maxSpeed; }
     }
 }
             ".Trim().WithUnixEOL();
@@ -353,20 +347,12 @@ namespace GeneratedGoodies
 {
     public interface IHaveGoodies
     {
-        int Count
-        {
-            get;
-            set;
-        }
+        int Count { get; set; }
     }
 
     internal interface IHaveHiddenGoodies : IHaveGoodies
     {
-        int HiddenCount
-        {
-            get;
-            set;
-        }
+        int HiddenCount { get; set; }
     }
 }
             ".Trim().WithUnixEOL();
@@ -398,11 +384,7 @@ namespace Geometry
         /// <summary>
         /// Gets or sets the length of the cube side.
         /// </summary>
-        public int Side
-        {
-            get;
-            set;
-        }
+        public int Side { get; set; }
     }
 }
             ".Trim().WithUnixEOL();

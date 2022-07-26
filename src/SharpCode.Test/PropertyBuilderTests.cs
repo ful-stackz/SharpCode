@@ -15,11 +15,7 @@ namespace SharpCode.Test
                 .WithUnixEOL();
 
             var expectedCode = @"
-public string Username
-{
-    get;
-    set;
-}
+public string Username { get; set; }
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
@@ -32,13 +28,7 @@ public string Username
                 .ToSourceCode()
                 .WithUnixEOL();
 
-            var expectedCode = @"
-public string Username
-{
-    get;
-    private set;
-}
-            ".Trim().WithUnixEOL();
+            var expectedCode = "public string Username { get; private set; }";
 
             Assert.AreEqual(expectedCode, generatedCode);
         }
@@ -61,11 +51,7 @@ public string Username
 /// <summary>
 /// The name of the user
 /// </summary>
-public string Username
-{
-    get;
-    set;
-}
+public string Username { get; set; }
             ".Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
@@ -104,12 +90,7 @@ public int Id
         [Test]
         public void CreateProperty_Works_WithGetterWithoutSetter()
         {
-            var expectedCode = @"
-private string EmptyString
-{
-    get => string.Empty;
-}
-            ".Trim().WithUnixEOL();
+            var expectedCode = "private string EmptyString { get => string.Empty; }";
 
             var generatedCode = Code.CreateProperty("string", "EmptyString", AccessModifier.Private)
                 .WithGetter("string.Empty")
@@ -197,15 +178,7 @@ private string EmptyString
                 .WithDefaultValue("0")
                 .ToSourceCode()
                 .WithUnixEOL();
-            var expectedCode = @"
-public int Zero
-{
-    get;
-    set;
-}
-
-= 0;
-            ".Trim().WithUnixEOL();
+            var expectedCode = "public int Zero { get; set; } = 0;";
             Assert.AreEqual(
                 expectedCode,
                 generatedCode,
@@ -217,14 +190,7 @@ public int Zero
                 .WithDefaultValue("\"Test\"")
                 .ToSourceCode()
                 .WithUnixEOL();
-            expectedCode = @"
-public string Name
-{
-    get;
-}
-
-= ""Test"";
-            ".Trim().WithUnixEOL();
+            expectedCode = "public string Name { get; } = \"Test\";";
             Assert.AreEqual(
                 expectedCode,
                 generatedCode,
@@ -237,15 +203,7 @@ public string Name
                 .MakeStatic()
                 .ToSourceCode()
                 .WithUnixEOL();
-            expectedCode = @"
-public static int Zero
-{
-    get;
-    set;
-}
-
-= 0;
-            ".Trim().WithUnixEOL();
+            expectedCode = "public static int Zero { get; set; } = 0;";
             Assert.AreEqual(
                 expectedCode,
                 generatedCode,
@@ -258,14 +216,7 @@ public static int Zero
                 .MakeStatic()
                 .ToSourceCode()
                 .WithUnixEOL();
-            expectedCode = @"
-public static int Zero
-{
-    get;
-}
-
-= 0;
-            ".Trim().WithUnixEOL();
+            expectedCode = "public static int Zero { get; } = 0;";
             Assert.AreEqual(
                 expectedCode,
                 generatedCode,
@@ -288,11 +239,7 @@ public static int Zero
                 .WithUnixEOL();
 
             var expectedCode = @"
-public Dictionary<TKey, TValue> Store
-{
-    get;
-    set;
-}"
+public Dictionary<TKey, TValue> Store { get; set; }"
             .Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
@@ -307,11 +254,7 @@ public Dictionary<TKey, TValue> Store
                 .WithUnixEOL();
 
             var expectedCode = @"
-public List<User> Users
-{
-    get;
-    set;
-}"
+public List<User> Users { get; set; }"
             .Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);
@@ -330,11 +273,7 @@ public List<User> Users
                 .WithUnixEOL();
 
             var expectedCode = @"
-public Map<string, (double X, double Y)> Coordinates
-{
-    get;
-    set;
-}"
+public Map<string, (double X, double Y)> Coordinates { get; set; }"
             .Trim().WithUnixEOL();
 
             Assert.AreEqual(expectedCode, generatedCode);

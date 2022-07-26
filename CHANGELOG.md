@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `Code.cs`, the entry point for creating a structure, has been modified to use the fluent APIs of each structure instead of using overridden constructors; this reduces duplicated validation code
+- The Roslyn packages were updated which results in a slightly different formatting in some places
+  - `constructor() : base()` instead of `constructor(): base()`
+  - `Property { get; set; }` and `Property { get => _value; set => _value = value; }` instead of the old multi-line version
 
 ### Fixed
 
