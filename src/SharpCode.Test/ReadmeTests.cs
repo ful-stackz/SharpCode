@@ -20,17 +20,9 @@ namespace Data
 {
     public class User
     {
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
 
-        public string Username
-        {
-            get;
-            set;
-        }
+        public string Username { get; set; }
     }
 }
             ".Trim().WithUnixEOL();
@@ -39,7 +31,7 @@ namespace Data
         }
 
         [Test]
-        public void ExtentedUsageExample()
+        public void ExtendedUsageExample()
         {
             var dataNamespace = Code.CreateNamespace("Data");
 
@@ -83,15 +75,9 @@ namespace Data
             _username = username;
         }
 
-        public int Id
-        {
-            get => _id;
-        }
+        public int Id { get => _id; }
 
-        public string Username
-        {
-            get => _username;
-        }
+        public string Username { get => _username; }
     }
 
     public class User
@@ -101,10 +87,7 @@ namespace Data
             Details = details;
         }
 
-        public UserDetails Details
-        {
-            get;
-        }
+        public UserDetails Details { get; }
     }
 }
             ".Trim().WithUnixEOL();

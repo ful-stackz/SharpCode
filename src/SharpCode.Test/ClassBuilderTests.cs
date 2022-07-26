@@ -90,17 +90,9 @@ public class Triangle
     private double _hypotenuse;
     private double _adjacent;
     private double _opposite;
-    public double Hypotenuse
-    {
-        get => _hypotenuse;
-        set => _hypotenuse = value;
-    }
+    public double Hypotenuse { get => _hypotenuse; set => _hypotenuse = value; }
 
-    public double Adjacent
-    {
-        get => _adjacent;
-        set => _adjacent = value;
-    }
+    public double Adjacent { get => _adjacent; set => _adjacent = value; }
 
     public double Opposite
     {
@@ -150,7 +142,7 @@ internal class User
             var expectedCode = @"
 public class UserCredentials : Credentials, IAuthorizationDetails, IMadeThisUp
 {
-    public UserCredentials(string username, string password): base(username, password, ""basic"")
+    public UserCredentials(string username, string password) : base(username, password, ""basic"")
     {
     }
 }
@@ -176,15 +168,15 @@ public class UserCredentials : Credentials, IAuthorizationDetails, IMadeThisUp
             var expectedCode = @"
 public class BasicCredentials : AuthorizationDetails
 {
-    public BasicCredentials(): base(string.Empty, string.Empty, ""basic"")
+    public BasicCredentials() : base(string.Empty, string.Empty, ""basic"")
     {
     }
 
-    public BasicCredentials(string username): base(username, string.Empty, ""basic"")
+    public BasicCredentials(string username) : base(username, string.Empty, ""basic"")
     {
     }
 
-    public BasicCredentials(string username, string password): base(username, password, ""basic"")
+    public BasicCredentials(string username, string password) : base(username, password, ""basic"")
     {
     }
 }
@@ -243,18 +235,8 @@ public static class Factory
             var expectedCode = @"
 public static class Config
 {
-    public static string Name
-    {
-        get;
-    }
-
-    = ""SharpCode"";
-    public static System.Version Version
-    {
-        get;
-    }
-
-    = new System.Version(0, 0, 1);
+    public static string Name { get; } = ""SharpCode"";
+    public static System.Version Version { get; } = new System.Version(0, 0, 1);
 }
             ".Trim().WithUnixEOL();
 
@@ -426,11 +408,7 @@ public class Dict<K, V>
 public class Dict<TKey, TValue>
     where TKey : IEquatable<TKey> where TValue : notnull
 {
-    public Dictionary<TKey, TValue> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<TKey, TValue> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -455,11 +433,7 @@ public class Dict<TKey, TValue>
             var expectedCode = @"
 public class Dict<K, V>
 {
-    public Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 
@@ -486,11 +460,7 @@ public class Dict<K, V>
             var expectedCode = @"
 public class Dict<K, V>
 {
-    public Dictionary<K, V> Store
-    {
-        get;
-        set;
-    }
+    public Dictionary<K, V> Store { get; set; }
 }
             ".Trim().WithUnixEOL();
 

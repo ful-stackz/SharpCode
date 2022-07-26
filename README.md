@@ -32,17 +32,9 @@ namespace Data
 {
     public class User
     {
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
 
-        public string Username
-        {
-            get;
-            set;
-        }
+        public string Username { get; set; }
     }
 }
 ```
@@ -98,15 +90,9 @@ namespace Data
             _username = username;
         }
 
-        public int Id
-        {
-            get => _id;
-        }
+        public int Id { get => _id; }
 
-        public string Username
-        {
-            get => _username;
-        }
+        public string Username { get => _username; }
     }
 
     public class User
@@ -116,10 +102,7 @@ namespace Data
             Details = details;
         }
 
-        public UserDetails Details
-        {
-            get;
-        }
+        public UserDetails Details { get; }
     }
 }
 ```
@@ -211,11 +194,7 @@ public class Data : DataBase, IHasData
     /// <summary>
     /// Docs!
     /// </summary>
-    public int Count
-    {
-        get => _count;
-        set => _count = value;
-    }
+    public int Count { get => _count; set => _count = value; }
 
     // ✔ Define auto-implemented properties
     public string Name { get; set; }
@@ -256,11 +235,7 @@ public struct DataPoint : IHasData
     /// <summary>
     /// Docs!
     /// </summary>
-    public int Count
-    {
-        get => _count;
-        set => _count = value;
-    }
+    public int Count { get => _count; set => _count = value; }
 }
 ```
 </details>

@@ -274,13 +274,7 @@ public struct Test
     [Test]
     public void CreateProperty_Works()
     {
-        var expected = @"
-public Action DoWork
-{
-    get;
-    set;
-}
-        ".Trim().WithUnixEOL();
+        var expected = "public Action DoWork { get; set; }";
 
         // CreateProperty()
         Assert.AreEqual(
