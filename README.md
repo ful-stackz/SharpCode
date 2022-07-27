@@ -9,7 +9,7 @@ Small C# code generator. Easily generate code programmatically!
 
 - .NET CLI `dotnet add package SharpCode`
 - Package Manager `Install-Package SharpCode`
-- Package Reference `<PackageReference Include="SharpCode" Version="0.3.0" />`
+- Package Reference `<PackageReference Include="SharpCode" Version="0.4.0" />`
 
 ## Usage
 
