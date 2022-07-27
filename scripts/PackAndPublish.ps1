@@ -85,7 +85,7 @@ if ($Publish) {
     dotnet nuget push $OutDirectory/$FileName
     --source https://api.nuget.org/v3/index.json
     --api-key $NuGetApiKey
-    --no-symbols true
+    --no-symbols
 "@
   
   if ($LASTEXITCODE -ne 0) {
